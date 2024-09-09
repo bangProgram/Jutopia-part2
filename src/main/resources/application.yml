@@ -10,6 +10,11 @@ spring:
     group:
       "local": "local"
       "prd": "prd"
+  thymeleaf:
+    prefix: classpath:templates/main/
+    suffix: .html
+    cache: false
+    check-template-location: true
 
 springdoc:
   use-fqn: true
