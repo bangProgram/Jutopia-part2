@@ -1,0 +1,36 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  application:
+    name: jutopia
+  profiles:
+    active: local
+    group:
+      "local": "local"
+      "prd": "prd"
+
+springdoc:
+  use-fqn: true
+
+auth:
+  account:
+    path:
+      - '/my-content'
+      - '/my-content/**'
+      - '/stream'
+---
+
+spring:
+  config:
+    activate:
+      on-profile: "local"
+    import:
+      - classpath:config/local/config.yml
+      - classpath:config/local/datasource.yml
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: info
