@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <form th:action="@{/auth/signup/proc}" th:method="post" th:object="${signupPayload}">
+        <table>
+            <tr>
+                <td>Email : </td>
+                <td>
+                    <label>
+                        <input type="text" th:field="*{email}">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>Name : </td>
+                <td>
+                    <label>
+                        <input type="text" th:field="*{name}">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>age : </td>
+                <td>
+                    <label>
+                        <input type="text" th:field="*{age}">
+                    </label>
+                </td>
+            </tr>
+        </table>
+        <button type="submit">
+            회원가입
+        </button>
+    </form>
+
+</body>
+</html>

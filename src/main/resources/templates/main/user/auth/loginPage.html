@@ -1,33 +1,39 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
+<script>
+    function test() {
+        console.log("test123");
+    }
+</script>
+
 <head>
     <meta charset="UTF-8">
     <title>로그인 페이지</title>
 </head>
 <body>
-    <form action="#" th:action="@{/signup}" th:method="post">
+    <form action="#" th:action="@{/login/proc}" th:object="${loginPayload}" th:method="post">
     <table>
         <tr>
             <td>Email : </td>
             <td>
-                <label><input type="text" id="email" th:name="email"></label>
-            </td>
-        </tr>
-        <tr>
-            <td>PW : </td>
-            <td>
-                <label><input type="password" id="password" th:name="password"></label>
+                <label><input type="text" th:field="*{email}"></label>
             </td>
         </tr>
     </table>
-    <button onclick="submitForm()">
-        email 확인
+    <button type="submit">
+        로그인
     </button>
-    <button onclick="whoami(document.getElementById('password'))">
-        password 확인
+    <button type="button" th:onclick="|location.href='@{/auth/signup}'|">
+        회원가입
     </button>
 </form>
 
 </body>
+
+<script>
+    function loginProc() {
+        console.log("loginProc 탑니까? ");
+    }
+</script>
 </html>

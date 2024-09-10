@@ -15,9 +15,11 @@ spring:
     suffix: .html
     cache: false
     check-template-location: true
-
-springdoc:
-  use-fqn: true
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: true
 
 auth:
   account:
