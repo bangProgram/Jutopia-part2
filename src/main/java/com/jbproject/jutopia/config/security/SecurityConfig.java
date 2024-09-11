@@ -28,6 +28,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    // 허용 URL 선언
+    private final String[] permitAllUris = {
+            "/auth/**",
+            "/swagger-ui/**","/v2/api-docs","/swagger-resources",
+            "/swagger-resources/**","/configuration/ui","/configuration/security",
+            "/swagger-ui.html","/webjars/**","swagger v3",
+            "/v3/api-docs/**","/swagger-ui/**"
+    };
+
     // PasswordEncoder는 BCryptPasswordEncoder를 사용
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -76,21 +85,8 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests((authorizeRequests)->
                                 authorizeRequests
-                                        //users 포함한 end point 보안 적용 X
-                                        .requestMatchers("/auth/**").permitAll() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
-                                        .requestMatchers("/error/**").permitAll()
-                                        .requestMatchers("/swagger-ui/**","/v2/api-docs",
-                                                "/swagger-resources",
-                                                "/swagger-resources/**",
-                                                "/configuration/ui",
-                                                "/configuration/security",
-                                                "/swagger-ui.html",
-                                                "/webjars/**",
-                                                /* swagger v3 */
-                                                "/v3/api-docs/**",
-                                                "/swagger-ui/**").permitAll()
-//                                .requestMatchers(PathRequest.toH2Console()).permitAll()// h2-console, favicon.ico 요청 인증 무시
-                                        .requestMatchers("/favicon.ico").permitAll()
+                                        // auth 관련 로직 security pass 추가
+                                        .requestMatchers(permitAllUris).permitAll() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
                                         .anyRequest().authenticated() // 그 외 인증 없이 접근X
                 )
                 .build();

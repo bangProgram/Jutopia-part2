@@ -7,6 +7,16 @@ logging:
     org.hibernate.type.descriptor.sql: TRACE
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.pretty: TRACE
+
+jutopia:
+  refresh:
+    jwt:
+      secret: jutapia@JbProject@refreshSecret
+  access:
+    jwt:
+      secret: jutapia@JbProject@accessSecret
+      duration: 5400
+
 #feign:
 #  client:
 #    config:

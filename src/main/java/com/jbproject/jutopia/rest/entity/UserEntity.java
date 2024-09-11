@@ -19,16 +19,28 @@ public class UserEntity {
     private String email;
     @Column(name = "name", nullable = false)
     private String name;
+    @Column(name = "password")
+    private String password;
     @Column(name = "age")
     private int age;
+    @Column(name = "social_type")
+    private String socialType;
+    @Column(name = "social_id")
+    private String socialId;
     @Column(name = "role", nullable = false)
     private String role;
 
     @Builder
-    public UserEntity(String emil, String name, int age, String role){
-        this.email = emil;
+    public UserEntity(
+            String email,String name,String password,int age,String socialType,
+            String socialId,String role
+    ){
+        this.email = email;
         this.name = name;
+        this.password = password;
         this.age = age;
+        this.socialType = socialType;
+        this.socialId = socialId;
         this.role = role;
     }
 }

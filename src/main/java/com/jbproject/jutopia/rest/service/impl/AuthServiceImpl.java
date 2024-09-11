@@ -19,13 +19,17 @@ public class AuthServiceImpl implements AuthService {
     public void addUser(SignupPayload payload) {
         UserEntity newUser = userRepository.save(
                 UserEntity.builder()
-                        .emil(payload.getEmail())
+                        .email(payload.getEmail())
                         .name(payload.getName())
                         .age(payload.getAge())
-                        .role("user")
+                        .role("JUTOPIAN")
                         .build()
         );
 
         System.out.println("new User "+ newUser.getId());
+    }
+
+    public void loginProc(String email) {
+
     }
 }
