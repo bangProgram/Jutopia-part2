@@ -1,5 +1,6 @@
 package com.jbproject.jutopia.config.security;
 
+import com.jbproject.jutopia.config.security.filter.CustomTestFilter;
 import com.jbproject.jutopia.config.security.filter.FilterAuthEntryPoint;
 import com.jbproject.jutopia.config.security.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -28,9 +30,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    // 허용 URL 선언
-    private final String[] permitAllUris = {
-            "/auth/**",
+    // 기본 허용 URL 선언
+    private final String[] defaultPermitAllUris = {
             "/swagger-ui/**","/v2/api-docs","/swagger-resources",
             "/swagger-resources/**","/configuration/ui","/configuration/security",
             "/swagger-ui.html","/webjars/**","swagger v3",
@@ -83,10 +84,12 @@ public class SecurityConfig {
                 .sessionManagement((sessionManagement) ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+//                .addFilterBefore(new CustomTestFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((authorizeRequests)->
                                 authorizeRequests
+                                        .requestMatchers(defaultPermitAllUris).permitAll()
                                         // auth 관련 로직 security pass 추가
-                                        .requestMatchers(permitAllUris).permitAll() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
+                                        .requestMatchers("/auth/**").permitAll() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
                                         .anyRequest().authenticated() // 그 외 인증 없이 접근X
                 )
                 .build();

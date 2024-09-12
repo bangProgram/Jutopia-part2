@@ -3,7 +3,8 @@ package com.jbproject.jutopia.rest.controller.web;
 
 import com.jbproject.jutopia.rest.model.payload.LoginPayload;
 import com.jbproject.jutopia.rest.model.payload.SignupPayload;
-import com.jbproject.jutopia.rest.service.AuthService;
+import com.jbproject.jutopia.auth.service.AuthService;
+import com.jbproject.jutopia.rest.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+    private final UserService userService;
 
     @GetMapping("/auth/login")
     public String goLogin(HttpServletRequest request, Model model, LoginPayload loginPayload) {
@@ -39,6 +40,7 @@ public class AuthController {
 
     @PostMapping("/auth/login")
     public String loginProc(HttpServletRequest request, Model model, LoginPayload loginPayload) {
+        System.out.println("JB /auth/login 동작");
         model.addAttribute("loginPayload", loginPayload);
         return "/user/auth/loginPage";
     }
@@ -51,7 +53,7 @@ public class AuthController {
 
     @PostMapping("/auth/signup")
     public RedirectView signupProc(HttpServletRequest request, Model model, SignupPayload signupPayload) {
-        authService.addUser(signupPayload);
+        userService.addUser(signupPayload);
         System.out.println("signup/proc 종료");
         return new RedirectView("/auth/login");
     }
