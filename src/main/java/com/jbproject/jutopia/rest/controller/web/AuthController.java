@@ -40,7 +40,7 @@ public class AuthController {
 
     @PostMapping("/auth/login")
     public String loginProc(HttpServletRequest request, Model model, LoginPayload loginPayload) {
-        System.out.println("JB /auth/login 동작");
+        userService.login(loginPayload);
         model.addAttribute("loginPayload", loginPayload);
         return "/user/auth/loginPage";
     }

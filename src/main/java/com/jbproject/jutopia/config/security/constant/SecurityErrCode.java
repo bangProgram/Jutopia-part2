@@ -6,14 +6,13 @@ import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 @ToString
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum SecurityErrCode {
 
     FORBIDDEN_ERROR(403,"Security.403.01", "Forbidden");
 
-    private int responseCode;
-    private String code;
-    private String message;
-
+    private int statusCode;
+    private String errorCode;
+    private String errorMsg;
 }

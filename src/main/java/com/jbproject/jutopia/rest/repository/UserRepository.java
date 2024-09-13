@@ -1,10 +1,12 @@
 package com.jbproject.jutopia.rest.repository;
 
 import com.jbproject.jutopia.rest.entity.UserEntity;
-import com.jbproject.jutopia.rest.repository.custom.AuthCustom;
-import org.apache.catalina.User;
+import com.jbproject.jutopia.rest.repository.custom.UserCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<UserEntity, Long>, AuthCustom {
+import java.util.Optional;
 
+public interface UserRepository extends JpaRepository<UserEntity, Long>, UserCustom {
+
+    Optional<UserEntity> findByEmailAndPassword(String email, String password);
 }
