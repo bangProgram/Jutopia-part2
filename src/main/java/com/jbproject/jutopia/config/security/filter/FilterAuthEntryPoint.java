@@ -27,8 +27,8 @@ public class FilterAuthEntryPoint implements AuthenticationEntryPoint {
                 .write(
                         RESPONSE_FORMAT.formatted(
                                 "",
-                                SecurityErrCode.FORBIDDEN_ERROR.getCode(),
-                                SecurityErrCode.FORBIDDEN_ERROR.getMessage()
+                                SecurityErrCode.FORBIDDEN_ERROR_01.getErrorCode(),
+                                SecurityErrCode.FORBIDDEN_ERROR_01.getErrorMsg()
                         )
                 );
 

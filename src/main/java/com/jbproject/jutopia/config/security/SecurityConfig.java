@@ -1,10 +1,13 @@
 package com.jbproject.jutopia.config.security;
 
+import com.jbproject.jutopia.auth.service.AuthService;
 import com.jbproject.jutopia.config.security.filter.CustomTestFilter;
 import com.jbproject.jutopia.config.security.filter.FilterAuthEntryPoint;
+import com.jbproject.jutopia.config.security.filter.RolebaseAuthFilter;
 import com.jbproject.jutopia.config.security.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,33 +19,56 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatchers;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
 @Slf4j
-@RequiredArgsConstructor
 public class SecurityConfig {
-
-    // 기본 허용 URL 선언
-    private final String[] defaultPermitAllUris = {
-            "/swagger-ui/**","/v2/api-docs","/swagger-resources",
-            "/swagger-resources/**","/configuration/ui","/configuration/security",
-            "/swagger-ui.html","/webjars/**","swagger v3",
-            "/v3/api-docs/**","/swagger-ui/**"
+    private final String[] defaultPermitPath = {
+            "/swagger-ui/**", "/v2/api-docs", "/swagger-resources",
+            "/swagger-resources/**", "/configuration/ui", "/configuration/security",
+            "/swagger-ui.html", "/webjars/**", "swagger v3",
+            "/v3/api-docs/**", "/swagger-ui/**", "/favicon.ico",
+            "/auth/**"
     };
+
+    @Autowired
+    private AuthService authService;
+
+    @Bean
+    public Map<String, List<String>> roleBasedAuthList(){
+        System.out.println("JB roleBasedAuthList 동작하는지 확인!");
+        return authService.getAllRoleBasedUrls();
+    }
+
+    @Bean
+    RequestMatcher defaultPermitAllPathMatcher(){
+        RequestMatcher[] matchers = Arrays.stream(defaultPermitPath)
+                .map(AntPathRequestMatcher::new)
+                .toList()
+                .toArray(RequestMatcher[]::new);
+
+        return RequestMatchers.anyOf(matchers);
+    }
 
     // PasswordEncoder는 BCryptPasswordEncoder를 사용
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
@@ -67,7 +93,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-
         return httpSecurity
                 // token 사용 방식, csrf disable
                 .csrf(AbstractHttpConfigurer::disable)
@@ -84,14 +109,12 @@ public class SecurityConfig {
                 .sessionManagement((sessionManagement) ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-//                .addFilterBefore(new CustomTestFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((authorizeRequests)->
-                                authorizeRequests
-                                        .requestMatchers(defaultPermitAllUris).permitAll()
-                                        // auth 관련 로직 security pass 추가
-                                        .requestMatchers("/auth/**").permitAll() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
+                                authorizeRequests// HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
+                                        .requestMatchers(defaultPermitPath).permitAll()
                                         .anyRequest().authenticated() // 그 외 인증 없이 접근X
                 )
+                .addFilterAfter(new RolebaseAuthFilter(defaultPermitAllPathMatcher()), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

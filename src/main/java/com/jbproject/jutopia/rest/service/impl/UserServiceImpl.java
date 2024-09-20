@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AccessJwtFacade accessJwtFacade;
+//    private final AccessJwtFacade accessJwtFacade;
 
     public void addUser(SignupPayload payload) {
 
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
                 .password(password)
                 .name(payload.getName())
                 .age(payload.getAge())
-                .role("JUTOPIAN")
+                .role("jutopian")
                 .build();
 
         newUser.setCreateId(newUser.getEmail());
@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void login(LoginPayload payload) {
+        /*
         String email = payload.getEmail();
         String password = passwordEncoder.encode(payload.getPassword());
 
@@ -69,6 +70,6 @@ public class UserServiceImpl implements UserService {
                         )
                         .build()
         );
-
+*/
     }
 }
