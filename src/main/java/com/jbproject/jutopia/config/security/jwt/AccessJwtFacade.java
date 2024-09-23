@@ -1,20 +1,8 @@
 package com.jbproject.jutopia.config.security.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.jbproject.jutopia.config.security.jwt.properties.AccessJwtProperties;
-import com.jbproject.jutopia.config.security.jwt.properties.RefreshJwtProperties;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import lombok.*;
-
-import javax.crypto.SecretKey;
-import java.time.Duration;
-import java.util.Date;
-import java.util.Map;
 
 @RequiredArgsConstructor
 public class AccessJwtFacade {

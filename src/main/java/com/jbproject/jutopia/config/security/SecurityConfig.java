@@ -1,13 +1,10 @@
 package com.jbproject.jutopia.config.security;
 
-import com.jbproject.jutopia.auth.service.AuthService;
-import com.jbproject.jutopia.config.security.filter.CustomTestFilter;
 import com.jbproject.jutopia.config.security.filter.FilterAuthEntryPoint;
-import com.jbproject.jutopia.config.security.filter.RolebaseAuthFilter;
-import com.jbproject.jutopia.config.security.provider.TokenProvider;
+import com.jbproject.jutopia.config.security.filter.AccessAuthFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,12 +16,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatchers;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -34,6 +33,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 @Slf4j
 public class SecurityConfig {
     private final String[] defaultPermitPath = {
@@ -44,17 +44,10 @@ public class SecurityConfig {
             "/auth/**"
     };
 
-    @Autowired
-    private AuthService authService;
 
-    @Bean
-    public Map<String, List<String>> roleBasedAuthList(){
-        System.out.println("JB roleBasedAuthList 동작하는지 확인!");
-        return authService.getAllRoleBasedUrls();
-    }
-
-    @Bean
+    @Bean("defaultPermitAllPathMatcher")
     RequestMatcher defaultPermitAllPathMatcher(){
+        System.out.println("JB Security defaultPermitAllPathMatcher");
         RequestMatcher[] matchers = Arrays.stream(defaultPermitPath)
                 .map(AntPathRequestMatcher::new)
                 .toList()
@@ -92,7 +85,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain filterChain(
+            HttpSecurity httpSecurity
+            ,@Qualifier("roleBasedAuthList") Map<String, List<String>> roleBasedAuthList
+    ) throws Exception {
+        CharacterEncodingFilter filter = new CharacterEncodingFilter();
+        filter.setEncoding("UTF-8");
+        filter.setForceEncoding(true);
+
         return httpSecurity
                 // token 사용 방식, csrf disable
                 .csrf(AbstractHttpConfigurer::disable)
@@ -114,7 +114,8 @@ public class SecurityConfig {
                                         .requestMatchers(defaultPermitPath).permitAll()
                                         .anyRequest().authenticated() // 그 외 인증 없이 접근X
                 )
-                .addFilterAfter(new RolebaseAuthFilter(defaultPermitAllPathMatcher()), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(filter, CsrfFilter.class)
+                .addFilterAfter(new AccessAuthFilter(defaultPermitAllPathMatcher(), roleBasedAuthList), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

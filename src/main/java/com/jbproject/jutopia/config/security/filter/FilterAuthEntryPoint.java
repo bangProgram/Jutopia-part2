@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.config.security.filter;
 
-import com.jbproject.jutopia.config.security.constant.SecurityErrCode;
+import com.jbproject.jutopia.config.security.constant.SecurityErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,8 +27,8 @@ public class FilterAuthEntryPoint implements AuthenticationEntryPoint {
                 .write(
                         RESPONSE_FORMAT.formatted(
                                 "",
-                                SecurityErrCode.FORBIDDEN_ERROR_01.getErrorCode(),
-                                SecurityErrCode.FORBIDDEN_ERROR_01.getErrorMsg()
+                                SecurityErrorCode.FORBIDDEN_ERROR_01.getErrorCode(),
+                                SecurityErrorCode.FORBIDDEN_ERROR_01.getErrorMsg()
                         )
                 );
 
