@@ -34,12 +34,12 @@ public class AccessJwtTokenProvider {
         return parser.parseClaimsJws(token).getBody();
     }
 
-    public AccessJwtFacade.CustomClaims getCustomClaims(String token){
+    public AccessJwtToken.CustomClaims getCustomClaims(String token){
         JwtParser parser = Jwts.parserBuilder()
                 .setSigningKey(getSecretKey())
                 .build();
         Claims body = parser.parseClaimsJws(token).getBody();
-        return objectMapper.convertValue(body, AccessJwtFacade.CustomClaims.class);
+        return objectMapper.convertValue(body, AccessJwtToken.CustomClaims.class);
     }
 
 
@@ -48,7 +48,7 @@ public class AccessJwtTokenProvider {
                 .setSigningKey(getSecretKey())
                 .build();
         Claims body = parser.parseClaimsJws(token).getBody();
-        AccessJwtFacade.CustomClaims custom =  objectMapper.convertValue(body, AccessJwtFacade.CustomClaims.class);
+        AccessJwtToken.CustomClaims custom =  objectMapper.convertValue(body, AccessJwtToken.CustomClaims.class);
 
         return custom.getRole();
     }
@@ -61,7 +61,7 @@ public class AccessJwtTokenProvider {
                 .getSubject();
     }
 
-    public String createCustomToken(AccessJwtFacade.CustomClaims customClaims){
+    public String createCustomToken(AccessJwtToken.CustomClaims customClaims){
         JwtBuilder builder = Jwts.builder()
                 .setSubject(customClaims.email)
                 .setClaims(this.objectMapper.convertValue(customClaims, Map.class))

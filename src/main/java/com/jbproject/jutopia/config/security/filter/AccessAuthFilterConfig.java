@@ -20,36 +20,21 @@ import java.util.function.Supplier;
 public class AccessAuthFilterConfig {
     @Autowired
     private AuthService authService;
-    private final String[] defaultPermitPath = {
-            "/swagger-ui/**", "/v2/api-docs", "/swagger-resources",
-            "/swagger-resources/**", "/configuration/ui", "/configuration/security",
-            "/swagger-ui.html", "/webjars/**", "swagger v3",
-            "/v3/api-docs/**", "/swagger-ui/**", "/favicon.ico",
-            "/auth/**"
-    };
+    private final RequestMatcher defaultPermitAllPathMatcher;
 
-    @Bean("defaultPermitAllPathMatcher1")
-    RequestMatcher defaultPermitAllPathMatcher(){
-        System.out.println("JB Security defaultPermitAllPathMatcher");
-        RequestMatcher[] matchers = Arrays.stream(defaultPermitPath)
-                .map(AntPathRequestMatcher::new)
-                .toList()
-                .toArray(RequestMatcher[]::new);
-
-        return RequestMatchers.anyOf(matchers);
+    public AccessAuthFilterConfig(RequestMatcher defaultPermitAllPathMatcher) {
+        this.defaultPermitAllPathMatcher = defaultPermitAllPathMatcher;
     }
 
-    @Bean("roleBasedAuthList1")
+    @Bean("roleBasedAuthList")
     public Map<String, List<String>> roleBasedAuthList(){
-        System.out.println("JB Security roleBasedAuthList");
         return authService.getAllRoleBasedUrls();
     }
 
     @Bean("accessAuthFilterFactory")
     Supplier<AccessAuthFilter> accountAuthFilterFactory(
             ObjectMapper objectMapper,
-            @Qualifier("defaultPermitAllPathMatcher1") RequestMatcher defaultPermitAllPathMatcher,
-            @Qualifier("roleBasedAuthList1") Map<String, List<String>> roleBasedAuthList
+            @Qualifier("roleBasedAuthList") Map<String, List<String>> roleBasedAuthList
     ){
         System.out.println("JB Security accountAuthFilterFactory");
         return () -> new AccessAuthFilter(

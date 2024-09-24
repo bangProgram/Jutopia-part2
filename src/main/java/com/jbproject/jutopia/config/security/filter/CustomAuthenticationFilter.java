@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -20,25 +21,40 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Map;
 
 @Slf4j
 public class CustomAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-//    @Autowired
-    private AuthService authService;
+    private final ObjectMapper objectMapper;
+    private final AuthService authService;
 
-    public CustomAuthenticationFilter() {
+    public CustomAuthenticationFilter(ObjectMapper objectMapper, AuthService authService) {
         super(new AntPathRequestMatcher("/auth/login", "POST"));
+        this.objectMapper = objectMapper;
+        this.authService = authService;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         System.out.println("JB Security CustomAuthenticationFilter");
-        LoginPayload payload = new ObjectMapper().readValue(request.getInputStream(), LoginPayload.class);
+        String email = request.getParameter("username");
+        System.out.println("JB : "+email);
+        String password = request.getParameter("password");
+        System.out.println("test1 : "+password);
+
+        LoginPayload payload = new LoginPayload();
+        payload.setEmail(email);
+        payload.setPassword(password);
+
         UserEntity userInfo = authService.getUserInfo(payload);
+
         AccessJwtToken token = new AccessJwtToken(
-                AccessJwtPrincipal.builder()
+                AccessJwtToken.AccessJwtPrincipal.builder()
                         .userEmail(userInfo.getEmail())
                         .userName(userInfo.getName())
                         .age(userInfo.getAge())
@@ -52,4 +68,13 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
 
         return token;
     }
+
+//    private Authentication handleAuthentication(HttpServletRequest request, String requestURI) {
+//        Authentication auth;
+//
+//        String accessToken = request.getHeader("X-Access-Authorization");
+//
+//
+//        return auth;
+//    }
 }

@@ -1,6 +1,5 @@
 package com.jbproject.jutopia.rest.service.impl;
 
-import com.jbproject.jutopia.config.security.jwt.AccessJwtFacade;
 import com.jbproject.jutopia.constant.ErrorCodeConstants;
 import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.rest.entity.UserEntity;

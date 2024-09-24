@@ -1,5 +1,7 @@
 package com.jbproject.jutopia.config.security;
 
+import com.jbproject.jutopia.config.security.filter.CustomAuthenticationFilter;
+import com.jbproject.jutopia.config.security.filter.CustomAuthenticationProvider;
 import com.jbproject.jutopia.config.security.filter.FilterAuthEntryPoint;
 import com.jbproject.jutopia.config.security.filter.AccessAuthFilter;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -46,9 +50,8 @@ public class SecurityConfig {
     };
 
     // 기본 허용 path - request Matcher 추가
-    @Bean("defaultPermitAllPathMatcher")
+    @Bean
     RequestMatcher defaultPermitAllPathMatcher(){
-        System.out.println("JB Security defaultPermitAllPathMatcher");
         RequestMatcher[] matchers = Arrays.stream(defaultPermitPath)
                 .map(AntPathRequestMatcher::new)
                 .toList()
@@ -99,6 +102,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(
             HttpSecurity httpSecurity
+            , @Qualifier("customAuthenticationFilterFactory") Supplier<CustomAuthenticationFilter> customAuthenticationFilterFactory
             , @Qualifier("accessAuthFilterFactory")Supplier<AccessAuthFilter> accessAuthFilterFactory
             ) throws Exception {
 
@@ -124,7 +128,8 @@ public class SecurityConfig {
                                         .anyRequest().authenticated() // 그 외 인증 없이 접근X
                 )
                 .addFilterBefore(characterEncodingFilter(), CsrfFilter.class)
-                .addFilterAfter(accessAuthFilterFactory.get(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(customAuthenticationFilterFactory.get() , UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(accessAuthFilterFactory.get(), CustomAuthenticationFilter.class)
                 .build();
     }
 }

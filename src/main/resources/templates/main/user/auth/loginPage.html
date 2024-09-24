@@ -12,18 +12,18 @@
     <title>로그인 페이지</title>
 </head>
 <body>
-    <form action="#" th:action="@{/login/proc}" th:object="${loginPayload}" th:method="post">
+    <form action="#" th:action="@{/auth/login}" th:object="${loginPayload}" th:method="post">
     <table>
         <tr>
             <td>Email : </td>
             <td>
-                <label><input type="text" th:field="*{email}"></label>
+                <label><input type="text" th:field="*{email}" required></label>
             </td>
         </tr>
         <tr>
             <td>Password : </td>
             <td>
-                <label><input type="text" th:field="*{password}"></label>
+                <label><input type="text" th:field="*{password}" required></label>
             </td>
         </tr>
     </table>

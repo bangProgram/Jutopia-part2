@@ -1,5 +1,10 @@
 package com.jbproject.jutopia.config.security.jwt;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -10,6 +15,10 @@ public class AccessJwtToken implements Authentication {
     boolean authenticated = false;
     private final AccessJwtPrincipal accessJwtPrincipal;
     String role = "VISITOR";
+
+    public AccessJwtToken(AccessJwtPrincipal principal){
+        this.accessJwtPrincipal = principal;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -46,11 +55,41 @@ public class AccessJwtToken implements Authentication {
         return null;
     }
 
-    public AccessJwtToken(AccessJwtPrincipal principal){
-        this.accessJwtPrincipal = principal;
-    }
-
     public void setRole(String role){
         this.role = role;
+    }
+
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class CustomClaims {
+
+        @Builder
+        @Data
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public static class SocialStatus {
+            String socialType;
+            String socialId;
+        }
+
+        String email;
+        String role;
+        SocialStatus socialStatus;
+    }
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AccessJwtPrincipal {
+        private String userEmail;
+        private String userName;
+        private int age;
+        private String socialType;
+        private String socialId;
+        private String role;
     }
 }

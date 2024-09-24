@@ -38,13 +38,6 @@ public class AuthController {
         return "/user/auth/loginPage";
     }
 
-    @PostMapping("/auth/login")
-    public String loginProc(HttpServletRequest request, Model model, LoginPayload loginPayload) {
-        userService.login(loginPayload);
-        model.addAttribute("loginPayload", loginPayload);
-        return "/user/auth/loginPage";
-    }
-
     @GetMapping("/auth/signup")
     public String goSignup(HttpServletRequest request, Model model, SignupPayload signupPayload) {
         model.addAttribute("signupPayload", signupPayload);
@@ -54,7 +47,7 @@ public class AuthController {
     @PostMapping("/auth/signup")
     public RedirectView signupProc(HttpServletRequest request, Model model, SignupPayload signupPayload) {
         userService.addUser(signupPayload);
-        System.out.println("signup/proc 종료");
+        System.out.println("/auth/signup process 종료");
         return new RedirectView("/auth/login");
     }
 }
