@@ -26,10 +26,12 @@ import java.util.Map;
 
 public class AccessAuthFilter extends OncePerRequestFilter {
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
+    private final ObjectMapper objectMapper;
     private final RequestMatcher defaultPermitAllPath;
     private final Map<String,List<String>> roleBasedAuthList;
 
-    public AccessAuthFilter(RequestMatcher defaultPermitAllPath, Map<String,List<String>> roleBasedAuthList){
+    public AccessAuthFilter(ObjectMapper objectMapper, RequestMatcher defaultPermitAllPath, Map<String,List<String>> roleBasedAuthList){
+        this.objectMapper = objectMapper;
         this.defaultPermitAllPath = defaultPermitAllPath;
         this.roleBasedAuthList = roleBasedAuthList;
     }

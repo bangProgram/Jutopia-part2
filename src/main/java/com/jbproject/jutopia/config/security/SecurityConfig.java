@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 @Configuration
 @EnableWebSecurity
@@ -44,7 +45,7 @@ public class SecurityConfig {
             "/auth/**"
     };
 
-
+    // 기본 허용 path - request Matcher 추가
     @Bean("defaultPermitAllPathMatcher")
     RequestMatcher defaultPermitAllPathMatcher(){
         System.out.println("JB Security defaultPermitAllPathMatcher");
@@ -62,7 +63,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
+    // Spring Security Cors 설정
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
@@ -79,19 +80,27 @@ public class SecurityConfig {
         return source;
     }
 
+    // Spring Security 필터 Exception entry point
     @Bean
     FilterAuthEntryPoint filterAuthEntryPoint(){
         return new FilterAuthEntryPoint();
     }
 
+    // Spring Security 인코딩 필터
     @Bean
-    public SecurityFilterChain filterChain(
-            HttpSecurity httpSecurity
-            ,@Qualifier("roleBasedAuthList") Map<String, List<String>> roleBasedAuthList
-    ) throws Exception {
+    CharacterEncodingFilter characterEncodingFilter() {
         CharacterEncodingFilter filter = new CharacterEncodingFilter();
         filter.setEncoding("UTF-8");
         filter.setForceEncoding(true);
+
+        return filter;
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(
+            HttpSecurity httpSecurity
+            , @Qualifier("accessAuthFilterFactory")Supplier<AccessAuthFilter> accessAuthFilterFactory
+            ) throws Exception {
 
         return httpSecurity
                 // token 사용 방식, csrf disable
@@ -114,8 +123,8 @@ public class SecurityConfig {
                                         .requestMatchers(defaultPermitPath).permitAll()
                                         .anyRequest().authenticated() // 그 외 인증 없이 접근X
                 )
-                .addFilterBefore(filter, CsrfFilter.class)
-                .addFilterAfter(new AccessAuthFilter(defaultPermitAllPathMatcher(), roleBasedAuthList), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(characterEncodingFilter(), CsrfFilter.class)
+                .addFilterAfter(accessAuthFilterFactory.get(), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

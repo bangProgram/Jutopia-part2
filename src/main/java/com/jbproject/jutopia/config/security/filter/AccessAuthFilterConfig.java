@@ -16,10 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-//@Configuration
+@Configuration
 public class AccessAuthFilterConfig {
-//    @Autowired
-//    private AuthService authService;
+    @Autowired
+    private AuthService authService;
     private final String[] defaultPermitPath = {
             "/swagger-ui/**", "/v2/api-docs", "/swagger-resources",
             "/swagger-resources/**", "/configuration/ui", "/configuration/security",
@@ -28,7 +28,7 @@ public class AccessAuthFilterConfig {
             "/auth/**"
     };
 
-//    @Bean("defaultPermitAllPathMatcher")
+    @Bean("defaultPermitAllPathMatcher1")
     RequestMatcher defaultPermitAllPathMatcher(){
         System.out.println("JB Security defaultPermitAllPathMatcher");
         RequestMatcher[] matchers = Arrays.stream(defaultPermitPath)
@@ -39,23 +39,23 @@ public class AccessAuthFilterConfig {
         return RequestMatchers.anyOf(matchers);
     }
 
-//    @Bean("roleBasedAuthList")
-//    public Map<String, List<String>> roleBasedAuthList(){
-//        System.out.println("JB Security roleBasedAuthList");
-//        return authService.getAllRoleBasedUrls();
-//    }
+    @Bean("roleBasedAuthList1")
+    public Map<String, List<String>> roleBasedAuthList(){
+        System.out.println("JB Security roleBasedAuthList");
+        return authService.getAllRoleBasedUrls();
+    }
 
-//    @Bean("accessAuthFilterFactory")
-//    Supplier<AccessAuthFilter> accountAuthFilterFactory(
-//            ObjectMapper objectMapper,
-//            @Qualifier("defaultPermitAllPathMatcher") RequestMatcher defaultPermitAllPathMatcher,
-//            @Qualifier("roleBasedAuthList") Map<String, List<String>> roleBasedAuthList
-//    ){
-//        System.out.println("JB Security accountAuthFilterFactory");
-//        return () -> new AccessAuthFilter(
-//                objectMapper,
-//                defaultPermitAllPathMatcher,
-//                roleBasedAuthList
-//        );
-//    }
+    @Bean("accessAuthFilterFactory")
+    Supplier<AccessAuthFilter> accountAuthFilterFactory(
+            ObjectMapper objectMapper,
+            @Qualifier("defaultPermitAllPathMatcher1") RequestMatcher defaultPermitAllPathMatcher,
+            @Qualifier("roleBasedAuthList1") Map<String, List<String>> roleBasedAuthList
+    ){
+        System.out.println("JB Security accountAuthFilterFactory");
+        return () -> new AccessAuthFilter(
+                objectMapper,
+                defaultPermitAllPathMatcher,
+                roleBasedAuthList
+        );
+    }
 }
