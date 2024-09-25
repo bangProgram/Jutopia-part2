@@ -1,7 +1,6 @@
 package com.jbproject.jutopia.config.security;
 
 import com.jbproject.jutopia.config.security.filter.CustomAuthenticationFilter;
-import com.jbproject.jutopia.config.security.filter.CustomAuthenticationProvider;
 import com.jbproject.jutopia.config.security.filter.FilterAuthEntryPoint;
 import com.jbproject.jutopia.config.security.filter.AccessAuthFilter;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -33,7 +30,6 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 @Configuration

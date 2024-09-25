@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
                 .password(password)
                 .name(payload.getName())
                 .age(payload.getAge())
-                .role("jutopian")
+                .role("JUTOPIAN")
                 .build();
 
         newUser.setCreateId(newUser.getEmail());

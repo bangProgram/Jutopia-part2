@@ -10,13 +10,18 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-public class AccessJwtToken implements Authentication {
+/*
+    토큰 (인증)
+
+*/
+
+public class AccessJwtTokenBack implements Authentication {
 
     boolean authenticated = false;
-    private final AccessJwtPrincipal accessJwtPrincipal;
+    AccessJwtPrincipal accessJwtPrincipal;
     String role = "VISITOR";
 
-    public AccessJwtToken(AccessJwtPrincipal principal){
+    public AccessJwtTokenBack(AccessJwtPrincipal principal){
         this.accessJwtPrincipal = principal;
     }
 

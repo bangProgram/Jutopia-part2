@@ -46,19 +46,12 @@ public class AuthService implements UserDetailsService {
         return roleBasedWhiteList;
     }
 
-    public UserEntity getUserInfo(LoginPayload payload){
-
-        String email = payload.getEmail();
-        String password = passwordEncoder.encode(payload.getPassword());
-
-        Optional<UserEntity> user = userRepository.findByEmailAndPassword(email, password);
-        if(!user.isPresent()) throw new ExceptionProvider(ErrorCodeConstants.AUTHENTICATION_400_01);
-
-        return user.get();
+    public boolean passwordMatcher(String password, String encodePassowrd) {
+        return passwordEncoder.matches(password, encodePassowrd);
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findByEmail(username);
 
         if (null == user) {

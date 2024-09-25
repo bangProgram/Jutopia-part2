@@ -1,14 +1,14 @@
 package com.jbproject.jutopia.config.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jbproject.jutopia.config.security.constant.AccessJwtErrorCode;
 import com.jbproject.jutopia.config.security.constant.SecurityErrorCode;
+import com.jbproject.jutopia.config.security.jwt.AccessJwtTokenBack;
+import com.jbproject.jutopia.config.security.model.Role;
 import com.jbproject.jutopia.exception.ErrorCode;
 import com.jbproject.jutopia.exception.model.ExceptionModel;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +30,7 @@ public class AccessAuthFilter extends OncePerRequestFilter {
     private final RequestMatcher defaultPermitAllPath;
     private final Map<String,List<String>> roleBasedAuthList;
 
+
     public AccessAuthFilter(ObjectMapper objectMapper, RequestMatcher defaultPermitAllPath, Map<String,List<String>> roleBasedAuthList){
         this.objectMapper = objectMapper;
         this.defaultPermitAllPath = defaultPermitAllPath;
@@ -46,24 +47,50 @@ public class AccessAuthFilter extends OncePerRequestFilter {
         }
         // 모든 경로에 대한 인증및 인가 검증
         else{
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Authentication authentication = handleAuthentication(request) ;
             String role = "VISITOR";  // 기본적으로 비로그인 상태는 'visitor'로 간주
 
+            if(authentication instanceof AccessJwtTokenBack){
+                System.out.println("JB AccessJwtToken True");
+            }else{
+                System.out.println("JB AccessJwtToken False");
+            }
+
             if (authentication != null && authentication.isAuthenticated()) {
-                role = authentication.getAuthorities().iterator().next().getAuthority();  // 인증된 사용자의 역할 가져오기
+                role = authentication.getAuthorities().iterator().next().getAuthority(); // 인증된 사용자의 역할 가져오기
+                System.out.println("JB authentication : "+role);
             }
 
             Map<String, List<String>> roleBasedUrls = roleBasedAuthList;
             List<String> whiteList = roleBasedUrls.get(role);
 
             System.out.println("JB whiteList : "+whiteList);
-            if (whiteList != null && whiteList.contains(requestURI)) {
+            if (whiteList != null && whiteList.contains(requestURI) || role.equals(Role.SYSTEM.name())) {
                 filterChain.doFilter(request, response);  // 허용된 URI일 경우 필터를 통과시킴
             } else {
                 sendErrorResponse(request, response, SecurityErrorCode.FORBIDDEN_ERROR_02);
             }
         }
     }
+
+
+    private Authentication handleAuthentication(HttpServletRequest request) {
+        Authentication auth;
+        Cookie[] cookies = request.getCookies();
+        String token  = "";
+        if(cookies != null){
+            for(Cookie cookie : cookies){
+                if(cookie.getName().equals("X-Access-Token")){
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }else{
+        }
+        System.out.println("accessToken 내용 : "+token);
+        return null;
+    }
+
 
     private void sendErrorResponse(HttpServletRequest request, HttpServletResponse response, ErrorCode exception) throws IOException {
 
@@ -72,8 +99,6 @@ public class AccessAuthFilter extends OncePerRequestFilter {
                 exception.getErrorCode(),
                 exception.getErrorMsg()
         );
-
-        ObjectMapper objectMapper = new ObjectMapper();
 
         String body = objectMapper.writeValueAsString(exceptionModel);
         response.getWriter().write(body);

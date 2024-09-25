@@ -11,10 +11,10 @@ logging:
 jutopia:
   refresh:
     jwt:
-      secret: jutapia@JbProject@refreshSecret
+      secret: jutapia-JbProject-refreshSecret-1214
   access:
     jwt:
-      secret: jutapia@JbProject@accessSecret
+      secret: jutapia-JbProject-accessSecret-1214
       duration: 5400
 
 #feign:

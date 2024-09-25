@@ -4,7 +4,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class DefaultAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         System.out.println("JB : CustomAuthenticationProvider 동작 진행");
@@ -13,6 +13,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return CustomAuthenticationProvider.class.isAssignableFrom(authentication);
+        return DefaultAuthenticationProvider.class.isAssignableFrom(authentication);
     }
 }

@@ -2,11 +2,13 @@ package com.jbproject.jutopia.config.security.model;
 
 import com.jbproject.jutopia.rest.entity.UserEntity;
 import jakarta.persistence.Column;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+@Getter
 public class UserDetail implements UserDetails {
 
     private Long id;
