@@ -1,7 +1,7 @@
 package com.jbproject.jutopia.config.security.jwt;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -50,5 +50,17 @@ public class RefreshJwtToken implements Authentication {
     @Override
     public String getName() {
         return null;
+    }
+
+
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class CustomClaims {
+
+        String userId;
+        String role;
     }
 }

@@ -2,7 +2,7 @@ package com.jbproject.jutopia.config.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.config.security.constant.SecurityErrorCode;
-import com.jbproject.jutopia.config.security.jwt.AccessJwtTokenBack;
+import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.config.security.model.Role;
 import com.jbproject.jutopia.exception.ErrorCode;
 import com.jbproject.jutopia.exception.model.ExceptionModel;
@@ -50,7 +50,7 @@ public class AccessAuthFilter extends OncePerRequestFilter {
             Authentication authentication = handleAuthentication(request) ;
             String role = "VISITOR";  // 기본적으로 비로그인 상태는 'visitor'로 간주
 
-            if(authentication instanceof AccessJwtTokenBack){
+            if(authentication instanceof AccessJwtToken){
                 System.out.println("JB AccessJwtToken True");
             }else{
                 System.out.println("JB AccessJwtToken False");

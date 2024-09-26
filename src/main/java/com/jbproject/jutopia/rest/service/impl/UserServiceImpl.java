@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
         System.out.println("JB password 확인 : "+payload.getPassword()+ " / " + password);
 
         UserEntity newUser = UserEntity.builder()
+                .userId(payload.getUserId())
                 .email(payload.getEmail())
                 .password(password)
                 .name(payload.getName())
@@ -41,34 +42,5 @@ public class UserServiceImpl implements UserService {
         userRepository.save(newUser);
 
         System.out.println("new User "+ newUser.getId());
-    }
-
-    public void login(LoginPayload payload) {
-        /*
-        String email = payload.getEmail();
-        String password = passwordEncoder.encode(payload.getPassword());
-
-        Optional<UserEntity> user = userRepository.findByEmailAndPassword(email, password);
-
-        // 해당 사용자 없을 경우 반환처리
-        if(!user.isPresent()){
-            throw new ExceptionProvider(ErrorCodeConstants.AUTHENTICATION_400_01);
-        }
-
-        UserEntity userInfo = user.get();
-
-        String token = accessJwtFacade.createToken(
-                AccessJwtFacade.CustomClaims.builder()
-                        .email(userInfo.getEmail())
-                        .role(userInfo.getRole())
-                        .socialStatus(
-                                AccessJwtFacade.CustomClaims.SocialStatus.builder()
-                                        .socialType(userInfo.getSocialType())
-                                        .socialId(userInfo.getSocialId())
-                                        .build()
-                        )
-                        .build()
-        );
-*/
     }
 }

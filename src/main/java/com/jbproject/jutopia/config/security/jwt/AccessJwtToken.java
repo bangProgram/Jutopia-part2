@@ -15,15 +15,17 @@ import java.util.Collection;
 
 */
 
-public class AccessJwtTokenBack implements Authentication {
+public class AccessJwtToken implements Authentication {
 
     boolean authenticated = false;
+//    private final AccessJwtPrincipal accessJwtPrincipal;
+
     AccessJwtPrincipal accessJwtPrincipal;
     String role = "VISITOR";
 
-    public AccessJwtTokenBack(AccessJwtPrincipal principal){
-        this.accessJwtPrincipal = principal;
-    }
+//    public AccessJwtToken(AccessJwtPrincipal principal) {
+//        accessJwtPrincipal = principal;
+//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -41,7 +43,7 @@ public class AccessJwtTokenBack implements Authentication {
     }
 
     @Override
-    public Object getPrincipal() {
+    public AccessJwtPrincipal getPrincipal() {
         return accessJwtPrincipal;
     }
 
@@ -64,6 +66,10 @@ public class AccessJwtTokenBack implements Authentication {
         this.role = role;
     }
 
+    public void setAccessJwtPrincipal(AccessJwtPrincipal principal){
+        this.accessJwtPrincipal = principal;
+    }
+
     @Builder
     @Data
     @NoArgsConstructor
@@ -71,30 +77,9 @@ public class AccessJwtTokenBack implements Authentication {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class CustomClaims {
 
-        @Builder
-        @Data
-        @NoArgsConstructor
-        @AllArgsConstructor
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        public static class SocialStatus {
-            String socialType;
-            String socialId;
-        }
-
+        String userId;
         String email;
         String role;
-        SocialStatus socialStatus;
     }
-    @Builder
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class AccessJwtPrincipal {
-        private String userEmail;
-        private String userName;
-        private int age;
-        private String socialType;
-        private String socialId;
-        private String role;
-    }
+
 }

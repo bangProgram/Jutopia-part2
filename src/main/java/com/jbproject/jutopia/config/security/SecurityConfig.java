@@ -3,6 +3,7 @@ package com.jbproject.jutopia.config.security;
 import com.jbproject.jutopia.config.security.filter.CustomAuthenticationFilter;
 import com.jbproject.jutopia.config.security.filter.FilterAuthEntryPoint;
 import com.jbproject.jutopia.config.security.filter.AccessAuthFilter;
+import com.jbproject.jutopia.config.security.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,6 +38,7 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 @Slf4j
 public class SecurityConfig {
+
     private final String[] defaultPermitPath = {
             "/swagger-ui/**", "/v2/api-docs", "/swagger-resources",
             "/swagger-resources/**", "/configuration/ui", "/configuration/security",
@@ -94,6 +96,9 @@ public class SecurityConfig {
 
         return filter;
     }
+
+    @Bean
+    TokenProvider tokenProvider() { return new TokenProvider(); }
 
     @Bean
     public SecurityFilterChain filterChain(

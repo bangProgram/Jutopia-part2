@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.auth.service.AuthService;
 import com.jbproject.jutopia.config.security.jwt.AccessJwtTokenProvider;
 import com.jbproject.jutopia.config.security.jwt.properties.AccessJwtProperties;
+import com.jbproject.jutopia.config.security.provider.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -22,10 +23,9 @@ public class CustomAuthenticationConfig {
     public AuthService authService;
 
     @Bean
-    CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler(final AccessJwtProperties accessJwtProperties, ObjectMapper objectMapper){
-        return new CustomAuthenticationSuccessHandler(
-                new AccessJwtTokenProvider(accessJwtProperties, objectMapper)
-        );
+    CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler(TokenProvider tokenProvider
+    ){
+        return new CustomAuthenticationSuccessHandler(tokenProvider);
     }
 
     @Bean("customAuthenticationFilterFactory")

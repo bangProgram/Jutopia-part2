@@ -6,6 +6,4 @@ import com.jbproject.jutopia.rest.model.payload.SignupPayload;
 public interface UserService {
 
     void addUser(SignupPayload payload);
-
-    void login(LoginPayload payload);
 }

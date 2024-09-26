@@ -12,22 +12,20 @@ import java.util.Collection;
 public class UserDetail implements UserDetails {
 
     private Long id;
+    private String userId;
     private String email;
     private String name;
     private String password;
     private int age;
-    private String socialType;
-    private String socialId;
     private String role;
 
     public UserDetail(UserEntity user) {
         this.id = user.getId();
+        this.userId = user.getUserId();
         this.email = user.getEmail();
         this.name = user.getName();
         this.password = user.getPassword();
         this.age = user.getAge();
-        this.socialType = user.getSocialType();
-        this.socialId = user.getSocialId();
         this.role = user.getRole();
     }
 

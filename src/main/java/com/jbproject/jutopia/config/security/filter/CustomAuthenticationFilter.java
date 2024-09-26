@@ -2,7 +2,8 @@ package com.jbproject.jutopia.config.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.auth.service.AuthService;
-import com.jbproject.jutopia.config.security.jwt.AccessJwtTokenBack;
+import com.jbproject.jutopia.config.security.jwt.AccessJwtPrincipal;
+import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.config.security.model.UserDetail;
 import com.jbproject.jutopia.exception.ErrorCode;
 import com.jbproject.jutopia.exception.model.ExceptionModel;
@@ -38,20 +39,20 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         System.out.println("JB Security CustomAuthenticationFilter");
-        String email = request.getParameter("email");
+        String userId = request.getParameter("userId");
         String password = request.getParameter("password");
 
-        UserDetail userInfo = authService.loadUserByUsername(email);
+        UserDetail userInfo = authService.loadUserByUsername(userId);
 
         if(authService.passwordMatcher(password,userInfo.getPassword())){
             System.out.println("JB 사용자 정보 확인 : "+userInfo.getEmail());
-            AccessJwtTokenBack authenticationToken = new AccessJwtTokenBack(
-                    AccessJwtTokenBack.AccessJwtPrincipal.builder()
+            AccessJwtToken authenticationToken = new AccessJwtToken();
+            authenticationToken.setAccessJwtPrincipal(
+                    AccessJwtPrincipal.builder()
+                            .userId(userInfo.getUserId())
                             .userEmail(userInfo.getEmail())
                             .userName(userInfo.getName())
                             .age(userInfo.getAge())
-                            .socialType(userInfo.getSocialType())
-                            .socialId(userInfo.getSocialId())
                             .role(userInfo.getRole())
                             .build()
             );

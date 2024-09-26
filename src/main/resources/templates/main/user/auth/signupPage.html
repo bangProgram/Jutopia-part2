@@ -9,6 +9,14 @@
     <form th:action="@{/auth/signup}" th:method="post" th:object="${signupPayload}">
         <table>
             <tr>
+                <td>ID : </td>
+                <td>
+                    <label>
+                        <input type="text" th:field="*{userId}">
+                    </label>
+                </td>
+            </tr>
+            <tr>
                 <td>Email : </td>
                 <td>
                     <label>

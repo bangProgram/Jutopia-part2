@@ -25,9 +25,6 @@ public class AccessJwtTokenProvider {
     private final ObjectMapper objectMapper;
 
     private SecretKey getSecretKey(){
-        System.out.println("JB getSecretKey "+accessJwtProperties.getSecret());
-        System.out.println("JB getSecretKey "+ Encoders.BASE64.encode(accessJwtProperties.getSecret().getBytes()));
-        ;
         byte[] keyBytes = Decoders.BASE64.decode(Encoders.BASE64.encode(accessJwtProperties.getSecret().getBytes()));
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -39,12 +36,12 @@ public class AccessJwtTokenProvider {
         return parser.parseClaimsJws(token).getBody();
     }
 
-    public AccessJwtTokenBack.CustomClaims getCustomClaims(String token){
+    public AccessJwtToken.CustomClaims getCustomClaims(String token){
         JwtParser parser = Jwts.parserBuilder()
                 .setSigningKey(getSecretKey())
                 .build();
         Claims body = parser.parseClaimsJws(token).getBody();
-        return objectMapper.convertValue(body, AccessJwtTokenBack.CustomClaims.class);
+        return objectMapper.convertValue(body, AccessJwtToken.CustomClaims.class);
     }
 
 
@@ -53,7 +50,7 @@ public class AccessJwtTokenProvider {
                 .setSigningKey(getSecretKey())
                 .build();
         Claims body = parser.parseClaimsJws(token).getBody();
-        AccessJwtTokenBack.CustomClaims custom =  objectMapper.convertValue(body, AccessJwtTokenBack.CustomClaims.class);
+        AccessJwtToken.CustomClaims custom =  objectMapper.convertValue(body, AccessJwtToken.CustomClaims.class);
 
         return custom.getRole();
     }
@@ -66,7 +63,7 @@ public class AccessJwtTokenProvider {
                 .getSubject();
     }
 
-    public String createCustomToken(AccessJwtTokenBack.CustomClaims customClaims){
+    public String createCustomToken(AccessJwtToken.CustomClaims customClaims){
         JwtBuilder builder = Jwts.builder()
                 .setSubject(customClaims.email)
                 .setClaims(this.objectMapper.convertValue(customClaims, Map.class))

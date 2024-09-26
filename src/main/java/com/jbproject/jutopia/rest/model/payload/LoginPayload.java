@@ -8,6 +8,6 @@ import lombok.RequiredArgsConstructor;
 @Data
 public class LoginPayload {
 
-    private String email;
+    private String userId;
     private String password;
 }

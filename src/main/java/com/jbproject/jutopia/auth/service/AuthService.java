@@ -52,7 +52,7 @@ public class AuthService implements UserDetailsService {
 
     @Override
     public UserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(username);
+        UserEntity user = userRepository.findByUserId(username);
 
         if (null == user) {
             throw new UsernameNotFoundException("Not found : " + username);
