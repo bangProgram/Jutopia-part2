@@ -14,7 +14,7 @@ jutopia:
     refresh:
       duration: 36000
     access:
-      duration: 3600
+      duration: 60
   refresh:
     jwt:
       secret: jutapia-JbProject-refreshSecret-1214

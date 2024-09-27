@@ -1,9 +1,7 @@
 package com.jbproject.jutopia.config.security.filter;
 
-import com.jbproject.jutopia.config.security.constant.JwtTokenConstants;
 import com.jbproject.jutopia.config.security.jwt.AccessJwtPrincipal;
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
-import com.jbproject.jutopia.config.security.jwt.AccessJwtTokenProvider;
 import com.jbproject.jutopia.config.security.jwt.JwtTokenInfo;
 import com.jbproject.jutopia.config.security.provider.TokenProvider;
 import jakarta.servlet.ServletException;
@@ -12,8 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.header.Header;
 
 import java.io.IOException;
 
@@ -48,17 +46,21 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             JwtTokenInfo jwtTokenInfo = tokenProvider.generateToken(accessJwtToken);
             System.out.println("principal 을 통한 response Token 생성 "+ principal.getUserEmail() + " / "+principal.getRole());
 
+            SecurityContextHolder.getContext().setAuthentication(accessJwtToken);
+            AccessJwtToken authentication1 = (AccessJwtToken) SecurityContextHolder.getContext().getAuthentication();
+
+            System.out.println("JB SecurityContextHolder.getContext : "+authentication1.getPrincipal());
 
             Cookie accessCookie = new Cookie("X-Access-Token", jwtTokenInfo.getAccessToken());
             accessCookie.setHttpOnly(true);  // XSS 방지
             accessCookie.setPath("/");  // 모든 경로에서 쿠키를 사용할 수 있도록 설정
-            accessCookie.setMaxAge((int) tokenProvider.getExpirationTime(JwtTokenConstants.ACCESS));  // 쿠키 유효 기간 (1시간)
+//            accessCookie.setMaxAge((int) tokenProvider.getExpirationTime(JwtTokenConstants.ACCESS.getName()));  // 쿠키 유효 기간 (임시 1분)
             response.addCookie(accessCookie);
 
             Cookie refreshCookie = new Cookie("X-Refresh-Token", jwtTokenInfo.getRefreshToken());
             refreshCookie.setHttpOnly(true);  // XSS 방지
             refreshCookie.setPath("/");  // 모든 경로에서 쿠키를 사용할 수 있도록 설정
-            refreshCookie.setMaxAge((int) tokenProvider.getExpirationTime(JwtTokenConstants.REFRESH));  // 쿠키 유효 기간 (1시간)
+//            refreshCookie.setMaxAge((int) tokenProvider.getExpirationTime(JwtTokenConstants.REFRESH.getName()));  // 쿠키 유효 기간 (10시간)
             response.addCookie(refreshCookie);
 
 

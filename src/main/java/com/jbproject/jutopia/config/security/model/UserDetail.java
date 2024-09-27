@@ -3,12 +3,14 @@ package com.jbproject.jutopia.config.security.model;
 import com.jbproject.jutopia.rest.entity.UserEntity;
 import jakarta.persistence.Column;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
 @Getter
+@Setter
 public class UserDetail implements UserDetails {
 
     private Long id;
@@ -41,7 +43,7 @@ public class UserDetail implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return userId;
     }
 
     @Override

@@ -1,7 +1,16 @@
 package com.jbproject.jutopia.config.security.constant;
 
-public class JwtTokenConstants {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-    public final static String ACCESS = "access";
-    public final static String REFRESH = "refresh";
+@Getter
+@AllArgsConstructor
+public enum JwtTokenConstants {
+
+    ACCESS("access","X-Access-Token"),
+    REFRESH("access","X-Refresh-Token"),
+    ;
+
+    private final String name;
+    private final String key;
 }

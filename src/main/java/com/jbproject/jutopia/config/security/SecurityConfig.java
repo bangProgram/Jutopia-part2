@@ -114,8 +114,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 //컨트롤러의 예외처리를 담당하는 exception handler와는 다름.
                 .exceptionHandling((exceptionHandling) ->
-                        exceptionHandling
-                                .authenticationEntryPoint(filterAuthEntryPoint())
+                        exceptionHandling.authenticationEntryPoint(filterAuthEntryPoint())
                 )
                 // security Form Login 미사용
                 .formLogin(FormLoginConfigurer::disable)

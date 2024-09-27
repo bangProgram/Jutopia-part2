@@ -8,10 +8,10 @@ import com.jbproject.jutopia.config.security.jwt.JwtTokenInfo;
 import com.jbproject.jutopia.config.security.jwt.RefreshJwtToken;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -78,7 +78,7 @@ public class TokenProvider {
         String accessToken = Jwts.builder()
                 .setSubject(principal.getUserEmail())
                 .setClaims(objectMapper.convertValue(accessClaims, Map.class))
-                .setExpiration(getExpirationDate(JwtTokenConstants.ACCESS))
+                .setExpiration(getExpirationDate(JwtTokenConstants.ACCESS.getName()))
                 .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact()
                 ;
@@ -89,7 +89,7 @@ public class TokenProvider {
                 .build();
 
         String refreshToken = Jwts.builder()
-                .setExpiration(getExpirationDate(JwtTokenConstants.REFRESH))
+                .setExpiration(getExpirationDate(JwtTokenConstants.REFRESH.getName()))
                 .setClaims(objectMapper.convertValue(refreshCliams, Map.class))
                 .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact()
@@ -99,20 +99,6 @@ public class TokenProvider {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
-    }
-
-    public String refreshToken(String accessToken) {
-        SecretKey secretKey = getSecretKey();
-        JwtParser parser = Jwts.parserBuilder().setSigningKey(secretKey).build();
-        Claims body = parser.parseClaimsJws(accessToken).getBody();
-
-        JwtBuilder builder = Jwts.builder()
-                .setClaims(body)
-                .setExpiration(getExpirationDate(JwtTokenConstants.REFRESH))
-                .setIssuedAt(new Date())
-                .signWith(secretKey);
-
-        return builder.compact();
     }
 
     // 토큰 정보를 검증하는 메서드
@@ -138,7 +124,7 @@ public class TokenProvider {
     public Date getExpirationDate(String type){
         long validity = 0;
 
-        if(type.equals(JwtTokenConstants.ACCESS)){
+        if(type.equals(JwtTokenConstants.ACCESS.getName())){
             validity = Duration.ofSeconds(accessTokenExpired).toMillis();
         }else{
             validity = Duration.ofSeconds(refreshTokenExpired).toMillis();
@@ -152,10 +138,10 @@ public class TokenProvider {
     public long getExpirationTime(String type){
         long validity = 0;
 
-        if(type.equals(JwtTokenConstants.ACCESS)){
-            validity = Duration.ofSeconds(accessTokenExpired).toMillis();
+        if(type.equals(JwtTokenConstants.ACCESS.getName())){
+            validity = Duration.ofSeconds(accessTokenExpired).toSeconds();
         }else{
-            validity = Duration.ofSeconds(refreshTokenExpired).toMillis();
+            validity = Duration.ofSeconds(refreshTokenExpired).toSeconds();
         }
 
         return validity;
@@ -165,6 +151,21 @@ public class TokenProvider {
         long validity = Duration.ofSeconds(refreshTokenExpired).toMillis();
         Date createdTime = new Date();
         return new Date(createdTime.getTime() + validity);
+    }
+
+    public AccessJwtToken getAccessAuthentication(String token){
+        AccessJwtToken.CustomClaims customClaims =  getCustomClaims(token);
+
+        AccessJwtToken accessJwtToken = new AccessJwtToken();
+        accessJwtToken.setAccessJwtPrincipal(
+                AccessJwtPrincipal.builder()
+                        .userId(customClaims.getUserId())
+                        .userEmail(customClaims.getEmail())
+                        .role(customClaims.getRole())
+                        .build()
+        );
+
+        return accessJwtToken;
     }
 
 }

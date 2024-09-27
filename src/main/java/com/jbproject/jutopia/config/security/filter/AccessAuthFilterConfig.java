@@ -3,6 +3,7 @@ package com.jbproject.jutopia.config.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.auth.service.AuthService;
 import com.jbproject.jutopia.config.security.jwt.properties.AccessJwtProperties;
+import com.jbproject.jutopia.config.security.provider.TokenProvider;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,15 @@ import java.util.function.Supplier;
 public class AccessAuthFilterConfig {
     @Autowired
     private AuthService authService;
+
     private final RequestMatcher defaultPermitAllPathMatcher;
-    private final AccessJwtProperties accessJwtProperties;
+    private final TokenProvider tokenProvider;
 
     @Bean("roleBasedAuthList")
     public Map<String, List<String>> roleBasedAuthList(){
-        return authService.getAllRoleBasedUrls();
+        Map<String, List<String>> roleBasedAuthList =  authService.getAllRoleBasedUrls();
+        System.out.println("JB Map<String, List<String>> roleBasedAuthList : "+roleBasedAuthList);
+        return roleBasedAuthList;
     }
 
     @Bean("accessAuthFilterFactory")
@@ -41,7 +45,8 @@ public class AccessAuthFilterConfig {
         return () -> new AccessAuthFilter(
                 objectMapper,
                 defaultPermitAllPathMatcher,
-                roleBasedAuthList
+                roleBasedAuthList,
+                tokenProvider
         );
     }
 }
