@@ -2,11 +2,11 @@ package com.jbproject.jutopia.config.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.auth.service.AuthService;
-import com.jbproject.jutopia.config.security.jwt.AccessJwtPrincipal;
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
-import com.jbproject.jutopia.config.security.model.UserDetail;
+import com.jbproject.jutopia.config.security.jwt.JwtTokenInfo;
 import com.jbproject.jutopia.exception.ErrorCode;
 import com.jbproject.jutopia.exception.model.ExceptionModel;
+import com.jbproject.jutopia.rest.entity.UserEntity;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,26 +43,21 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         String password = request.getParameter("password");
 
         System.out.println("JB 사용자 입력 : "+ userId + " / "+password);
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userId, password);
-        Authentication authentication = getAuthenticationManager().authenticate(token);
-        UserDetail userDetail = (UserDetail) authentication.getPrincipal();
-        userDetail.setPassword(null);
+        UserEntity userDetail = authService.getUserInfo(userId);
 
+        System.out.println("JB 사용자 정보 확인 pw : "+password + " / " +userDetail.getPassword() + " : " +authService.passwordMatcher(password,userDetail.getPassword()));
         if(authService.passwordMatcher(password,userDetail.getPassword())){
             System.out.println("JB 사용자 정보 확인 : "+userDetail.getEmail());
             AccessJwtToken authenticationToken = new AccessJwtToken();
             authenticationToken.setAccessJwtPrincipal(
-                    AccessJwtPrincipal.builder()
-                            .userId(userDetail.getUserId())
-                            .userEmail(userDetail.getEmail())
-                            .userName(userDetail.getName())
-                            .age(userDetail.getAge())
-                            .role(userDetail.getRole())
+                    AccessJwtToken.AccessJwtPrincipal.builder()
+                            .id(userDetail.getId())
                             .build()
             );
             System.out.println("Token Authentication 발급 완료");
 
             authenticationToken.setRole(userDetail.getRole());
+            authenticationToken.setAuthenticated(true);
             System.out.println("Token Authentication Role 주입 완료");
 
             return authenticationToken;

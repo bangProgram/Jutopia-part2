@@ -2,7 +2,6 @@ package com.jbproject.jutopia.config.security.provider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.config.security.constant.JwtTokenConstants;
-import com.jbproject.jutopia.config.security.jwt.AccessJwtPrincipal;
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.config.security.jwt.JwtTokenInfo;
 import com.jbproject.jutopia.config.security.jwt.RefreshJwtToken;
@@ -38,12 +37,11 @@ public class TokenProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public AccessJwtToken.CustomClaims getCustomClaims(String accessToken){
+    public Claims getClaims(String token){
         JwtParser parser = Jwts.parserBuilder()
                 .setSigningKey(getSecretKey())
                 .build();
-        Claims body = parser.parseClaimsJws(accessToken).getBody();
-        return objectMapper.convertValue(body, AccessJwtToken.CustomClaims.class);
+        return parser.parseClaimsJws(token).getBody();
     }
 
 
@@ -65,27 +63,18 @@ public class TokenProvider {
                 .getSubject();
     }
 
-    public JwtTokenInfo generateToken(AccessJwtToken authentication){
-        AccessJwtPrincipal principal = authentication.getPrincipal();
-
-        AccessJwtToken.CustomClaims accessClaims = AccessJwtToken.CustomClaims.builder()
-                .userId(principal.getUserId())
-                .email(principal.getUserEmail())
-                .role(principal.getRole()
-                )
-                .build();
-
+    public JwtTokenInfo generateToken(AccessJwtToken.CustomClaims customClaims){
         String accessToken = Jwts.builder()
-                .setSubject(principal.getUserEmail())
-                .setClaims(objectMapper.convertValue(accessClaims, Map.class))
+                .setSubject(customClaims.getId().toString())
+                .setClaims(objectMapper.convertValue(customClaims, Map.class))
                 .setExpiration(getExpirationDate(JwtTokenConstants.ACCESS.getName()))
                 .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact()
                 ;
 
         RefreshJwtToken.CustomClaims refreshCliams = RefreshJwtToken.CustomClaims.builder()
-                .userId(principal.getUserId())
-                .role(principal.getRole())
+                .id(customClaims.getId())
+                .role(customClaims.getRole())
                 .build();
 
         String refreshToken = Jwts.builder()
@@ -154,18 +143,36 @@ public class TokenProvider {
     }
 
     public AccessJwtToken getAccessAuthentication(String token){
-        AccessJwtToken.CustomClaims customClaims =  getCustomClaims(token);
+        Claims claims =  getClaims(token);
+        AccessJwtToken.CustomClaims customClaims = objectMapper.convertValue(claims, AccessJwtToken.CustomClaims.class);
 
         AccessJwtToken accessJwtToken = new AccessJwtToken();
         accessJwtToken.setAccessJwtPrincipal(
-                AccessJwtPrincipal.builder()
+                AccessJwtToken.AccessJwtPrincipal.builder()
+                        .id(customClaims.getId())
                         .userId(customClaims.getUserId())
-                        .userEmail(customClaims.getEmail())
+                        .userEmail(customClaims.getUserEmail())
+                        .userName(customClaims.getUserName())
                         .role(customClaims.getRole())
                         .build()
         );
 
         return accessJwtToken;
+    }
+
+    public RefreshJwtToken getRefreshAuthentication(String token){
+        Claims claims =  getClaims(token);
+        RefreshJwtToken.CustomClaims customClaims = objectMapper.convertValue(claims, RefreshJwtToken.CustomClaims.class);
+
+        RefreshJwtToken refreshJwtToken = new RefreshJwtToken();
+        refreshJwtToken.setRefreshJwtPrincipal(
+                RefreshJwtToken.RefreshJwtPrincipal.builder()
+                        .id(customClaims.getId())
+                        .role(customClaims.getRole())
+                        .build()
+        );
+
+        return refreshJwtToken;
     }
 
 }

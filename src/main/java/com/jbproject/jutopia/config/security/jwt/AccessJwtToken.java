@@ -1,10 +1,7 @@
 package com.jbproject.jutopia.config.security.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -18,14 +15,10 @@ import java.util.Collection;
 public class AccessJwtToken implements Authentication {
 
     boolean authenticated = false;
-//    private final AccessJwtPrincipal accessJwtPrincipal;
 
-    AccessJwtPrincipal accessJwtPrincipal;
+    @Setter
+    private AccessJwtToken.AccessJwtPrincipal accessJwtPrincipal;
     String role = "VISITOR";
-
-//    public AccessJwtToken(AccessJwtPrincipal principal) {
-//        accessJwtPrincipal = principal;
-//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -43,7 +36,7 @@ public class AccessJwtToken implements Authentication {
     }
 
     @Override
-    public AccessJwtPrincipal getPrincipal() {
+    public AccessJwtToken.AccessJwtPrincipal getPrincipal() {
         return accessJwtPrincipal;
     }
 
@@ -66,10 +59,6 @@ public class AccessJwtToken implements Authentication {
         this.role = role;
     }
 
-    public void setAccessJwtPrincipal(AccessJwtPrincipal principal){
-        this.accessJwtPrincipal = principal;
-    }
-
     @Builder
     @Data
     @NoArgsConstructor
@@ -77,9 +66,34 @@ public class AccessJwtToken implements Authentication {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class CustomClaims {
 
+        Long id;
         String userId;
-        String email;
+        String userEmail;
+        String userName;
         String role;
     }
 
+    @Getter
+    public static class AccessJwtPrincipal {
+        private final Long id;
+        private final String userId;
+        private final String userEmail;
+        private final String userName;
+        private final int age;
+        private final String role;
+
+        @Builder
+        public AccessJwtPrincipal(
+                Long id,
+                String userId, String userEmail, String userName,
+                int age, String role
+        ){
+            this.id = id;
+            this.userId = userId;
+            this.userEmail = userEmail;
+            this.userName = userName;
+            this.age = age;
+            this.role = role;
+        }
+    }
 }

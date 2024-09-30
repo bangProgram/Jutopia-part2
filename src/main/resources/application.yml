@@ -11,7 +11,7 @@ spring:
       "local": "local"
       "prd": "prd"
   thymeleaf:
-    prefix: classpath:templates/main/
+    prefix: classpath:templates/main
     suffix: .html
     cache: false
     check-template-location: true

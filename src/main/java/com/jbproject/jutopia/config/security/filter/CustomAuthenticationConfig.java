@@ -2,7 +2,6 @@ package com.jbproject.jutopia.config.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.auth.service.AuthService;
-import com.jbproject.jutopia.config.security.jwt.AccessJwtTokenProvider;
 import com.jbproject.jutopia.config.security.jwt.properties.AccessJwtProperties;
 import com.jbproject.jutopia.config.security.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,7 @@ public class CustomAuthenticationConfig {
 
     @Autowired
     public AuthService authService;
+
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
@@ -43,7 +43,6 @@ public class CustomAuthenticationConfig {
                 objectMapper,
                 authService
         );
-        customAuthenticationFilter.setAuthenticationManager(authenticationConfiguration.getAuthenticationManager());
         customAuthenticationFilter.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);
         customAuthenticationFilter.setAuthenticationFailureHandler(new CustomAuthenticationFailureHandler());
 

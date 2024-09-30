@@ -3,12 +3,10 @@ package com.jbproject.jutopia.config.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.config.security.constant.JwtTokenConstants;
 import com.jbproject.jutopia.config.security.constant.SecurityErrorCode;
-import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.config.security.jwt.JwtTokenInfo;
-import com.jbproject.jutopia.config.security.model.Role;
+import com.jbproject.jutopia.config.security.jwt.RefreshJwtToken;
 import com.jbproject.jutopia.config.security.provider.TokenProvider;
 import com.jbproject.jutopia.exception.ErrorCode;
-import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.exception.model.ExceptionModel;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -19,89 +17,45 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolderStrategy;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
-public class AccessAuthFilter extends OncePerRequestFilter {
-    private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
+
+public class RefreshAuthFilter extends OncePerRequestFilter {
+
     private final ObjectMapper objectMapper;
-    private final RequestMatcher defaultPermitAllPath;
-    private final Map<String,List<String>> roleBasedAuthList;
+    private final AntPathRequestMatcher requestMatcher;
     private final TokenProvider tokenProvider;
 
-
-    public AccessAuthFilter(
-            ObjectMapper objectMapper, RequestMatcher defaultPermitAllPath, Map<String,List<String>> roleBasedAuthList, TokenProvider tokenProvider
-    ){
+    public RefreshAuthFilter(ObjectMapper objectMapper, AntPathRequestMatcher requestMatcher, TokenProvider tokenProvider){
         this.objectMapper = objectMapper;
-        this.defaultPermitAllPath = defaultPermitAllPath;
-        this.roleBasedAuthList = roleBasedAuthList;
+        this.requestMatcher = requestMatcher;
         this.tokenProvider = tokenProvider;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        if(!requestMatcher.matches(request)){
+            doFilter(request,response,filterChain);
+        }else{
+            JwtTokenInfo jwtTokenInfo = handleAuthentication(request);
 
-        String requestURI = request.getRequestURI();
-        // 인증에 상관 없이 pass 되어야 하는 경로
-        if(defaultPermitAllPath.matches(request)){
-            filterChain.doFilter(request, response);
-        }
-        // 모든 경로에 대한 인증및 인가 검증
-        else{
-            JwtTokenInfo jwtTokenInfo = handleAuthentication(request) ;
-            String role = "VISITOR";  // 기본적으로 비로그인 상태는 'visitor'로 간주
-            AccessJwtToken accessJwtToken = new AccessJwtToken();
+            try{
+                String token = jwtTokenInfo.getRefreshToken();
 
-            if(!jwtTokenInfo.getAccessToken().isEmpty()){
-                try{
-                    accessJwtToken = tokenProvider.getAccessAuthentication(jwtTokenInfo.getAccessToken());
-                }catch (RuntimeException runtimeException){
-                    sendErrorResponse(request,response,runtimeException);
-                    return;
-                }
-                role = accessJwtToken.getPrincipal().getRole(); // 인증된 사용자의 역할 가져오기
-                accessJwtToken.setRole(role);
-
-                System.out.println("JB authentication : "+role);
+            }catch (RuntimeException exception){
+                sendErrorResponse(request, response, exception);
             }
-
-            accessJwtToken.setAuthenticated(true);
-            SecurityContext newContext = securityContextHolderStrategy.createEmptyContext();
-            newContext.setAuthentication(accessJwtToken);
-            securityContextHolderStrategy.setContext(newContext);
-
-            Map<String, List<String>> roleBasedUrls = roleBasedAuthList;
-            List<String> whiteList = roleBasedUrls.get(role);
-            List<String> whiteList2 = roleBasedUrls.get("JUTOPIAN");
-
-            System.out.println("roleBasedUrls : "+roleBasedUrls);
-            System.out.println("JB whiteList : "+whiteList + " / "+requestURI);
-            System.out.println("JB whiteList2 : "+whiteList2);
-            System.out.println("JB whiteList : "+(whiteList != null && whiteList.contains(requestURI)) + " / "+role.equals(Role.SYSTEM.name()));
-
-            if (whiteList != null && whiteList.contains(requestURI) ) {
-                System.out.println("필터 들어옴");
-                filterChain.doFilter(request, response);  // 허용된 URI일 경우 필터를 통과시킴
-            } else {
-                throw new ExceptionProvider(SecurityErrorCode.FORBIDDEN_ERROR_02);
-            }
-
-
         }
     }
-
 
     private JwtTokenInfo handleAuthentication(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
@@ -126,6 +80,8 @@ public class AccessAuthFilter extends OncePerRequestFilter {
         System.out.println("refreshToken 내용 : "+jwtTokenInfo.getRefreshToken());
         return jwtTokenInfo;
     }
+
+
 
     private void sendErrorResponse(HttpServletRequest request, HttpServletResponse response, RuntimeException exception) throws IOException {
         ErrorCode errorCode = switch (exception) {

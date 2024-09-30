@@ -2,27 +2,22 @@ package com.jbproject.jutopia.config.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.auth.service.AuthService;
-import com.jbproject.jutopia.config.security.jwt.properties.AccessJwtProperties;
 import com.jbproject.jutopia.config.security.provider.TokenProvider;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatchers;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
 @Configuration
 @RequiredArgsConstructor
-public class AccessAuthFilterConfig {
+public class AuthFilterConfig {
     @Autowired
     private AuthService authService;
 
@@ -46,6 +41,18 @@ public class AccessAuthFilterConfig {
                 objectMapper,
                 defaultPermitAllPathMatcher,
                 roleBasedAuthList,
+                tokenProvider
+        );
+    }
+
+    @Bean("refreshAuthFilterFactory")
+    Supplier<RefreshAuthFilter> refreshAuthFilterFactory(
+            ObjectMapper objectMapper
+    ){
+        System.out.println("JB Security accountAuthFilterFactory");
+        return () -> new RefreshAuthFilter(
+                objectMapper,
+                new AntPathRequestMatcher("/auth/refresh","POST"),
                 tokenProvider
         );
     }

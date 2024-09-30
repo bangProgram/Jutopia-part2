@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
 
     @GetMapping("/home")
-    public String goHome(HttpServletRequest request) {
+    public String goHome(HttpServletRequest request,Model model, LoginPayload loginPayload) {
 
+        model.addAttribute("loginPayload", loginPayload);
         return "/user/auth/loginPage";
     }
 }

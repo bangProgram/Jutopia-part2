@@ -12,10 +12,10 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class RefreshJwtToken implements Authentication {
 
-    private static final long serialVersionID = 2414806483127061202L;
     private boolean authenticated = false;
-    private final String refreshToken;
-    private final String requestUrl;
+
+    @Setter
+    private RefreshJwtToken.RefreshJwtPrincipal refreshJwtPrincipal;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -24,7 +24,7 @@ public class RefreshJwtToken implements Authentication {
 
     @Override
     public Object getCredentials() {
-        return refreshToken;
+        return null;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class RefreshJwtToken implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        return null;
+        return refreshJwtPrincipal;
     }
 
     @Override
@@ -59,8 +59,21 @@ public class RefreshJwtToken implements Authentication {
     @AllArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class CustomClaims {
-
-        String userId;
+        Long id;
         String role;
+    }
+
+    @Getter
+    public static class RefreshJwtPrincipal {
+        private final Long id;
+        private final String role;
+
+        @Builder
+        public RefreshJwtPrincipal(
+                Long id, String role
+        ){
+            this.id = id;
+            this.role = role;
+        }
     }
 }

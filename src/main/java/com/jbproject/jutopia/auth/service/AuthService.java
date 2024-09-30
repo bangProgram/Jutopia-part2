@@ -1,6 +1,5 @@
 package com.jbproject.jutopia.auth.service;
 
-import com.jbproject.jutopia.config.security.model.UserDetail;
 import com.jbproject.jutopia.constant.ErrorCodeConstants;
 import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.rest.entity.RoleMenuRelation;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class AuthService implements UserDetailsService {
+public class AuthService {
 
     private final RoleMenuRepository roleMenuRepository;
 
@@ -50,14 +49,7 @@ public class AuthService implements UserDetailsService {
         return passwordEncoder.matches(password, encodePassowrd);
     }
 
-    @Override
-    public UserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByUserId(username);
-
-        if (null == user) {
-            throw new UsernameNotFoundException("Not found : " + username);
-        }
-
-        return new UserDetail(user);
+    public UserEntity getUserInfo (String userId) {
+        return userRepository.findByUserId(userId);
     }
 }
