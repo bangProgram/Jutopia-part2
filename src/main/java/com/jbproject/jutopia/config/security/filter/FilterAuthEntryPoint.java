@@ -22,6 +22,7 @@ public class FilterAuthEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
 
+        System.out.println("JB FilterAuthEntryPoint 여길 들어와?");
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.getWriter()
                 .write(
@@ -31,6 +32,8 @@ public class FilterAuthEntryPoint implements AuthenticationEntryPoint {
                                 authException.getMessage()
                         )
                 );
+
+        response.sendRedirect("/error/auth");
 
     }
 }

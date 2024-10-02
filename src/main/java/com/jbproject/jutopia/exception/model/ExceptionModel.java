@@ -1,10 +1,12 @@
 package com.jbproject.jutopia.exception.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ExceptionModel {
 
     private String statusCode;

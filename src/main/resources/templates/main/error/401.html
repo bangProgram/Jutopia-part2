@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<script th:inline="javascript">
+    /* 타임리프 변수를 JavaScript 변수로 전달 */
+    var refreshTokenUrl = /*[[${refreshTokenUrl}]]*/ '/auth/refresh';
+    var loginUrl = /*[[${loginUrl}]]*/ '/auth/login';
+
+    async function fetchWithAuth(url, options = {}) {
+        const response = await fetch(url, options);
+
+        if (response.status === 401) {
+            // Access Token이 만료된 경우, 연장 여부를 묻는 팝업을 띄움
+            const extend = confirm("Your session has expired. Do you want to extend your session?");
+            if (extend) {
+                // Refresh Token을 사용하여 새로운 Access Token을 요청
+                const refreshResponse = await fetch(refreshTokenUrl, {
+                    method: 'POST',
+                    credentials: 'include' // 쿠키를 포함하여 요청
+                });
+
+                if (refreshResponse.ok) {
+                    // 새로운 Access Token을 발급받은 후, 원래 요청을 다시 시도
+                    return fetch(url, options);
+                } else {
+                    // Refresh Token도 만료된 경우, 로그인 페이지로 리디렉션
+                    alert("Session extension failed. Please log in again.");
+                    window.location.href = loginUrl;
+                }
+            } else {
+                // 사용자가 연장을 원하지 않는 경우, 로그인 페이지로 리디렉션
+                window.location.href = loginUrl;
+            }
+        }
+
+        return response;
+    }
+
+    async function fetchData() {
+        const response = await fetchWithAuth('/api/protected-resource');
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+        } else {
+            console.error('Failed to fetch data');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('fetchDataButton').addEventListener('click', fetchData);
+    });
+</script>
+<head>
+    <title>Unauthorized</title>
+</head>
+<body>
+<h1>Unauthorized</h1>
+<p th:text="${message}">You are not authorized to access this page.</p>
+</body>
+</html>

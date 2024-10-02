@@ -49,7 +49,7 @@ public class AuthService {
         return passwordEncoder.matches(password, encodePassowrd);
     }
 
-    public UserEntity getUserInfo (String userId) {
+    public UserEntity getUserInfoByUserid (String userId) {
         return userRepository.findByUserId(userId);
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 import java.util.Collections;
 
-@Getter
 @RequiredArgsConstructor
 public class RefreshJwtToken implements Authentication {
 
@@ -33,7 +32,7 @@ public class RefreshJwtToken implements Authentication {
     }
 
     @Override
-    public Object getPrincipal() {
+    public RefreshJwtToken.RefreshJwtPrincipal getPrincipal() {
         return refreshJwtPrincipal;
     }
 
@@ -62,6 +61,7 @@ public class RefreshJwtToken implements Authentication {
         Long id;
         String role;
     }
+
 
     @Getter
     public static class RefreshJwtPrincipal {

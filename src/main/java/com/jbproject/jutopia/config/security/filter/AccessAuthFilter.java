@@ -7,6 +7,7 @@ import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.config.security.jwt.JwtTokenInfo;
 import com.jbproject.jutopia.config.security.model.Role;
 import com.jbproject.jutopia.config.security.provider.TokenProvider;
+import com.jbproject.jutopia.config.security.util.SecurityUtils;
 import com.jbproject.jutopia.exception.ErrorCode;
 import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.exception.model.ExceptionModel;
@@ -60,7 +61,7 @@ public class AccessAuthFilter extends OncePerRequestFilter {
         }
         // 모든 경로에 대한 인증및 인가 검증
         else{
-            JwtTokenInfo jwtTokenInfo = handleAuthentication(request) ;
+            JwtTokenInfo jwtTokenInfo = SecurityUtils.handleAuthentication(request) ;
             String role = "VISITOR";  // 기본적으로 비로그인 상태는 'visitor'로 간주
             AccessJwtToken accessJwtToken = new AccessJwtToken();
 
@@ -68,7 +69,9 @@ public class AccessAuthFilter extends OncePerRequestFilter {
                 try{
                     accessJwtToken = tokenProvider.getAccessAuthentication(jwtTokenInfo.getAccessToken());
                 }catch (RuntimeException runtimeException){
-                    sendErrorResponse(request,response,runtimeException);
+                    accessJwtToken.setAuthenticated(false);
+                    securityContextHolderStrategy.clearContext();
+                    SecurityUtils.sendErrorResponse(request,response,runtimeException);
                     return;
                 }
                 role = accessJwtToken.getPrincipal().getRole(); // 인증된 사용자의 역할 가져오기
@@ -84,14 +87,12 @@ public class AccessAuthFilter extends OncePerRequestFilter {
 
             Map<String, List<String>> roleBasedUrls = roleBasedAuthList;
             List<String> whiteList = roleBasedUrls.get(role);
-            List<String> whiteList2 = roleBasedUrls.get("JUTOPIAN");
 
-            System.out.println("roleBasedUrls : "+roleBasedUrls);
-            System.out.println("JB whiteList : "+whiteList + " / "+requestURI);
-            System.out.println("JB whiteList2 : "+whiteList2);
+            System.out.println("roleBasedUrls : "+roleBasedUrls+ " / "+requestURI);
+            System.out.println("JB whiteList : "+role + " / "+whiteList);
             System.out.println("JB whiteList : "+(whiteList != null && whiteList.contains(requestURI)) + " / "+role.equals(Role.SYSTEM.name()));
 
-            if (whiteList != null && whiteList.contains(requestURI) ) {
+            if ( (whiteList != null && whiteList.contains(requestURI)) || role.equals(Role.SYSTEM.name()) ) {
                 System.out.println("필터 들어옴");
                 filterChain.doFilter(request, response);  // 허용된 URI일 경우 필터를 통과시킴
             } else {
@@ -100,53 +101,5 @@ public class AccessAuthFilter extends OncePerRequestFilter {
 
 
         }
-    }
-
-
-    private JwtTokenInfo handleAuthentication(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        String refreshToken = "";
-        String accessToken  = "";
-        if(cookies != null){
-            for(Cookie cookie : cookies){
-                if(cookie.getName().equals(JwtTokenConstants.ACCESS.getKey())){
-                    accessToken = cookie.getValue();
-                }else if(cookie.getName().equals(JwtTokenConstants.REFRESH.getKey())){
-                    refreshToken = cookie.getValue();
-                }
-            }
-        }
-
-        JwtTokenInfo jwtTokenInfo = JwtTokenInfo.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
-
-        System.out.println("accessToken 내용 : "+jwtTokenInfo.getAccessToken());
-        System.out.println("refreshToken 내용 : "+jwtTokenInfo.getRefreshToken());
-        return jwtTokenInfo;
-    }
-
-    private void sendErrorResponse(HttpServletRequest request, HttpServletResponse response, RuntimeException exception) throws IOException {
-        ErrorCode errorCode = switch (exception) {
-            case SecurityException securityException -> SecurityErrorCode.JWT_AUTH_ERROR_01;
-            case MalformedJwtException malformedJwtException -> SecurityErrorCode.JWT_AUTH_ERROR_01;
-            case ExpiredJwtException expiredJwtException -> SecurityErrorCode.JWT_AUTH_ERROR_02;
-            case UnsupportedJwtException unsupportedJwtException -> SecurityErrorCode.JWT_AUTH_ERROR_03;
-            case IllegalArgumentException illegalArgumentException -> SecurityErrorCode.JWT_AUTH_ERROR_04;
-            case SignatureException signatureException -> SecurityErrorCode.JWT_AUTH_ERROR_04;
-            default -> SecurityErrorCode.JWT_AUTH_ERROR_06;
-        };
-
-        ExceptionModel exceptionModel = new ExceptionModel(
-                request.getRequestURI(),
-                errorCode.getErrorCode(),
-                errorCode.getErrorMsg()
-        );
-
-        String body = objectMapper.writeValueAsString(exceptionModel);
-        response.getWriter().write(body);
-        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
     }
 }

@@ -43,7 +43,7 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         String password = request.getParameter("password");
 
         System.out.println("JB 사용자 입력 : "+ userId + " / "+password);
-        UserEntity userDetail = authService.getUserInfo(userId);
+        UserEntity userDetail = authService.getUserInfoByUserid(userId);
 
         System.out.println("JB 사용자 정보 확인 pw : "+password + " / " +userDetail.getPassword() + " : " +authService.passwordMatcher(password,userDetail.getPassword()));
         if(authService.passwordMatcher(password,userDetail.getPassword())){

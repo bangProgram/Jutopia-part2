@@ -4,12 +4,15 @@ package com.jbproject.jutopia.rest.controller.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.config.security.jwt.JwtTokenInfo;
+import com.jbproject.jutopia.config.security.jwt.RefreshJwtToken;
 import com.jbproject.jutopia.config.security.provider.TokenProvider;
+import com.jbproject.jutopia.config.security.util.SecurityUtils;
 import com.jbproject.jutopia.rest.entity.UserEntity;
 import com.jbproject.jutopia.rest.model.payload.LoginPayload;
 import com.jbproject.jutopia.rest.model.payload.SignupPayload;
 import com.jbproject.jutopia.auth.service.AuthService;
 import com.jbproject.jutopia.rest.service.UserService;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,17 +36,6 @@ public class AuthController {
 
     @GetMapping("/auth/login")
     public String goLogin(HttpServletRequest request, Model model, LoginPayload loginPayload) {
-        /*
-        model.addAttribute("testParam1","testParam1");
-        model.addAttribute("test1","test1");
-        model.addAttribute("test2","test2");
-
-        Map<String, String> test = new HashMap<>();
-        test.put("testTitle", "testTitle Text");
-        test.put("testDetail", "testDetail Text");
-
-        model.addAttribute("test",test);
-        */
         model.addAttribute("loginPayload", loginPayload);
         return "/user/auth/loginPage";
     }
@@ -54,34 +46,37 @@ public class AuthController {
         String userId = loginPayload.getUserId();
         String password = loginPayload.getPassword();
 
-        UserEntity userDetail = authService.getUserInfo(userId);
+        UserEntity userEntity = authService.getUserInfoByUserid(userId);
 
-        if(authService.passwordMatcher(password,userDetail.getPassword())){
-            System.out.println("JB 사용자 정보 확인 : "+userDetail.getEmail());
-
-            JwtTokenInfo jwtTokenInfo = tokenProvider.generateToken(
-                    AccessJwtToken.CustomClaims.builder()
-                            .id(userDetail.getId())
-                            .userId(userDetail.getUserId())
-                            .userName(userDetail.getName())
-                            .role(userDetail.getRole())
-                            .build()
-            );
-
-            Cookie accessCookie = new Cookie("X-Access-Token", jwtTokenInfo.getAccessToken());
-            accessCookie.setHttpOnly(true);  // XSS 방지
-            accessCookie.setPath("/");  // 모든 경로에서 쿠키를 사용할 수 있도록 설정
-            response.addCookie(accessCookie);
-
-            Cookie refreshCookie = new Cookie("X-Refresh-Token", jwtTokenInfo.getRefreshToken());
-            refreshCookie.setHttpOnly(true);  // XSS 방지
-            refreshCookie.setPath("/");  // 모든 경로에서 쿠키를 사용할 수 있도록 설정
-            response.addCookie(refreshCookie);
+        if(authService.passwordMatcher(password,userEntity.getPassword())){
+            System.out.println("JB 사용자 정보 확인 : "+userEntity.getEmail());
+            tokenGenerate(response, userEntity);
 
             return new RedirectView("/home");
         }else{
             return new RedirectView("/auth/login");
         }
+    }
+
+    @PostMapping("/auth/refresh")
+    public RedirectView refreshPorc(HttpServletRequest request, HttpServletResponse response, Model model) {
+        JwtTokenInfo jwtTokenInfo = SecurityUtils.handleAuthentication(request);
+        RefreshJwtToken token;
+
+        try {
+            token = tokenProvider.getRefreshAuthentication(jwtTokenInfo.getRefreshToken());
+        }catch (RuntimeException exception){
+            System.out.println("refresh Token 만료");
+            return new RedirectView("/auth/login");
+        }
+
+        RefreshJwtToken.RefreshJwtPrincipal principal = token.getPrincipal();
+
+        UserEntity userEntity = userService.findById(principal.getId());
+        tokenGenerate(response, userEntity);
+
+
+        return new RedirectView("/home");
     }
 
     @GetMapping("/auth/signup")
@@ -95,5 +90,27 @@ public class AuthController {
         userService.addUser(signupPayload);
         System.out.println("/auth/signup process 종료");
         return new RedirectView("/auth/login");
+    }
+
+    private void tokenGenerate(HttpServletResponse response, UserEntity userEntity){
+
+        JwtTokenInfo jwtTokenInfo = tokenProvider.generateToken(
+                AccessJwtToken.CustomClaims.builder()
+                        .id(userEntity.getId())
+                        .userId(userEntity.getUserId())
+                        .userName(userEntity.getName())
+                        .role(userEntity.getRole())
+                        .build()
+        );
+
+        Cookie accessCookie = new Cookie("X-Access-Token", jwtTokenInfo.getAccessToken());
+        accessCookie.setHttpOnly(true);  // XSS 방지
+        accessCookie.setPath("/");  // 모든 경로에서 쿠키를 사용할 수 있도록 설정
+        response.addCookie(accessCookie);
+
+        Cookie refreshCookie = new Cookie("X-Refresh-Token", jwtTokenInfo.getRefreshToken());
+        refreshCookie.setHttpOnly(true);  // XSS 방지
+        refreshCookie.setPath("/");  // 모든 경로에서 쿠키를 사용할 수 있도록 설정
+        response.addCookie(refreshCookie);
     }
 }

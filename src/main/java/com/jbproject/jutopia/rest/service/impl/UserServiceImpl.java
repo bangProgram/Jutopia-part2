@@ -43,4 +43,10 @@ public class UserServiceImpl implements UserService {
 
         System.out.println("new User "+ newUser.getId());
     }
+
+    public UserEntity findById(Long id){
+        return userRepository.findById(id).orElseThrow(
+                () -> new ExceptionProvider(ErrorCodeConstants.AUTHENTICATION_400_01)
+        );
+    }
 }

@@ -1,0 +1,33 @@
+package com.jbproject.jutopia.rest.controller.web;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jbproject.jutopia.exception.model.ExceptionModel;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+@Slf4j
+@RequiredArgsConstructor
+public class ErrorController {
+
+    @GetMapping("/error/auth")
+    public String goErrorAuth(HttpServletRequest request, HttpServletResponse response, Model model) throws JsonProcessingException {
+
+        String body = request.getAttribute("errorBody").toString();
+        ExceptionModel exceptionModel = new ObjectMapper().readValue(body,ExceptionModel.class);
+
+        System.out.println("request getStatusCode : "+exceptionModel.getStatusCode());
+        System.out.println("request getErrorCode : "+exceptionModel.getErrorCode());
+        System.out.println("request getErrorMsg : "+exceptionModel.getErrorMsg());
+
+        model.addAttribute("errorCode",exceptionModel.getErrorCode());
+        model.addAttribute("message",exceptionModel.getErrorMsg());
+        return "/error/auth";
+    }
+}
