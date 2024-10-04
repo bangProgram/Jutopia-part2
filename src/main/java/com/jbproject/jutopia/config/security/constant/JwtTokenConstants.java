@@ -7,10 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum JwtTokenConstants {
 
-    ACCESS("access","X-Access-Token"),
-    REFRESH("access","X-Refresh-Token"),
+    ACCESS("X-Access-Token","access"),
+    REFRESH("X-Refresh-Token","refresh"),
     ;
 
-    private final String name;
     private final String key;
+    private final String name;
 }

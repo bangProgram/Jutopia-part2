@@ -26,6 +26,7 @@ public class ErrorController {
         System.out.println("request getErrorCode : "+exceptionModel.getErrorCode());
         System.out.println("request getErrorMsg : "+exceptionModel.getErrorMsg());
 
+        model.addAttribute("statusCode",exceptionModel.getStatusCode());
         model.addAttribute("errorCode",exceptionModel.getErrorCode());
         model.addAttribute("message",exceptionModel.getErrorMsg());
         return "/error/auth";

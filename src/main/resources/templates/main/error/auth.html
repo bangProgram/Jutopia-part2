@@ -1,51 +1,46 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<script th:inline="javascript">
-    /* 타임리프 변수를 JavaScript 변수로 전달 */
-    var refreshTokenUrl = '/auth/refresh';
-    var loginUrl = '/auth/login';
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // 페이지가 로드되자마자 실행될 JavaScript 코드
-        authConfirm(url, options = {});
-    });
-
-    function authConfirm(url, options = {}) {
-        const errorCode = /*[[${errorCode}]]*/ '500';
-        const errorMsg =  /*[[${message}]]*/ 'Error message not available';
-
-        if (errorCode === 500) {
-            // Access Token이 만료된 경우, 연장 여부를 묻는 팝업을 띄움
-            const extend = confirm(errorMsg + "\nYour session has expired. Do you want to extend your session?");
-            if (extend) {
-                // Refresh Token을 사용하여 새로운 Access Token을 요청
-                const refreshResponse = await fetch(refreshTokenUrl, {
-                    method: 'POST',
-                    credentials: 'include' // 쿠키를 포함하여 요청
-                });
-
-                if (refreshResponse.ok) {
-                    // 새로운 Access Token을 발급받은 후, 원래 요청을 다시 시도
-                    return fetch(url, options);
-                } else {
-                    // Refresh Token도 만료된 경우, 로그인 페이지로 리디렉션
-                    alert("Session extension failed. Please log in again.");
-                    window.location.href = loginUrl;
-                }
-            } else {
-                // 사용자가 연장을 원하지 않는 경우, 로그인 페이지로 리디렉션
-                window.location.href = loginUrl;
-            }
-        }
-
-        return null;
-    }
-</script>
 <head>
     <title>Unauthorized</title>
 </head>
 <body>
 <h1>Unauthorized</h1>
 <p th:text="${message}">You are not authorized to access this page.</p>
+
+
+<script th:inline="javascript">
+    /* 타임리프 변수를 JavaScript 변수로 전달 */
+    let statusCode = /*[[${statusCode}]]*/ "500";
+    let errorCode = /*[[${errorCode}]]*/ "Auth.500.00";
+    let message = /*[[${message}]]*/ "Auth Error";
+    let refreshTokenUrl = "/auth/refresh";
+    let loginUrl = "/auth/login";
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // 페이지가 로드되자마자 실행될 JavaScript 코드
+        sendRedirect();
+    });
+
+    function sendRedirect() {
+        if(statusCode == "500"){
+            if(errorCode.indexOf("JwtAuth") > -1 ) {
+                if(confirm(message + "\n로그인 연장 하시겠습니까?")){
+                    let form = document.createElement("form");
+                    form.setAttribute("method","post");
+                    form.setAttribute("action",refreshTokenUrl);
+                    document.body.appendChild(form);
+                    form.submit();
+                }else{
+                    location.href(loginUrl);
+                }
+            }else{
+                alert("원인 미상의 에러코드입니다."+errorCode);
+            }
+        }else{
+            alert("원인 미상의 상태코드입니다."+statusCode);
+        }
+    }
+</script>
 </body>
 </html>

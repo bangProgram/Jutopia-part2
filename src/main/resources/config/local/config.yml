@@ -12,16 +12,18 @@ jutopia:
   jwt:
     secret: d1b014505346f9fdafbdf571de8f8dabebd71c525f99528fec2b0a657366ec5a
     refresh:
+      secret: 81ec70180f1c20c495133bc707c338180e87721aa47c39b421cad507b46bb3a4
       duration: 36000
     access:
+      secret: d1b014505346f9fdafbdf571de8f8dabebd71c525f99528fec2b0a657366ec5a
       duration: 60
   refresh:
     jwt:
-      secret: jutapia-JbProject-refreshSecret-1214
+      secret: 81ec70180f1c20c495133bc707c338180e87721aa47c39b421cad507b46bb3a4
       duration: 36000
   access:
     jwt:
-      secret: jutapia-JbProject-accessSecret-1214
+      secret: d1b014505346f9fdafbdf571de8f8dabebd71c525f99528fec2b0a657366ec5a
       duration: 3600
 
 #feign:

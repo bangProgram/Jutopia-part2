@@ -68,8 +68,6 @@ public class SecurityUtils {
         String body = new ObjectMapper().writeValueAsString(exceptionModel);
         System.out.println("JB test1 ");
         request.setAttribute("errorBody",body);
-        request.setAttribute("errorStatus", HttpStatus.UNAUTHORIZED.value());
-        request.setAttribute("errorContentType", MediaType.APPLICATION_JSON_VALUE);
         System.out.println("JB test2 ");
         request.getRequestDispatcher("/error/auth").forward(request, response);
         System.out.println("JB test3 ");

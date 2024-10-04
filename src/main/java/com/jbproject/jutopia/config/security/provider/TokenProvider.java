@@ -22,8 +22,10 @@ import java.util.Map;
 @Slf4j
 public class TokenProvider {
 
-    @Value("${jutopia.jwt.secret}")
+    @Value("${jutopia.jwt.access.secret}")
     private String accessSecret;
+    @Value("${jutopia.jwt.refresh.secret}")
+    private String refreshSecret;
     @Value("${jutopia.jwt.access.duration}")
     private Long accessTokenExpired;
     @Value("${jutopia.jwt.refresh.duration}")
@@ -32,14 +34,19 @@ public class TokenProvider {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
 
-    private SecretKey getSecretKey(){
-        byte[] keyBytes = Decoders.BASE64.decode(accessSecret);
+    private SecretKey getSecretKey(String type){
+        byte[] keyBytes;
+        if(type.equals(JwtTokenConstants.ACCESS.getName())){
+            keyBytes = Decoders.BASE64.decode(accessSecret);
+        }else{
+            keyBytes = Decoders.BASE64.decode(refreshSecret);
+        }
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public Claims getClaims(String token){
+    public Claims getClaims(String token, String type){
         JwtParser parser = Jwts.parserBuilder()
-                .setSigningKey(getSecretKey())
+                .setSigningKey(getSecretKey(type))
                 .build();
         return parser.parseClaimsJws(token).getBody();
     }
@@ -47,7 +54,7 @@ public class TokenProvider {
 
     public String getRole(String accessToken) {
         JwtParser parser = Jwts.parserBuilder()
-                .setSigningKey(getSecretKey())
+                .setSigningKey(getSecretKey(JwtTokenConstants.ACCESS.getName()))
                 .build();
         Claims body = parser.parseClaimsJws(accessToken).getBody();
         AccessJwtToken.CustomClaims custom =  objectMapper.convertValue(body, AccessJwtToken.CustomClaims.class);
@@ -57,7 +64,7 @@ public class TokenProvider {
 
     public String getUserEmail(String accessToken) {
         return Jwts.parser()
-                .setSigningKey(getSecretKey())
+                .setSigningKey(getSecretKey(JwtTokenConstants.ACCESS.getName()))
                 .parseClaimsJws(accessToken)
                 .getBody()
                 .getSubject();
@@ -68,7 +75,7 @@ public class TokenProvider {
                 .setSubject(customClaims.getId().toString())
                 .setClaims(objectMapper.convertValue(customClaims, Map.class))
                 .setExpiration(getExpirationDate(JwtTokenConstants.ACCESS.getName()))
-                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
+                .signWith(getSecretKey(JwtTokenConstants.ACCESS.getName()), SignatureAlgorithm.HS256)
                 .compact()
                 ;
 
@@ -80,7 +87,7 @@ public class TokenProvider {
         String refreshToken = Jwts.builder()
                 .setExpiration(getExpirationDate(JwtTokenConstants.REFRESH.getName()))
                 .setClaims(objectMapper.convertValue(refreshCliams, Map.class))
-                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
+                .signWith(getSecretKey(JwtTokenConstants.REFRESH.getName()), SignatureAlgorithm.HS256)
                 .compact()
                 ;
 
@@ -91,10 +98,17 @@ public class TokenProvider {
     }
 
     // 토큰 정보를 검증하는 메서드
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, String type) {
         try {
+            SecretKey secret;
+            if(type.equals(JwtTokenConstants.ACCESS.getName())){
+                secret = getSecretKey(JwtTokenConstants.ACCESS.getName());
+            }else{
+                secret = getSecretKey(JwtTokenConstants.REFRESH.getName());
+            }
+
             Jwts.parserBuilder()
-                    .setSigningKey(getSecretKey())
+                    .setSigningKey(secret)
                     .build()
                     .parseClaimsJws(token);
             return true;
@@ -143,7 +157,7 @@ public class TokenProvider {
     }
 
     public AccessJwtToken getAccessAuthentication(String token){
-        Claims claims =  getClaims(token);
+        Claims claims =  getClaims(token, JwtTokenConstants.ACCESS.getName());
         AccessJwtToken.CustomClaims customClaims = objectMapper.convertValue(claims, AccessJwtToken.CustomClaims.class);
 
         AccessJwtToken accessJwtToken = new AccessJwtToken();
@@ -161,7 +175,7 @@ public class TokenProvider {
     }
 
     public RefreshJwtToken getRefreshAuthentication(String token){
-        Claims claims =  getClaims(token);
+        Claims claims =  getClaims(token, JwtTokenConstants.REFRESH.getName());
         RefreshJwtToken.CustomClaims customClaims = objectMapper.convertValue(claims, RefreshJwtToken.CustomClaims.class);
 
         RefreshJwtToken refreshJwtToken = new RefreshJwtToken();
