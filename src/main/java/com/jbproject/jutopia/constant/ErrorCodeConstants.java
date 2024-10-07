@@ -8,7 +8,10 @@ import lombok.ToString;
 @AllArgsConstructor
 public enum ErrorCodeConstants implements ErrorCode {
 
-    AUTHENTICATION_400_01(400, "AUTHENTICATION.400.01", "Invalid User Info.");
+    AUTHENTICATION_400_01(400, "AUTHENTICATION.400.01", "Invalid User Info.")
+
+    ,MENU_404_01(404, "MENU.404.01", "해당 메뉴를 찾지 못했습니다.")
+    ;
 
     private int statusCode;
     private String errorCode;

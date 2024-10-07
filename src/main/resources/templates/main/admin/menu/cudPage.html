@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>어드민 메뉴 등록 화면 입니다.</title>
+</head>
+<body>
+    <h1>
+      어드민 메뉴 등록 화면 이라네요
+    </h1>
+    <form action="#" th:action="@{/admin/menu/cud}" th:object="${menuCudPayload}" th:method="post">
+        <table>
+            <tr>
+                <td>menuNm</td>
+                <td>menuUrl</td>
+                <td>parentMenuId</td>
+                <td>seq</td>
+                <td>useYn</td>
+            </tr>
+            <tr>
+                <td>
+                    <label><input type="text" th:field="*{menuName}" required></label>
+                </td>
+                <td>
+                    <label><input type="text" th:field="*{menuUrl}" required></label>
+                </td>
+                <td>
+                    <label><input type="text" th:field="*{parentId}"></label>
+                </td>
+                <td>
+                    <label><input type="text" th:field="*{seq}"></label>
+                </td>
+                <td>
+                    <label><input type="text" th:field="*{useYn}"></label>
+                </td>
+            </tr>
+        </table>
+        <button type="submit">
+            메뉴등록
+        </button>
+        <button type="button" th:onclick="|location.href='@{/admin/menu/main}'|">
+            뒤로가기
+        </button>
+    </form>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.jbproject.jutopia.rest.controller.web.admin;
+package com.jbproject.jutopia.rest.controller.web.user;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/admin")
-public class AdminController {
+@RequestMapping("/home")
+public class UserHomeController {
 
-    @GetMapping("main")
-    public String goMain(HttpServletRequest request, Model model){
-        return "/admin/mainPage";
+    @GetMapping("/main")
+    public String goMain(HttpServletRequest request,Model model) {
+
+        return "/user/home/mainPage";
     }
 }

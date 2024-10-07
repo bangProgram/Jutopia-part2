@@ -78,7 +78,7 @@ public class AuthController {
         tokenGenerate(response, userEntity);
 
 
-        return new RedirectView("/home");
+        return new RedirectView("/home/main");
     }
 
     @GetMapping("/signup")

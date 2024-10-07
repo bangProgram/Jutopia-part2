@@ -1,5 +1,6 @@
 package com.jbproject.jutopia.rest.entity;
 
+import com.jbproject.jutopia.rest.model.payload.MenuCudPayload;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,5 +48,14 @@ public class MenuEntity extends BaseEntity {
         this.useYn = useYn;
         this.seq = seq;
         this.parentId = parentId;
+    }
+
+
+    public void modMenu(MenuCudPayload payload){
+        this.menuName = payload.getMenuName();
+        this.menuUrl = payload.getMenuUrl();
+        this.useYn = payload.getUseYn();
+        this.seq = payload.getSeq();
+        this.parentId = payload.getParentId();
     }
 }
