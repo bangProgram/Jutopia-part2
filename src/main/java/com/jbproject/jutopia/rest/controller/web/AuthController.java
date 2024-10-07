@@ -22,11 +22,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 public class AuthController {
 
     private final UserService userService;
@@ -34,13 +36,13 @@ public class AuthController {
     private final TokenProvider tokenProvider;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @GetMapping("/auth/login")
+    @GetMapping("/login")
     public String goLogin(HttpServletRequest request, Model model, LoginPayload loginPayload) {
         model.addAttribute("loginPayload", loginPayload);
         return "/user/auth/loginPage";
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public RedirectView loginPorc(HttpServletRequest request, HttpServletResponse response, Model model, LoginPayload loginPayload) {
         model.addAttribute("loginPayload", loginPayload);
         String userId = loginPayload.getUserId();
@@ -52,13 +54,13 @@ public class AuthController {
             System.out.println("JB 사용자 정보 확인 : "+userEntity.getEmail());
             tokenGenerate(response, userEntity);
 
-            return new RedirectView("/home");
+            return new RedirectView("/home/main");
         }else{
             return new RedirectView("/auth/login");
         }
     }
 
-    @PostMapping("/auth/refresh")
+    @PostMapping("/refresh")
     public RedirectView refreshPorc(HttpServletRequest request, HttpServletResponse response, Model model) {
         JwtTokenInfo jwtTokenInfo = SecurityUtils.handleAuthentication(request);
         RefreshJwtToken token;
@@ -79,13 +81,13 @@ public class AuthController {
         return new RedirectView("/home");
     }
 
-    @GetMapping("/auth/signup")
+    @GetMapping("/signup")
     public String goSignup(HttpServletRequest request, Model model, SignupPayload signupPayload) {
         model.addAttribute("signupPayload", signupPayload);
         return "/user/auth/signupPage";
     }
 
-    @PostMapping("/auth/signup")
+    @PostMapping("/signup")
     public RedirectView signupProc(HttpServletRequest request, Model model, SignupPayload signupPayload) {
         userService.addUser(signupPayload);
         System.out.println("/auth/signup process 종료");
