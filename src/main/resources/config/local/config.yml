@@ -13,10 +13,10 @@ jutopia:
     secret: d1b014505346f9fdafbdf571de8f8dabebd71c525f99528fec2b0a657366ec5a
     refresh:
       secret: 81ec70180f1c20c495133bc707c338180e87721aa47c39b421cad507b46bb3a4
-      duration: 36000
+      duration: 60
     access:
       secret: d1b014505346f9fdafbdf571de8f8dabebd71c525f99528fec2b0a657366ec5a
-      duration: 600
+      duration: 30
   refresh:
     jwt:
       secret: 81ec70180f1c20c495133bc707c338180e87721aa47c39b421cad507b46bb3a4

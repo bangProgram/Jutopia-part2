@@ -68,7 +68,6 @@ public class AuthController {
         try {
             token = tokenProvider.getRefreshAuthentication(jwtTokenInfo.getRefreshToken());
         }catch (RuntimeException exception){
-            System.out.println("refresh Token 만료");
             return new RedirectView("/auth/login");
         }
 
