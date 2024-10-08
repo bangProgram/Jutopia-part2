@@ -5,6 +5,7 @@ import com.jbproject.jutopia.config.security.constant.JwtTokenConstants;
 import com.jbproject.jutopia.config.security.constant.SecurityErrorCode;
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.config.security.jwt.JwtTokenInfo;
+import com.jbproject.jutopia.config.security.jwt.RefreshJwtToken;
 import com.jbproject.jutopia.config.security.model.Role;
 import com.jbproject.jutopia.config.security.provider.TokenProvider;
 import com.jbproject.jutopia.config.security.util.SecurityUtils;
@@ -69,9 +70,24 @@ public class AccessAuthFilter extends OncePerRequestFilter {
                 try{
                     accessJwtToken = tokenProvider.getAccessAuthentication(jwtTokenInfo.getAccessToken());
                 }catch (RuntimeException runtimeException){
+                    if(!tokenProvider.validateToken(jwtTokenInfo.getRefreshToken(), JwtTokenConstants.REFRESH.getName())){
+                        SecurityUtils.sendErrorResponse(request,response, SecurityErrorCode.JWT_AUTH_ERROR_07);
+                        return;
+                    }
                     accessJwtToken.setAuthenticated(false);
                     securityContextHolderStrategy.clearContext();
-                    SecurityUtils.sendErrorResponse(request,response,runtimeException);
+
+                    ErrorCode errorCode = switch (runtimeException) {
+                        case SecurityException securityException -> SecurityErrorCode.JWT_AUTH_ERROR_01;
+                        case MalformedJwtException malformedJwtException -> SecurityErrorCode.JWT_AUTH_ERROR_01;
+                        case ExpiredJwtException expiredJwtException -> SecurityErrorCode.JWT_AUTH_ERROR_02;
+                        case UnsupportedJwtException unsupportedJwtException -> SecurityErrorCode.JWT_AUTH_ERROR_03;
+                        case IllegalArgumentException illegalArgumentException -> SecurityErrorCode.JWT_AUTH_ERROR_04;
+                        case SignatureException signatureException -> SecurityErrorCode.JWT_AUTH_ERROR_04;
+                        default -> SecurityErrorCode.JWT_AUTH_ERROR_04;
+                    };
+
+                    SecurityUtils.sendErrorResponse(request,response,errorCode);
                     return;
                 }
                 role = accessJwtToken.getPrincipal().getRole(); // 인증된 사용자의 역할 가져오기
@@ -96,10 +112,8 @@ public class AccessAuthFilter extends OncePerRequestFilter {
                 System.out.println("필터 들어옴");
                 filterChain.doFilter(request, response);  // 허용된 URI일 경우 필터를 통과시킴
             } else {
-                throw new ExceptionProvider(SecurityErrorCode.FORBIDDEN_ERROR_02);
+                SecurityUtils.sendErrorResponse(request,response,SecurityErrorCode.FORBIDDEN_ERROR_02);
             }
-
-
         }
     }
 }

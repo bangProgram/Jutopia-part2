@@ -48,16 +48,7 @@ public class SecurityUtils {
 
 
 
-    public static void sendErrorResponse(HttpServletRequest request, HttpServletResponse response, RuntimeException exception) throws IOException, ServletException {
-        ErrorCode errorCode = switch (exception) {
-            case SecurityException securityException -> SecurityErrorCode.JWT_AUTH_ERROR_01;
-            case MalformedJwtException malformedJwtException -> SecurityErrorCode.JWT_AUTH_ERROR_01;
-            case ExpiredJwtException expiredJwtException -> SecurityErrorCode.JWT_AUTH_ERROR_02;
-            case UnsupportedJwtException unsupportedJwtException -> SecurityErrorCode.JWT_AUTH_ERROR_03;
-            case IllegalArgumentException illegalArgumentException -> SecurityErrorCode.JWT_AUTH_ERROR_04;
-            case SignatureException signatureException -> SecurityErrorCode.JWT_AUTH_ERROR_04;
-            default -> SecurityErrorCode.JWT_AUTH_ERROR_06;
-        };
+    public static void sendErrorResponse(HttpServletRequest request, HttpServletResponse response, ErrorCode errorCode) throws IOException, ServletException {
 
         ExceptionModel exceptionModel = new ExceptionModel(
                 Integer.toString(errorCode.getStatusCode()),
@@ -65,11 +56,9 @@ public class SecurityUtils {
                 errorCode.getErrorMsg()
         );
 
+        System.out.println("sendErrorResponse");
         String body = new ObjectMapper().writeValueAsString(exceptionModel);
-        System.out.println("JB test1 ");
-        request.setAttribute("errorBody",body);
-        System.out.println("JB test2 ");
+        request.setAttribute("errorBody", body);
         request.getRequestDispatcher("/error/auth").forward(request, response);
-        System.out.println("JB test3 ");
     }
 }

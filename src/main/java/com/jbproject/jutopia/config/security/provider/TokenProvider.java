@@ -85,11 +85,14 @@ public class TokenProvider {
                 .build();
 
         String refreshToken = Jwts.builder()
-                .setExpiration(getExpirationDate(JwtTokenConstants.REFRESH.getName()))
                 .setClaims(objectMapper.convertValue(refreshCliams, Map.class))
+                .setExpiration(getExpirationDate(JwtTokenConstants.REFRESH.getName()))
                 .signWith(getSecretKey(JwtTokenConstants.REFRESH.getName()), SignatureAlgorithm.HS256)
                 .compact()
                 ;
+
+        System.out.println("getExpirationDate(JwtTokenConstants.REFRESH.getName()) : "+getExpirationDate(JwtTokenConstants.REFRESH.getName()));
+        System.out.println("refreshToken : "+refreshToken);
 
         return JwtTokenInfo.builder()
                 .accessToken(accessToken)

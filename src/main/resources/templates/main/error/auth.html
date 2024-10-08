@@ -16,6 +16,7 @@
     let message = /*[[${message}]]*/ "Auth Error";
     let refreshTokenUrl = "/auth/refresh";
     let loginUrl = "/auth/login";
+    let homeUrl = "/home/main";
 
     document.addEventListener('DOMContentLoaded', function() {
         // 페이지가 로드되자마자 실행될 JavaScript 코드
@@ -23,8 +24,13 @@
     });
 
     function sendRedirect() {
-        if(statusCode == "500"){
-            if(errorCode.indexOf("JwtAuth") > -1 ) {
+        if(errorCode.indexOf("JwtAuth") > -1 ) {
+            if(errorCode == "JwtAuth.500.07") {
+                    alert(message);
+                    location.href = loginUrl;
+                    return;
+            }
+            else {
                 if(confirm(message + "\n로그인 연장 하시겠습니까?")){
                     let form = document.createElement("form");
                     form.setAttribute("method","post");
@@ -32,13 +38,14 @@
                     document.body.appendChild(form);
                     form.submit();
                 }else{
-                    location.href(loginUrl);
+                    location.href = loginUrl;
+                    return;
                 }
-            }else{
-                alert("원인 미상의 에러코드입니다."+errorCode);
             }
         }else{
-            alert("원인 미상의 상태코드입니다."+statusCode);
+            alert(message);
+            location.href = homeUrl;
+            return;
         }
     }
 </script>

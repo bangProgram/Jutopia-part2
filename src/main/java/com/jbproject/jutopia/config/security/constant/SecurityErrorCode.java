@@ -23,6 +23,8 @@ public enum SecurityErrorCode implements ErrorCode {
     ,JWT_AUTH_ERROR_04(500,"JwtAuth.500.04","비정상적인 토큰입니다.")
     ,JWT_AUTH_ERROR_05(500,"JwtAuth.500.05","비정상적인 서명의 토큰입니다.")
     ,JWT_AUTH_ERROR_06(500,"JwtAuth.500.06","Jwt Parsing Error")
+
+    ,JWT_AUTH_ERROR_07(500,"JwtAuth.500.07","로그인 만료입니다.")
     ;
 
     private int statusCode;
