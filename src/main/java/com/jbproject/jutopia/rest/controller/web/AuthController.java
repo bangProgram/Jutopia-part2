@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.config.security.jwt.JwtTokenInfo;
 import com.jbproject.jutopia.config.security.jwt.RefreshJwtToken;
+import com.jbproject.jutopia.config.security.model.Role;
 import com.jbproject.jutopia.config.security.provider.TokenProvider;
 import com.jbproject.jutopia.config.security.util.SecurityUtils;
 import com.jbproject.jutopia.rest.entity.UserEntity;
@@ -18,6 +19,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +38,7 @@ public class AuthController {
     private final AuthService authService;
     private final TokenProvider tokenProvider;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
 
     @GetMapping("/login")
     public String goLogin(HttpServletRequest request, Model model, LoginPayload loginPayload) {
@@ -52,7 +56,7 @@ public class AuthController {
 
         if(authService.passwordMatcher(password,userEntity.getPassword())){
             System.out.println("JB 사용자 정보 확인 : "+userEntity.getEmail());
-            tokenGenerate(response, userEntity);
+            generateToken(response, userEntity);
 
             return new RedirectView("/home/main");
         }else{
@@ -74,7 +78,7 @@ public class AuthController {
         RefreshJwtToken.RefreshJwtPrincipal principal = token.getPrincipal();
 
         UserEntity userEntity = userService.findById(principal.getId());
-        tokenGenerate(response, userEntity);
+        generateToken(response, userEntity);
 
 
         return new RedirectView("/home/main");
@@ -93,7 +97,15 @@ public class AuthController {
         return new RedirectView("/auth/login");
     }
 
-    private void tokenGenerate(HttpServletResponse response, UserEntity userEntity){
+    @PostMapping("/auth/logout")
+    public RedirectView logoutProc(HttpServletResponse response, Model model) {
+        securityContextHolderStrategy.clearContext();
+        clearToken(response);
+
+        return new RedirectView("/auth/login");
+    }
+
+    private void generateToken(HttpServletResponse response, UserEntity userEntity){
 
         JwtTokenInfo jwtTokenInfo = tokenProvider.generateToken(
                 AccessJwtToken.CustomClaims.builder()
@@ -114,4 +126,21 @@ public class AuthController {
         refreshCookie.setPath("/");  // 모든 경로에서 쿠키를 사용할 수 있도록 설정
         response.addCookie(refreshCookie);
     }
+
+    private void clearToken(HttpServletResponse response){
+
+        Cookie accessCookie = new Cookie("X-Access-Token", null);
+        accessCookie.setMaxAge(0);
+        accessCookie.setHttpOnly(true);  // XSS 방지
+        accessCookie.setPath("/");  // 모든 경로에서 쿠키를 사용할 수 있도록 설정
+        response.addCookie(accessCookie);
+
+        Cookie refreshCookie = new Cookie("X-Refresh-Token", null);
+        refreshCookie.setHttpOnly(true);  // XSS 방지
+        refreshCookie.setMaxAge(0);
+        refreshCookie.setPath("/");  // 모든 경로에서 쿠키를 사용할 수 있도록 설정
+        response.addCookie(refreshCookie);
+    }
+
+
 }

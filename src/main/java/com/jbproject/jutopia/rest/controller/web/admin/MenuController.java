@@ -1,16 +1,21 @@
 package com.jbproject.jutopia.rest.controller.web.admin;
 
 import com.jbproject.jutopia.rest.model.payload.MenuCudPayload;
+import com.jbproject.jutopia.rest.model.result.MenuResult;
 import com.jbproject.jutopia.rest.service.MenuService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -20,8 +25,21 @@ public class MenuController {
 
     private final MenuService menuService;
 
-    @GetMapping("/main")
-    public String goMain(HttpServletRequest request, Model model){
+    @GetMapping({
+            "/main"
+            ,"/main/{menuId}"
+    })
+    public String goMain(
+            HttpServletRequest request, Model model
+            , @PathVariable(value = "menuId", required = false) String menuId
+            , MenuCudPayload payload
+        ){
+        System.out.println("어디서 에러?1");
+        model.addAttribute("menuCudPayload", payload);
+        System.out.println("어디서 에러?1");
+        List<MenuResult> result = menuService.getMenuList(menuId);
+        System.out.println("어디서 에러?1");
+        model.addAttribute("menuResult", result);
         return "/admin/menu/mainPage";
     }
 

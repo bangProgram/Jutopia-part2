@@ -4,11 +4,14 @@ import com.jbproject.jutopia.constant.ErrorCodeConstants;
 import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.rest.entity.MenuEntity;
 import com.jbproject.jutopia.rest.model.payload.MenuCudPayload;
+import com.jbproject.jutopia.rest.model.result.MenuResult;
 import com.jbproject.jutopia.rest.repository.MenuRepository;
 import com.jbproject.jutopia.rest.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -37,5 +40,10 @@ public class MenuServiceImpl implements MenuService {
         curMenu.modMenu(payload);
 
         menuRepository.save(curMenu);
+    }
+
+    public List<MenuResult> getMenuList(String menuId){
+        System.out.println("어디서 에러?2");
+        return menuRepository.getMenuList(menuId);
     }
 }

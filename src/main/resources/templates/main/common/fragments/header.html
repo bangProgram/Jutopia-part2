@@ -6,6 +6,9 @@
             <button type="button" th:if="${isAdmin}" th:onclick="|location.href='@{/admin/home/main}'|">
                 관리자 메인 이동
             </button>
+            <button type="button" th:if="${isAdmin}" th:onclick="|location.href='@{/home/main}'|">
+                사용자 메인 이동
+            </button>
         </div>
     </nav>
 </html>

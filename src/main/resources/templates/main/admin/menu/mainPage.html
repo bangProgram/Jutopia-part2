@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="content"
+>
 <head>
     <meta charset="UTF-8">
     <title>어드민 메뉴 화면 입니다.</title>
@@ -8,9 +13,9 @@
 <h1>
   어드민 메뉴 화면 이라네요
 </h1>
-
-<button type="button" th:onclick="|location.href='@{/admin/menu/cud}'|">
-    관리자 메뉴 등록 화면 이동
+<th:block th:replace="~{/admin/menu/cudPage :: writer}"></th:block>
+<button type="button" th:onclick="|location.href='@{/admin/home/main}'|">
+    뒤로가기
 </button>
 </body>
 </html>
