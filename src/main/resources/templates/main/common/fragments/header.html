@@ -2,6 +2,10 @@
     <nav th:fragment="headerFragment">
         <div>
             헤더영역
+            <a href="/auth/login">로그인</a>
+            <button type="button" th:if="${isAdmin}" th:onclick="|location.href='@{/admin/home/main}'|">
+                관리자 메인 이동
+            </button>
         </div>
     </nav>
 </html>
