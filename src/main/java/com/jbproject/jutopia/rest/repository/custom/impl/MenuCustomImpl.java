@@ -23,7 +23,6 @@ public class MenuCustomImpl implements MenuCustom {
 
     public List<MenuResult> getMenuList(String menuId){
 
-        System.out.println("어디서 에러?3");
         BooleanBuilder whereCondition = new BooleanBuilder();
         if(menuId != null){
             whereCondition.and(menuEntity.parentId.eq(Long.parseLong(menuId)));

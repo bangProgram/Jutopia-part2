@@ -1,5 +1,8 @@
 server:
-  port: 8080
+#  노트북 포트
+#  port: 8080
+#  데스크탑 포트
+  port: 9000
   shutdown: graceful
 
 spring:

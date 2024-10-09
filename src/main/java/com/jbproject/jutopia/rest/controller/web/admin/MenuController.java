@@ -34,11 +34,8 @@ public class MenuController {
             , @PathVariable(value = "menuId", required = false) String menuId
             , MenuCudPayload payload
         ){
-        System.out.println("어디서 에러?1");
         model.addAttribute("menuCudPayload", payload);
-        System.out.println("어디서 에러?1");
         List<MenuResult> result = menuService.getMenuList(menuId);
-        System.out.println("어디서 에러?1");
         model.addAttribute("menuResult", result);
         return "/admin/menu/mainPage";
     }
@@ -46,7 +43,7 @@ public class MenuController {
     @GetMapping("/cud")
     public String goCud(HttpServletRequest request, Model model, MenuCudPayload payload){
         model.addAttribute("menuCudPayload", payload);
-        return "/admin/menu/cudPage";
+        return "/admin/menu/mainPage";
     }
 
 

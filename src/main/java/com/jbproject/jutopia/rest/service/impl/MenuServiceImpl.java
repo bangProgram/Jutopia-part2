@@ -43,7 +43,6 @@ public class MenuServiceImpl implements MenuService {
     }
 
     public List<MenuResult> getMenuList(String menuId){
-        System.out.println("어디서 에러?2");
         return menuRepository.getMenuList(menuId);
     }
 }
