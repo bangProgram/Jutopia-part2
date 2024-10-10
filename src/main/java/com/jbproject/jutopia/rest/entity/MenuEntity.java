@@ -30,6 +30,8 @@ public class MenuEntity extends BaseEntity {
     private int seq;
     @Column(name = "parent_id", insertable = false, updatable = false)
     private Long parentId;
+    @Column(name = "menu_type")
+    private String menuType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
@@ -42,12 +44,12 @@ public class MenuEntity extends BaseEntity {
     private List<RoleMenuRelation> roleMenuRelations;
 
     @Builder
-    public MenuEntity(String menuName,String menuUrl,String useYn,int seq,Long parentId){
+    public MenuEntity(String menuName,String menuUrl,String useYn,int seq, String menuType){
         this.menuName = menuName;
         this.menuUrl = menuUrl;
         this.useYn = useYn;
         this.seq = seq;
-        this.parentId = parentId;
+        this.menuType = menuType;
     }
 
 
@@ -56,6 +58,6 @@ public class MenuEntity extends BaseEntity {
         this.menuUrl = payload.getMenuUrl();
         this.useYn = payload.getUseYn();
         this.seq = payload.getSeq();
-        this.parentId = payload.getParentId();
+        this.menuType = payload.getMenuType();
     }
 }

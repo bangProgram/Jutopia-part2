@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface MenuCustom {
 
-    List<MenuResult> getMenuList(String menuId);
+    List<MenuResult> getMenuList(String menuType);
 }

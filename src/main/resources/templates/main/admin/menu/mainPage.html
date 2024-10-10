@@ -13,7 +13,84 @@
 <h1>
   어드민 메뉴 화면 이라네요
 </h1>
-<th:block th:replace="~{/admin/menu/cudPage :: writer}"></th:block>
+
+<button type="button" th:if="${menuCudPayload.menuType =='USER'}" th:onclick="|location.href='@{/admin/menu/main/ADMIN}'|">
+    관리자메뉴
+</button>
+<button type="button" th:if="${menuCudPayload.menuType =='ADMIN'}" th:onclick="|location.href='@{/admin/menu/main/USER}'|">
+    사용자메뉴
+</button>
+
+<form action="#" name="cudForm" th:action="@{/admin/menu/cud}" th:object="${menuCudPayload}" th:method="post">
+    <input type="hidden" th:field="*{menuId}" value="0">
+    <input type="hidden" th:field="*{menuType}">
+    <table>
+        <tr>
+            <td>menuNm</td>
+            <td>menuUrl</td>
+            <td>parentMenuId</td>
+            <td>seq</td>
+            <td>useYn</td>
+            <td>저장</td>
+        </tr>
+        <tr>
+            <td>
+                <label><input type="text" th:field="*{menuName}" required></label>
+            </td>
+            <td>
+                <label><input type="text" th:field="*{menuUrl}" required></label>
+            </td>
+            <td>
+                <label><input type="text" th:field="*{parentId}"></label>
+            </td>
+            <td>
+                <label><input type="text" th:field="*{seq}"></label>
+            </td>
+            <td>
+                <label><input type="text" th:field="*{useYn}"></label>
+            </td>
+            <td>
+                <button type="submit">
+                    메뉴등록
+                </button>
+            </td>
+        </tr>
+    </table>
+</form>
+
+<table>
+
+</table>
+<div style="">
+    <ul>
+        <li>menuId</li>
+        <li>menuName</li>
+        <li>menuUrl</li>
+        <li>parentId</li>
+        <li>seq</li>
+        <li>useYn</li>
+    </ul>
+</div>
+<div>
+    <ul th:each="menuResult : ${menuResults}">
+        <li><span th:text="${menuResult.menuId}">menuId</span></li>
+        <li><span th:text="${menuResult.menuName}">menuNm</span></li>
+        <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
+        <li><span th:text="${menuResult.parentId}">parentId</span></li>
+        <li><span th:text="${menuResult.seq}">seq</span></li>
+        <li><span th:text="${menuResult.useYn}">useYn</span></li>
+        <ul th:each="childMenu : ${menuResult.childMenu}">
+            <li><span th:text="${childMenu.menuId}">menuId</span></li>
+            <li><span th:text="${childMenu.menuName}">menuNm</span></li>
+            <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
+            <li><span th:text="${childMenu.parentId}">parentId</span></li>
+            <li><span th:text="${childMenu.seq}">seq</span></li>
+            <li><span th:text="${childMenu.useYn}">useYn</span></li>
+        </ul>
+    </ul>
+</div>
+
+<!--<th:block th:replace="~{/admin/menu/listPage :: list}"></th:block>-->
 <button type="button" th:onclick="|location.href='@{/admin/home/main}'|">
     뒤로가기
 </button>

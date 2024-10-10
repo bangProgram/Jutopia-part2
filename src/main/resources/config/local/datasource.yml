@@ -16,15 +16,15 @@ spring:
 #    password:
 
   # 노트북 datasource
-#  datasource:
-#    driver-class-name: org.h2.Driver
-#    url: jdbc:h2:tcp://localhost/~/admindev
-#    username: sa
-#    password: sa
-
-  # 데스크탑 datasource
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/jpashop
+    url: jdbc:h2:tcp://localhost/~/admindev
     username: sa
-    password:
+    password: sa
+
+  # 데스크탑 datasource
+#  datasource:
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:tcp://localhost/~/jpashop
+#    username: sa
+#    password:

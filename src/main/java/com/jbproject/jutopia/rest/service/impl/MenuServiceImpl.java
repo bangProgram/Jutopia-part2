@@ -21,13 +21,20 @@ public class MenuServiceImpl implements MenuService {
     private final MenuRepository menuRepository;
 
     public void addMenu(MenuCudPayload payload) {
+        System.out.println("payload : "+payload.getParentId());
         MenuEntity newMenu = MenuEntity.builder()
                 .menuName(payload.getMenuName())
                 .menuUrl(payload.getMenuUrl())
                 .useYn(payload.getUseYn())
-                .parentId(payload.getParentId())
                 .seq(payload.getSeq())
                 .build();
+
+        if(payload.getParentId() != null){
+            MenuEntity parentMenu = menuRepository.findById(payload.getParentId()).orElseThrow(
+                    () -> new ExceptionProvider(ErrorCodeConstants.MENU_404_01)
+            );
+            newMenu.setParentMenu(parentMenu);
+        }
 
         menuRepository.save(newMenu);
     }
@@ -39,10 +46,17 @@ public class MenuServiceImpl implements MenuService {
 
         curMenu.modMenu(payload);
 
+        if(!payload.getParentId().equals(curMenu.getParentMenu().getId())){
+            MenuEntity parentMenu = menuRepository.findById(payload.getParentId()).orElseThrow(
+                    () -> new ExceptionProvider(ErrorCodeConstants.MENU_404_01)
+            );
+            curMenu.setParentMenu(parentMenu);
+        }
+
         menuRepository.save(curMenu);
     }
 
-    public List<MenuResult> getMenuList(String menuId){
-        return menuRepository.getMenuList(menuId);
+    public List<MenuResult> getMenuList(String menuType){
+        return menuRepository.getMenuList(menuType);
     }
 }

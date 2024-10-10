@@ -10,4 +10,5 @@ public class MenuCudPayload {
     private String useYn = "Y";
     private int seq;
     private Long parentId;
+    private String menuType;
 }

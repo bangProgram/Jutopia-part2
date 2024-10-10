@@ -1,42 +1,32 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<th:block th:fragment="writer">
+<th:block th:fragment="list">
     <h1>
-        어드민 메뉴 등록 화면 이라네요
+        어드민 메뉴 리스트 화면 이라네요
     </h1>
-    <form action="#" th:action="@{/admin/menu/cud}" th:object="${menuCudPayload}" th:method="post">
-        <table>
-            <tr>
-                <td>menuNm</td>
-                <td>menuUrl</td>
-                <td>parentMenuId</td>
-                <td>seq</td>
-                <td>useYn</td>
-                <td>저장</td>
-            </tr>
-            <tr>
-                <td>
-                    <label><input type="text" th:field="*{menuName}" required></label>
-                </td>
-                <td>
-                    <label><input type="text" th:field="*{menuUrl}" required></label>
-                </td>
-                <td>
-                    <label><input type="text" th:field="*{parentId}"></label>
-                </td>
-                <td>
-                    <label><input type="text" th:field="*{seq}"></label>
-                </td>
-                <td>
-                    <label><input type="text" th:field="*{useYn}"></label>
-                </td>
-                <td>
-                    <button type="submit">
-                        메뉴등록
-                    </button>
-                </td>
-            </tr>
-        </table>
-    </form>
+        <ul>
+            <li>menuId</li>
+            <li>menuName</li>
+            <li>menuUrl</li>
+            <li>parentId</li>
+            <li>seq</li>
+            <li>useYn</li>
+        </ul>
+        <ul th:each="menuResult : ${menuResults}">
+            <li><span th:text="${menuResult.menuId}">menuId</span></li>
+            <li><span th:text="${menuResult.menuName}">menuNm</span></li>
+            <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
+            <li><span th:text="${menuResult.parentId}">parentId</span></li>
+            <li><span th:text="${menuResult.seq}">seq</span></li>
+            <li><span th:text="${menuResult.useYn}">useYn</span></li>
+            <ul th:each="childMenu : ${menuResult.childMenu}">
+                <li><span th:text="${childMenu.menuId}">menuId</span></li>
+                <li><span th:text="${childMenu.menuName}">menuNm</span></li>
+                <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
+                <li><span th:text="${childMenu.parentId}">parentId</span></li>
+                <li><span th:text="${childMenu.seq}">seq</span></li>
+                <li><span th:text="${childMenu.useYn}">useYn</span></li>
+            </ul>
+        </ul>
 </th:block >
 </html>
