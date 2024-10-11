@@ -61,7 +61,7 @@
 <table>
 
 </table>
-<div style="">
+<div class="menuList">
     <ul>
         <li>menuId</li>
         <li>menuName</li>
@@ -71,7 +71,7 @@
         <li>useYn</li>
     </ul>
 </div>
-<div>
+<div id="depth1" class="menuList">
     <ul th:each="menuResult : ${menuResults}">
         <li><span th:text="${menuResult.menuId}">menuId</span></li>
         <li><span th:text="${menuResult.menuName}">menuNm</span></li>
@@ -79,14 +79,16 @@
         <li><span th:text="${menuResult.parentId}">parentId</span></li>
         <li><span th:text="${menuResult.seq}">seq</span></li>
         <li><span th:text="${menuResult.useYn}">useYn</span></li>
-        <ul th:each="childMenu : ${menuResult.childMenu}">
-            <li><span th:text="${childMenu.menuId}">menuId</span></li>
-            <li><span th:text="${childMenu.menuName}">menuNm</span></li>
-            <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
-            <li><span th:text="${childMenu.parentId}">parentId</span></li>
-            <li><span th:text="${childMenu.seq}">seq</span></li>
-            <li><span th:text="${childMenu.useYn}">useYn</span></li>
-        </ul>
+        <div id="depth2">
+            <ul th:each="childMenu : ${menuResult.childMenu}" >
+                <li><span th:text="${childMenu.menuId}">menuId</span></li>
+                <li><span th:text="${childMenu.menuName}">menuNm</span></li>
+                <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
+                <li><span th:text="${childMenu.parentId}">parentId</span></li>
+                <li><span th:text="${childMenu.seq}">seq</span></li>
+                <li><span th:text="${childMenu.useYn}">useYn</span></li>
+            </ul>
+        </div>
     </ul>
 </div>
 
@@ -94,5 +96,29 @@
 <button type="button" th:onclick="|location.href='@{/admin/home/main}'|">
     뒤로가기
 </button>
+
+<style>
+.menuList {
+    width: 100%;
+}
+
+.menuList > ul {
+    width: 100%;
+}
+
+.menuList > ul > li {
+    display: inline-block;
+    width: 15.6%;
+}
+
+#depth2 > ul {
+    width: 100%;
+}
+
+#depth2 > ul > li {
+    display: inline-block;
+    width: 15.6%;
+}
+</style>
 </body>
 </html>

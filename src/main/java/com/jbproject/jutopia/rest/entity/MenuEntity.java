@@ -22,6 +22,8 @@ public class MenuEntity extends BaseEntity {
 
     @Column(name = "menu_name", nullable = false)
     private String menuName;
+    @Column(name = "menu_detail")
+    private String menuDetail;
     @Column(name = "menu_url", nullable = false)
     private String menuUrl;
     @Column(name = "use_yn", nullable = false)
@@ -44,12 +46,13 @@ public class MenuEntity extends BaseEntity {
     private List<RoleMenuRelation> roleMenuRelations;
 
     @Builder
-    public MenuEntity(String menuName,String menuUrl,String useYn,int seq, String menuType){
+    public MenuEntity(String menuName,String menuUrl,String useYn,int seq, String menuType, String menuDetail){
         this.menuName = menuName;
         this.menuUrl = menuUrl;
         this.useYn = useYn;
         this.seq = seq;
         this.menuType = menuType;
+        this.menuDetail = menuDetail;
     }
 
 
@@ -59,5 +62,6 @@ public class MenuEntity extends BaseEntity {
         this.useYn = payload.getUseYn();
         this.seq = payload.getSeq();
         this.menuType = payload.getMenuType();
+        this.menuDetail = payload.getMenuDetail();
     }
 }

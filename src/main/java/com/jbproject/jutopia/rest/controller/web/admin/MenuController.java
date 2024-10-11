@@ -43,6 +43,9 @@ public class MenuController {
 
         // 그룹별 메뉴 리스트 제공
         List<MenuResult> result = menuService.getMenuList(menuType);
+        for(MenuResult menu : result) {
+            System.out.println("menu : "+menu);
+        }
         model.addAttribute("menuResults", result);
 
         // 그룹별 메뉴 리스트 제공 및 추가,수정을 위한 그룹 플래그 전송

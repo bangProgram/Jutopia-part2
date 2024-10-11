@@ -27,7 +27,10 @@ public class MenuCustomImpl implements MenuCustom {
 
         List<MenuEntity> menuEntities = queryFactory.selectFrom(menuEntity)
                 .leftJoin(menuEntity.childMenu).fetchJoin() // 자식 메뉴를 LEFT JOIN FETCH
-                .where(menuEntity.menuType.eq(menuType))
+                .where(
+                        menuEntity.menuType.eq(menuType)
+                        .and(menuEntity.parentId.isNull())
+                )
                 .fetch();
 
         return menuEntities.stream().map(menu -> {
