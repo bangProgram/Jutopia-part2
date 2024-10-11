@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="content"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>어드민 권한관리 화면 입니다.</title>
+</head>
+<body>
+<h1>
+  어드민 권한관리 화면 이라네요
+</h1>
+
+<div class="adminAuthButtonDiv">
+    <div class="adminAuthButton" th:each="roleType : ${roleTypes}" >
+        <button type="button" th:onclick="goPage([[${roleType.code}]])">
+            <span th:text="${roleType.code}">Button Name</span>
+        </button>
+    </div>
+</div>
+
+<div class="listDiv">
+    <div class="userMenuList">
+        <div class="menuList">
+            <ul>
+                <li>menuId</li>
+                <li>menuName</li>
+                <li>menuUrl</li>
+                <li>parentId</li>
+                <li>seq</li>
+                <li>useYn</li>
+            </ul>
+        </div>
+        <div class="menuList" th:if="${userMenuList == null}">
+            등록된 사용자 메뉴가 없습니다.
+        </div>
+        <div class="menuList" th:if="${userMenuList != null}">
+            <ul th:each="menuResult : ${userMenuList}">
+                <li><span th:text="${menuResult.menuId}">menuId</span></li>
+                <li><span th:text="${menuResult.menuName}">menuNm</span></li>
+                <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
+                <li><span th:text="${menuResult.parentId}">parentId</span></li>
+                <li><span th:text="${menuResult.seq}">seq</span></li>
+                <li><span th:text="${menuResult.useYn}">useYn</span></li>
+                <div class="depth2">
+                    <ul th:each="childMenu : ${menuResult.childMenu}" >
+                        <li><span th:text="${childMenu.menuId}">menuId</span></li>
+                        <li><span th:text="${childMenu.menuName}">menuNm</span></li>
+                        <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
+                        <li><span th:text="${childMenu.parentId}">parentId</span></li>
+                        <li><span th:text="${childMenu.seq}">seq</span></li>
+                        <li><span th:text="${childMenu.useYn}">useYn</span></li>
+                    </ul>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <div class="adminMenuList">
+        <div class="menuList">
+            <ul>
+                <li>menuId</li>
+                <li>menuName</li>
+                <li>menuUrl</li>
+                <li>parentId</li>
+                <li>seq</li>
+                <li>useYn</li>
+            </ul>
+        </div>
+        <div class="menuList" id="test1" th:if="${adminMenuList.size() <= 0 }">
+            등록된 관리자 메뉴가 없습니다.
+        </div>
+        <div class="menuList" id="test2" th:if="${adminMenuList.size() > 0 }">
+            <ul th:each="menuResult : ${adminMenuList}">
+                <li><span th:text="${menuResult.menuId}">menuId</span></li>
+                <li><span th:text="${menuResult.menuName}">menuNm</span></li>
+                <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
+                <li><span th:text="${menuResult.parentId}">parentId</span></li>
+                <li><span th:text="${menuResult.seq}">seq</span></li>
+                <li><span th:text="${menuResult.useYn}">useYn</span></li>
+                <div class="depth2">
+                    <ul th:each="childMenu : ${menuResult.childMenu}" >
+                        <li><span th:text="${childMenu.menuId}">menuId</span></li>
+                        <li><span th:text="${childMenu.menuName}">menuNm</span></li>
+                        <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
+                        <li><span th:text="${childMenu.parentId}">parentId</span></li>
+                        <li><span th:text="${childMenu.seq}">seq</span></li>
+                        <li><span th:text="${childMenu.useYn}">useYn</span></li>
+                    </ul>
+                </div>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!--<th:block th:replace="~{/admin/menu/listPage :: list}"></th:block>-->
+<button type="button" th:onclick="|location.href='@{/admin/home/main}'|">
+    뒤로가기
+</button>
+
+<style>
+.menuList {
+    width: 100%;
+}
+
+.menuList > ul {
+    width: 100%;
+}
+
+.menuList > ul > li {
+    display: inline-block;
+    width: 15.6%;
+}
+
+.depth2 > ul {
+    width: 100%;
+}
+
+.depth2 > ul > li {
+    display: inline-block;
+    width: 15.6%;
+}
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 페이지가 로드되자마자 실행될 JavaScript 코드
+        console.log('adminMenuList.size() : [[${adminMenuList.size()}]]');
+    });
+
+    function goPage(roleType){
+        location.href = "/admin/auth/main/"+roleType;
+    }
+</script>
+</body>
+</html>

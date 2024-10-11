@@ -1,17 +1,14 @@
 package com.jbproject.jutopia.rest.controller.web.admin;
 
 import com.jbproject.jutopia.constant.CommonConstatns;
-import com.jbproject.jutopia.rest.entity.key.CommCodeKey;
 import com.jbproject.jutopia.rest.model.payload.MenuCudPayload;
 import com.jbproject.jutopia.rest.model.result.CommCodeResult;
 import com.jbproject.jutopia.rest.model.result.MenuResult;
-import com.jbproject.jutopia.rest.repository.CommCodeRepository;
 import com.jbproject.jutopia.rest.service.CommCodeService;
 import com.jbproject.jutopia.rest.service.MenuService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +23,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/admin/menu")
-public class MenuController {
+public class AdminMenuController {
 
     private final MenuService menuService;
     private final CommCodeService commCodeService;
@@ -65,4 +62,6 @@ public class MenuController {
         }
         return new RedirectView("/admin/menu/main/"+payload.getMenuType());
     }
+
+
 }

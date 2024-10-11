@@ -14,12 +14,13 @@
   어드민 메뉴 화면 이라네요
 </h1>
 
-<button type="button" th:if="${menuCudPayload.menuType =='USER'}" th:onclick="|location.href='@{/admin/menu/main/ADMIN}'|">
-    관리자메뉴
-</button>
-<button type="button" th:if="${menuCudPayload.menuType =='ADMIN'}" th:onclick="|location.href='@{/admin/menu/main/USER}'|">
-    사용자메뉴
-</button>
+<div class="adminMenuButtonDiv">
+    <div class="adminMenuButton" th:each="menuType : ${menuTypes}" >
+        <button type="button" th:onclick="goPage([[${menuType.code}]])">
+            <span th:text="${menuType.code}">Button Name</span>
+        </button>
+    </div>
+</div>
 
 <form action="#" name="cudForm" th:action="@{/admin/menu/cud}" th:object="${menuCudPayload}" th:method="post">
     <input type="hidden" th:field="*{menuId}" value="0">
@@ -120,5 +121,11 @@
     width: 15.6%;
 }
 </style>
+
+<script>
+    function goPage(menuType){
+        location.href = "/admin/menu/main/"+menuType;
+    }
+</script>
 </body>
 </html>

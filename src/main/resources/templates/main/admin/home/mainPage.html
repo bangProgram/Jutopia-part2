@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="content"
 >
 <head>
     <meta charset="UTF-8">
@@ -12,6 +15,9 @@
     </h6>
     <button type="button" th:onclick="|location.href='@{/admin/menu/main/USER}'|">
         관리자 메뉴 화면 이동
+    </button>
+    <button type="button" th:onclick="|location.href='@{/admin/auth/main/VISITOR}'|">
+        관리자 권한 화면 이동
     </button>
 </body>
 </html>
