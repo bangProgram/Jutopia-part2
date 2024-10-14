@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.jbproject.jutopia.rest.entity.QMenuEntity.menuEntity;
 import static com.jbproject.jutopia.rest.entity.QRoleMenuRelation.roleMenuRelation;
 
 
@@ -24,10 +25,11 @@ public class RoleMenuCustomImpl implements RoleMenuCustom {
                 Projections.fields(
                     RoleBasedWhiteList.class,
                     roleMenuRelation.roleId.as("role"),
-                    roleMenuRelation.url.as("url")
+                    menuEntity.menuUrl.as("url")
                     )
                 )
-                .from(roleMenuRelation)
+                .from(menuEntity)
+                .innerJoin(roleMenuRelation).on(menuEntity.id.eq(roleMenuRelation.menuEntity.id))
                 .fetch();
     }
 }

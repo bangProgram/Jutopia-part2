@@ -1,5 +1,6 @@
 package com.jbproject.jutopia.auth.service;
 
+import com.jbproject.jutopia.auth.model.RoleBasedWhiteList;
 import com.jbproject.jutopia.constant.ErrorCodeConstants;
 import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.rest.entity.RoleMenuRelation;
@@ -33,12 +34,12 @@ public class AuthService {
 
     public Map<String, List<String>> getAllRoleBasedUrls() {
 
-        List<RoleMenuRelation> roleMenuRelations = roleMenuRepository.findAll();  // 모든 역할 목록 가져오기
+        List<RoleBasedWhiteList> roleMenuRelations = roleMenuRepository.getRoleBasedWhiteList();  // 모든 역할 목록 가져오기
 
         Map<String, List<String>> roleBasedWhiteList = roleMenuRelations.stream().collect(
                 Collectors.groupingBy(
-                        RoleMenuRelation::getRoleId,
-                        Collectors.mapping(RoleMenuRelation::getUrl, Collectors.toList())
+                        RoleBasedWhiteList::getRole,
+                        Collectors.mapping(RoleBasedWhiteList::getUrl, Collectors.toList())
                 )
         );
 

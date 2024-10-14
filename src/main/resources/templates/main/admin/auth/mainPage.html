@@ -14,7 +14,7 @@
   어드민 권한관리 화면 이라네요
 </h1>
 
-<div class="adminAuthButtonDiv">
+<div class="buttonDiv-row">
     <div class="adminAuthButton" th:each="roleType : ${roleTypes}" >
         <button type="button" th:onclick="goPage([[${roleType.code}]])">
             <span th:text="${roleType.code}">Button Name</span>
@@ -23,76 +23,82 @@
 </div>
 
 <div class="listDiv">
-    <div class="userMenuList">
-        <div class="menuList">
-            <ul>
-                <li>menuId</li>
-                <li>menuName</li>
-                <li>menuUrl</li>
-                <li>parentId</li>
-                <li>seq</li>
-                <li>useYn</li>
-            </ul>
+    <form action="/admin/auth/cud" method="post" name="userForm">
+        <input type="hidden" name="roleType" value="${roleType}">
+        <div class="userMenuList">
+            <div class="menuList">
+                <ul>
+                    <li>메뉴 ID</li>
+                    <li>메뉴 명</li>
+                    <li>메뉴 URL</li>
+                    <li>상위 메뉴</li>
+                    <li>승인</li>
+                </ul>
+            </div>
+            <div class="menuList" th:if="${authResult.userMenuRoleList.size() <= 0}">
+                등록된 사용자 메뉴가 없습니다.
+            </div>
+            <div class="menuList" th:if="${authResult.userMenuRoleList.size() > 0}">
+                <ul th:each="menuResult : ${authResult.userMenuRoleList}">
+                    <li><span th:text="${menuResult.menuId}">menuId</span></li>
+                    <li><span th:text="${menuResult.menuName}">menuNm</span></li>
+                    <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
+                    <li><span th:text="${menuResult.parentId}">parentId</span></li>
+                    <li><input type="checkbox" name="menuId" value="${menuResult.menuId}" th:checked="${menuResult.roleId != null}"></li>
+                    <div class="depth2">
+                        <ul th:each="childMenu : ${menuResult.childMenu}" >
+                            <li><span th:text="${childMenu.menuId}">menuId</span></li>
+                            <li><span th:text="${childMenu.menuName}">menuNm</span></li>
+                            <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
+                            <li><span th:text="${childMenu.parentId}">parentId</span></li>
+                            <li><input type="checkbox" name="menuId" value="${childMenu.menuId}" th:checked="${childMenu.roleId != null}"></li>
+                        </ul>
+                    </div>
+                </ul>
+            </div>
         </div>
-        <div class="menuList" th:if="${userMenuList == null}">
-            등록된 사용자 메뉴가 없습니다.
+        <button type="submit">
+            저장
+        </button>
+    </form>
+    <form action="/admin/auth/cud" method="post" name="adminForm">
+        <input type="hidden" name="roleType" value="${roleType}">
+        <div class="adminMenuList">
+            <div class="menuList">
+                <ul>
+                    <li>메뉴 ID</li>
+                    <li>메뉴 명</li>
+                    <li>메뉴 URL</li>
+                    <li>상위 메뉴</li>
+                    <li>승인</li>
+                </ul>
+            </div>
+            <div class="menuList" id="test1" th:if="${authResult.adminMenuRoleList.size() <= 0 }">
+                등록된 관리자 메뉴가 없습니다.
+            </div>
+            <div class="menuList" id="test2" th:if="${authResult.adminMenuRoleList.size() > 0 }">
+                <ul th:each="menuResult : ${authResult.adminMenuRoleList}">
+                    <li><span th:text="${menuResult.menuId}">menuId</span></li>
+                    <li><span th:text="${menuResult.menuName}">menuNm</span></li>
+                    <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
+                    <li><span th:text="${menuResult.parentId}">parentId</span></li>
+                    <li><input type="checkbox" name="menuId" value="${menuResult.menuId}" th:checked="${menuResult.roleId != null}"></li>
+                    <div class="depth2">
+                        <ul th:each="childMenu : ${menuResult.childMenu}" >
+                            <li><span th:text="${childMenu.menuId}">menuId</span></li>
+                            <li><span th:text="${childMenu.menuName}">menuNm</span></li>
+                            <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
+                            <li><span th:text="${childMenu.parentId}">parentId</span></li>
+                            <li><input type="checkbox" name="menuId" value="${childMenu.menuId}" th:checked="${childMenu.roleId != null}"></li>
+                        </ul>
+                    </div>
+                </ul>
+            </div>
         </div>
-        <div class="menuList" th:if="${userMenuList != null}">
-            <ul th:each="menuResult : ${userMenuList}">
-                <li><span th:text="${menuResult.menuId}">menuId</span></li>
-                <li><span th:text="${menuResult.menuName}">menuNm</span></li>
-                <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
-                <li><span th:text="${menuResult.parentId}">parentId</span></li>
-                <li><span th:text="${menuResult.seq}">seq</span></li>
-                <li><span th:text="${menuResult.useYn}">useYn</span></li>
-                <div class="depth2">
-                    <ul th:each="childMenu : ${menuResult.childMenu}" >
-                        <li><span th:text="${childMenu.menuId}">menuId</span></li>
-                        <li><span th:text="${childMenu.menuName}">menuNm</span></li>
-                        <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
-                        <li><span th:text="${childMenu.parentId}">parentId</span></li>
-                        <li><span th:text="${childMenu.seq}">seq</span></li>
-                        <li><span th:text="${childMenu.useYn}">useYn</span></li>
-                    </ul>
-                </div>
-            </ul>
-        </div>
-    </div>
-    <div class="adminMenuList">
-        <div class="menuList">
-            <ul>
-                <li>menuId</li>
-                <li>menuName</li>
-                <li>menuUrl</li>
-                <li>parentId</li>
-                <li>seq</li>
-                <li>useYn</li>
-            </ul>
-        </div>
-        <div class="menuList" id="test1" th:if="${adminMenuList.size() <= 0 }">
-            등록된 관리자 메뉴가 없습니다.
-        </div>
-        <div class="menuList" id="test2" th:if="${adminMenuList.size() > 0 }">
-            <ul th:each="menuResult : ${adminMenuList}">
-                <li><span th:text="${menuResult.menuId}">menuId</span></li>
-                <li><span th:text="${menuResult.menuName}">menuNm</span></li>
-                <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
-                <li><span th:text="${menuResult.parentId}">parentId</span></li>
-                <li><span th:text="${menuResult.seq}">seq</span></li>
-                <li><span th:text="${menuResult.useYn}">useYn</span></li>
-                <div class="depth2">
-                    <ul th:each="childMenu : ${menuResult.childMenu}" >
-                        <li><span th:text="${childMenu.menuId}">menuId</span></li>
-                        <li><span th:text="${childMenu.menuName}">menuNm</span></li>
-                        <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
-                        <li><span th:text="${childMenu.parentId}">parentId</span></li>
-                        <li><span th:text="${childMenu.seq}">seq</span></li>
-                        <li><span th:text="${childMenu.useYn}">useYn</span></li>
-                    </ul>
-                </div>
-            </ul>
-        </div>
-    </div>
+        <button type="submit">
+            저장
+        </button>
+    </form>
 </div>
 
 <!--<th:block th:replace="~{/admin/menu/listPage :: list}"></th:block>-->
@@ -105,9 +111,12 @@
     display: inline-flex;
     width: 100%;
 }
-.listDiv > div {
+.listDiv > form {
     border: solid 1px;
     width: 50%;
+}
+.listDiv > form > div {
+    width: 100%;
 }
 .menuList {
     width: 100%;
@@ -119,7 +128,7 @@
 
 .menuList > ul > li {
     display: inline-block;
-    width: 15.6%;
+    width: 19%;
 }
 
 .depth2 > ul {
@@ -128,13 +137,12 @@
 
 .depth2 > ul > li {
     display: inline-block;
-    width: 15.6%;
+    width: 19%;
 }
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // 페이지가 로드되자마자 실행될 JavaScript 코드
-        console.log('adminMenuList.size() : [[${adminMenuList.size()}]]');
     });
 
     function goPage(roleType){

@@ -14,7 +14,7 @@
   어드민 메뉴 화면 이라네요
 </h1>
 
-<div class="adminMenuButtonDiv">
+<div class="buttonDiv-row">
     <div class="adminMenuButton" th:each="menuType : ${menuTypes}" >
         <button type="button" th:onclick="goPage([[${menuType.code}]])">
             <span th:text="${menuType.code}">Button Name</span>

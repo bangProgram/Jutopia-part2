@@ -8,11 +8,14 @@ import java.util.List;
 public class MenuResult {
 
     private Long menuId;
+    private String roleId;
+
     private String menuName;
     private String menuDetail;
     private String menuUrl;
     private String useYn;
     private int seq;
     private Long parentId;
+    private String menuType;
     private List<MenuResult> childMenu;
 }

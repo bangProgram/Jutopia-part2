@@ -14,5 +14,5 @@ import java.util.List;
 public class RoleBasedWhiteList {
 
     private String role;
-    private List<String> url;
+    private String url;
 }

@@ -27,6 +27,8 @@ public class MenuServiceImpl implements MenuService {
                 .menuUrl(payload.getMenuUrl())
                 .useYn(payload.getUseYn())
                 .seq(payload.getSeq())
+                .menuType(payload.getMenuType())
+                .menuDetail(payload.getMenuDetail())
                 .build();
 
         if(payload.getParentId() != null){
