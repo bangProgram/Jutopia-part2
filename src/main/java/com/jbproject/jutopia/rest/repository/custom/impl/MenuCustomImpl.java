@@ -95,8 +95,8 @@ public class MenuCustomImpl implements MenuCustom {
                     )
                 )
                 .from(menuEntity)
-                .leftJoin(roleMenuRelation).on(menuEntity.id.eq(roleMenuRelation.menuEntity.id))
-                .leftJoin(roleEntity).on(roleMenuRelation.roleEntity.role.eq(roleEntity.role).and(roleEntity.role.eq(roleType)))
+                .leftJoin(roleMenuRelation).on(menuEntity.id.eq(roleMenuRelation.menuEntity.id).and(roleEntity.role.eq(roleType)))
+                .leftJoin(roleEntity).on(roleMenuRelation.roleEntity.role.eq(roleEntity.role))
                 .fetch();
 
         List<MenuResult> userMenuRoleList;

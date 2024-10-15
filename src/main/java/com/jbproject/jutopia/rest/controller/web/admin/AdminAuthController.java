@@ -54,9 +54,14 @@ public class AdminAuthController {
     @PostMapping("/cud")
     public RedirectView cudProc(
             @RequestParam(name = "roleType") String roleType,
-            @RequestParam(name = "menuId") List<String> menuId
+            @RequestParam(name = "menuId", required = false) List<String> menuId,
+            @RequestParam(name = "chkMenuId", required = false) List<String> chkMenuId
     ){
-        adminAuthService.addRoleMenu(roleType, menuId);
+//        adminAuthService.cudRoleMenu(roleType, menuId);
+
+        System.out.println("roleType : "+roleType);
+        System.out.println("menuId : "+menuId);
+        System.out.println("chkMenuId : "+chkMenuId);
         return new RedirectView("/admin/auth/main/"+roleType);
     }
 

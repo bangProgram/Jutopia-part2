@@ -24,7 +24,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         return menuRepository.getMenuRoleList(roleType);
     }
 
-    public void addRoleMenu(String roleType, List<String> menuIds){
+    public void cudRoleMenu(String roleType, List<String> menuIds){
 //        List<RoleMenuRelation> roleMenuRelations = roleMenuRepository.
 
         for(String menuId : menuIds ){

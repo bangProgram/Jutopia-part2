@@ -24,7 +24,7 @@
 
 <div class="listDiv">
     <form action="/admin/auth/cud" method="post" name="userForm">
-        <input type="hidden" name="roleType" value="${roleType}">
+        <input type="hidden" name="roleType" th:value="${roleType}">
         <div class="userMenuList">
             <div class="menuList">
                 <ul>
@@ -40,18 +40,20 @@
             </div>
             <div class="menuList" th:if="${authResult.userMenuRoleList.size() > 0}">
                 <ul th:each="menuResult : ${authResult.userMenuRoleList}">
+                    <input type="checkbox" name="chkMenuId" th:value="${menuResult.menuId}" th:checked="${menuResult.roleId != null}" style="display:none;">
                     <li><span th:text="${menuResult.menuId}">menuId</span></li>
                     <li><span th:text="${menuResult.menuName}">menuNm</span></li>
                     <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
                     <li><span th:text="${menuResult.parentId}">parentId</span></li>
-                    <li><input type="checkbox" name="menuId" value="${menuResult.menuId}" th:checked="${menuResult.roleId != null}"></li>
+                    <li><input type="checkbox" name="menuId" th:value="${menuResult.menuId}" th:checked="${menuResult.roleId != null}"></li>
                     <div class="depth2">
                         <ul th:each="childMenu : ${menuResult.childMenu}" >
+                            <input type="checkbox" name="chkMenuId" th:value="${childMenu.menuId}" th:checked="${childMenu.roleId != null}" style="display:none;">
                             <li><span th:text="${childMenu.menuId}">menuId</span></li>
                             <li><span th:text="${childMenu.menuName}">menuNm</span></li>
                             <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
                             <li><span th:text="${childMenu.parentId}">parentId</span></li>
-                            <li><input type="checkbox" name="menuId" value="${childMenu.menuId}" th:checked="${childMenu.roleId != null}"></li>
+                            <li><input type="checkbox" name="menuId" th:value="${childMenu.menuId}" th:checked="${childMenu.roleId != null}"></li>
                         </ul>
                     </div>
                 </ul>
@@ -62,7 +64,7 @@
         </button>
     </form>
     <form action="/admin/auth/cud" method="post" name="adminForm">
-        <input type="hidden" name="roleType" value="${roleType}">
+        <input type="hidden" name="roleType" th:value="${roleType}">
         <div class="adminMenuList">
             <div class="menuList">
                 <ul>
@@ -78,18 +80,20 @@
             </div>
             <div class="menuList" id="test2" th:if="${authResult.adminMenuRoleList.size() > 0 }">
                 <ul th:each="menuResult : ${authResult.adminMenuRoleList}">
+                    <input type="checkbox" name="chkMenuId" th:value="${menuResult.menuId}" th:checked="${menuResult.roleId != null}" style="display:none;">
                     <li><span th:text="${menuResult.menuId}">menuId</span></li>
                     <li><span th:text="${menuResult.menuName}">menuNm</span></li>
                     <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
                     <li><span th:text="${menuResult.parentId}">parentId</span></li>
-                    <li><input type="checkbox" name="menuId" value="${menuResult.menuId}" th:checked="${menuResult.roleId != null}"></li>
+                    <li><input type="checkbox" name="menuId" th:value="${menuResult.menuId}" th:checked="${menuResult.roleId != null}"></li>
                     <div class="depth2">
                         <ul th:each="childMenu : ${menuResult.childMenu}" >
+                            <input type="checkbox" name="chkMenuId" th:value="${childMenu.menuId}" th:checked="${childMenu.roleId != null}" style="display:none;">
                             <li><span th:text="${childMenu.menuId}">menuId</span></li>
                             <li><span th:text="${childMenu.menuName}">menuNm</span></li>
                             <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
                             <li><span th:text="${childMenu.parentId}">parentId</span></li>
-                            <li><input type="checkbox" name="menuId" value="${childMenu.menuId}" th:checked="${childMenu.roleId != null}"></li>
+                            <li><input type="checkbox" name="menuId" th:value="${childMenu.menuId}" th:checked="${childMenu.roleId != null}"></li>
                         </ul>
                     </div>
                 </ul>
