@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface AdminAuthService {
     AuthResult getMenuRoleList(String roleType);
-    void cudRoleMenu(String roleType, List<String> menuId);
+    void cudRoleMenu(String roleType, List<Long> menuIds, List<Long> chkMenuIds);
 }

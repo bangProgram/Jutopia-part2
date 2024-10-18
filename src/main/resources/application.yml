@@ -23,6 +23,11 @@ spring:
       enabled: false
     livereload:
       enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
 
 auth:
   account:

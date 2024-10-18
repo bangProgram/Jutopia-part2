@@ -40,7 +40,7 @@
             </div>
             <div class="menuList" th:if="${authResult.userMenuRoleList.size() > 0}">
                 <ul th:each="menuResult : ${authResult.userMenuRoleList}">
-                    <input type="checkbox" name="chkMenuId" th:value="${menuResult.menuId}" th:checked="${menuResult.roleId != null}" style="display:none;">
+                    <input type="hidden" name="chkMenuId" th:value="${menuResult.menuId}" >
                     <li><span th:text="${menuResult.menuId}">menuId</span></li>
                     <li><span th:text="${menuResult.menuName}">menuNm</span></li>
                     <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
@@ -48,7 +48,7 @@
                     <li><input type="checkbox" name="menuId" th:value="${menuResult.menuId}" th:checked="${menuResult.roleId != null}"></li>
                     <div class="depth2">
                         <ul th:each="childMenu : ${menuResult.childMenu}" >
-                            <input type="checkbox" name="chkMenuId" th:value="${childMenu.menuId}" th:checked="${childMenu.roleId != null}" style="display:none;">
+                            <input type="hidden" name="chkMenuId" th:value="${childMenu.menuId}">
                             <li><span th:text="${childMenu.menuId}">menuId</span></li>
                             <li><span th:text="${childMenu.menuName}">menuNm</span></li>
                             <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
@@ -80,7 +80,7 @@
             </div>
             <div class="menuList" id="test2" th:if="${authResult.adminMenuRoleList.size() > 0 }">
                 <ul th:each="menuResult : ${authResult.adminMenuRoleList}">
-                    <input type="checkbox" name="chkMenuId" th:value="${menuResult.menuId}" th:checked="${menuResult.roleId != null}" style="display:none;">
+                    <input type="hidden" name="chkMenuId" th:value="${menuResult.menuId}" >
                     <li><span th:text="${menuResult.menuId}">menuId</span></li>
                     <li><span th:text="${menuResult.menuName}">menuNm</span></li>
                     <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
@@ -88,7 +88,7 @@
                     <li><input type="checkbox" name="menuId" th:value="${menuResult.menuId}" th:checked="${menuResult.roleId != null}"></li>
                     <div class="depth2">
                         <ul th:each="childMenu : ${menuResult.childMenu}" >
-                            <input type="checkbox" name="chkMenuId" th:value="${childMenu.menuId}" th:checked="${childMenu.roleId != null}" style="display:none;">
+                            <input type="hidden" name="chkMenuId" th:value="${childMenu.menuId}">
                             <li><span th:text="${childMenu.menuId}">menuId</span></li>
                             <li><span th:text="${childMenu.menuName}">menuNm</span></li>
                             <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
@@ -147,6 +147,10 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // 페이지가 로드되자마자 실행될 JavaScript 코드
+        const successMessage = '[[${successMessage}]]';
+        if (successMessage) {
+            alert(successMessage); // 팝업 메시지
+        }
     });
 
     function goPage(roleType){

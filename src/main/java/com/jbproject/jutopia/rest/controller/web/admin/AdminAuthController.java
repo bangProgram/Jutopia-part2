@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class AdminAuthController {
     public String goMain(
             HttpServletRequest request, Model model
             , @PathVariable(value = "roleType", required = false) String roleType
-        ){
+    ){
         // 현재 접속된 그룹 전송
         model.addAttribute("roleType",roleType);
 
@@ -54,14 +55,12 @@ public class AdminAuthController {
     @PostMapping("/cud")
     public RedirectView cudProc(
             @RequestParam(name = "roleType") String roleType,
-            @RequestParam(name = "menuId", required = false) List<String> menuId,
-            @RequestParam(name = "chkMenuId", required = false) List<String> chkMenuId
+            @RequestParam(name = "menuId", required = false) List<Long> menuIds,
+            @RequestParam(name = "chkMenuId", required = false) List<Long> chkMenuIds,
+            RedirectAttributes redirectAttributes
     ){
-//        adminAuthService.cudRoleMenu(roleType, menuId);
-
-        System.out.println("roleType : "+roleType);
-        System.out.println("menuId : "+menuId);
-        System.out.println("chkMenuId : "+chkMenuId);
+        adminAuthService.cudRoleMenu(roleType, menuIds, chkMenuIds);
+        redirectAttributes.addFlashAttribute("successMessage", roleType+"의 접근 권한이 정상적으로 부여되었습니다.");
         return new RedirectView("/admin/auth/main/"+roleType);
     }
 

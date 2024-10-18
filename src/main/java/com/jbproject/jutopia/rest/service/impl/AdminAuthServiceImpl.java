@@ -9,12 +9,14 @@ import com.jbproject.jutopia.rest.service.AdminAuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class AdminAuthServiceImpl implements AdminAuthService {
 
     private final MenuRepository menuRepository;
@@ -24,16 +26,21 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         return menuRepository.getMenuRoleList(roleType);
     }
 
-    public void cudRoleMenu(String roleType, List<String> menuIds){
+    public void cudRoleMenu(String roleType, List<Long> menuIds, List<Long> chkMenuIds){
 //        List<RoleMenuRelation> roleMenuRelations = roleMenuRepository.
 
-        for(String menuId : menuIds ){
-            RoleMenuRelation roleMenu = RoleMenuRelation.builder()
-                    .roleId(roleType)
-                    .menuId(Long.getLong(menuId))
-                    .build();
+        roleMenuRepository.deleteRoleMenuByRoleAndMenuIdList(roleType,chkMenuIds);
+        roleMenuRepository.flush();
 
-            roleMenuRepository.save(roleMenu);
+        if(menuIds != null){
+            for(Long menuId : menuIds ){
+                RoleMenuRelation roleMenu = RoleMenuRelation.builder()
+                        .roleId(roleType)
+                        .menuId(menuId)
+                        .build();
+
+                roleMenuRepository.save(roleMenu);
+            }
         }
 
     }

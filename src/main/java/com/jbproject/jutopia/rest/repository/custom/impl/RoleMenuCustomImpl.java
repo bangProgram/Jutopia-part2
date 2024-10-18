@@ -32,4 +32,14 @@ public class RoleMenuCustomImpl implements RoleMenuCustom {
                 .innerJoin(roleMenuRelation).on(menuEntity.id.eq(roleMenuRelation.menuEntity.id))
                 .fetch();
     }
+
+    public void deleteRoleMenuByRoleAndMenuIdList(String roleType, List<Long> menuIdList) {
+        queryFactory.delete(roleMenuRelation)
+                .where(
+                        roleMenuRelation.roleId.eq(roleType)
+                        .and(roleMenuRelation.menuId.in(menuIdList))
+                )
+                .execute()
+        ;
+    }
 }

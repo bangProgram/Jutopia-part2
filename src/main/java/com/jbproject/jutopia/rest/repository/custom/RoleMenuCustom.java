@@ -8,5 +8,6 @@ import java.util.List;
 public interface RoleMenuCustom {
 
     List<RoleBasedWhiteList> getRoleBasedWhiteList();
+    void deleteRoleMenuByRoleAndMenuIdList(String roleType, List<Long> menuIdList);
 
 }

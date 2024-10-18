@@ -3,9 +3,14 @@
         <div id="headerDiv">
             헤더영역
             <div id="headerDiv-button">
-                <button type="button" th:if="${isAdmin}" th:onclick="|location.href='@{/auth/login}'|" >로그인</button>
-                <button type="button" th:if="${isAdmin}" th:onclick="|location.href='@{/admin/home/main}'|">관리자 메인 이동</button>
-                <button type="button" th:if="${isAdmin}" th:onclick="|location.href='@{/home/main}'|">사용자 메인 이동</button>
+                <div id="activeDiv">
+                    <button type="button" th:onclick="|location.href='@{/auth/login}'|" >로그아웃</button>
+                    <button type="button" th:if="${isAdmin}" th:onclick="|location.href='@{/admin/home/main}'|">관리자 메인 이동</button>
+                    <button type="button" th:if="${isAdmin}" th:onclick="|location.href='@{/home/main}'|">사용자 메인 이동</button>
+                </div>
+                <div id="inActiveDiv">
+                    <button type="button" th:onclick="|location.href='@{/auth/login}'|" >로그인</button>
+                </div>
             </div>
         </div>
     </nav>
