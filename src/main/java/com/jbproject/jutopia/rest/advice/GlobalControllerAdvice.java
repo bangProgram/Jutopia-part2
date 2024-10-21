@@ -1,4 +1,4 @@
-package com.jbproject.jutopia.rest.controller.web;
+package com.jbproject.jutopia.rest.advice;
 
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.config.security.model.Role;
@@ -23,5 +23,16 @@ public class GlobalControllerAdvice {
         }
 
         return false;
+    }
+
+    @ModelAttribute("isRole")
+    public String isRole() {
+        Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+
+        if (authentication instanceof AccessJwtToken accessJwtToken && accessJwtToken.isAuthenticated()) {
+            return accessJwtToken.getPrincipal().getRole();
+        }
+
+        return "VISITOR";
     }
 }

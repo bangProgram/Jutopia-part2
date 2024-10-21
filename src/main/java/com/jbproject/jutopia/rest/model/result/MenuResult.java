@@ -18,4 +18,6 @@ public class MenuResult {
     private Long parentId;
     private String menuType;
     private List<MenuResult> childMenu;
+
+    private RoleMenuResult roleMenuResult;
 }

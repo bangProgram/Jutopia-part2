@@ -1,6 +1,7 @@
 package com.jbproject.jutopia.rest.repository.custom.impl;
 
 import com.jbproject.jutopia.auth.model.RoleBasedWhiteList;
+import com.jbproject.jutopia.rest.model.result.RoleMenuResult;
 import com.jbproject.jutopia.rest.repository.custom.RoleMenuCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -20,16 +21,20 @@ public class RoleMenuCustomImpl implements RoleMenuCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<RoleBasedWhiteList> getRoleBasedWhiteList(){
+    public List<RoleMenuResult> getRoleBasedWhiteList(String role){
+
         return queryFactory.select(
                 Projections.fields(
-                    RoleBasedWhiteList.class,
-                    roleMenuRelation.roleId.as("role"),
-                    menuEntity.menuUrl.as("url")
+                        RoleMenuResult.class,
+                        roleMenuRelation.roleId.as("roleId"),
+                        roleMenuRelation.menuId.as("menuId"),
+                        menuEntity.menuUrl.as("menuUrl"),
+                        roleMenuRelation.isCud.as("isCud")
                     )
                 )
                 .from(menuEntity)
                 .innerJoin(roleMenuRelation).on(menuEntity.id.eq(roleMenuRelation.menuEntity.id))
+                .where(roleMenuRelation.roleId.eq(role))
                 .fetch();
     }
 

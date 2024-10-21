@@ -5,6 +5,7 @@ import com.jbproject.jutopia.rest.entity.MenuEntity;
 import com.jbproject.jutopia.rest.entity.RoleMenuRelation;
 import com.jbproject.jutopia.rest.model.result.AuthResult;
 import com.jbproject.jutopia.rest.model.result.MenuResult;
+import com.jbproject.jutopia.rest.model.result.RoleMenuResult;
 import com.jbproject.jutopia.rest.repository.custom.MenuCustom;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
@@ -92,7 +93,14 @@ public class MenuCustomImpl implements MenuCustom {
                             menuEntity.useYn.as("useYn"),
                             menuEntity.seq.as("seq"),
                             menuEntity.parentId.as("parentId"),
-                            menuEntity.menuType.as("menuType")
+                            menuEntity.menuType.as("menuType"),
+                            Projections.fields(
+                                    RoleMenuResult.class,
+                                    roleMenuRelation.roleId,
+                                    roleMenuRelation.menuId,
+                                    menuEntity.menuUrl,
+                                    roleMenuRelation.isCud
+                            ).as("roleMenuResult")
                     )
                 )
                 .from(menuEntity)
@@ -128,7 +136,7 @@ public class MenuCustomImpl implements MenuCustom {
         }
 
         AuthResult authResult = new AuthResult();
-        authResult.setRole(result.getFirst().getRoleId());
+        authResult.setRole(roleType);
         authResult.setUserMenuRoleList(userMenuRoleList);
         authResult.setAdminMenuRoleList(adminMenuRoleList);
 

@@ -26,7 +26,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         return menuRepository.getMenuRoleList(roleType);
     }
 
-    public void cudRoleMenu(String roleType, List<Long> menuIds, List<Long> chkMenuIds){
+    public void cudRoleMenu(String roleType, List<Long> menuIds, List<Long> cudMenuIds, List<Long> chkMenuIds){
 //        List<RoleMenuRelation> roleMenuRelations = roleMenuRepository.
 
         roleMenuRepository.deleteRoleMenuByRoleAndMenuIdList(roleType,chkMenuIds);
@@ -37,6 +37,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
                 RoleMenuRelation roleMenu = RoleMenuRelation.builder()
                         .roleId(roleType)
                         .menuId(menuId)
+                        .isCud(cudMenuIds != null && cudMenuIds.contains(menuId) ? "Y" : "N")
                         .build();
 
                 roleMenuRepository.save(roleMenu);

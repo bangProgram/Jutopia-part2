@@ -55,11 +55,6 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	// Bean 상태관리 Spring Cloud 추가
-	implementation 'org.springframework.cloud:spring-cloud-starter'
-	implementation 'org.springframework.cloud:spring-boot-starter-actuator'
-	implementation 'org.springframework.cloud:spring-cloud-starter-config'
-
 }
 
 // start of querydsl

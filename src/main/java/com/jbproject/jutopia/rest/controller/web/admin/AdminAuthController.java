@@ -56,10 +56,27 @@ public class AdminAuthController {
     public RedirectView cudProc(
             @RequestParam(name = "roleType") String roleType,
             @RequestParam(name = "menuId", required = false) List<Long> menuIds,
+            @RequestParam(name = "cudMenuId", required = false) List<Long> cudMenuIds,
             @RequestParam(name = "chkMenuId", required = false) List<Long> chkMenuIds,
             RedirectAttributes redirectAttributes
     ){
-        adminAuthService.cudRoleMenu(roleType, menuIds, chkMenuIds);
+        // List<String>을 List<Long>으로 변환
+//        List<Long> menuIds = menuIdStr.stream()
+//                .filter(id -> id != null && !id.isEmpty()) // null 또는 빈 문자열 필터링
+//                .map(Long::valueOf) // String을 Long으로 변환
+//                .toList();
+//
+//        List<Long> cudMenuIds = cudMenuIdStr.stream()
+//                .filter(id -> id != null && !id.isEmpty()) // null 또는 빈 문자열 필터링
+//                .map(Long::valueOf) // String을 Long으로 변환
+//                .toList();
+//
+//        List<Long> chkMenuIds = chkMenuIdStr.stream()
+//                .filter(id -> id != null && !id.isEmpty()) // null 또는 빈 문자열 필터링
+//                .map(Long::valueOf) // String을 Long으로 변환
+//                .toList();
+
+        adminAuthService.cudRoleMenu(roleType, menuIds, cudMenuIds, chkMenuIds);
         redirectAttributes.addFlashAttribute("successMessage", roleType+"의 접근 권한이 정상적으로 부여되었습니다.");
         return new RedirectView("/admin/auth/main/"+roleType);
     }

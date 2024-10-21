@@ -24,23 +24,22 @@ public class AuthFilterConfig {
     private final RequestMatcher defaultPermitAllPathMatcher;
     private final TokenProvider tokenProvider;
 
-    @Bean("roleBasedAuthList")
-    public Map<String, List<String>> roleBasedAuthList(){
-        Map<String, List<String>> roleBasedAuthList =  authService.getAllRoleBasedUrls();
-        System.out.println("JB Map<String, List<String>> roleBasedAuthList : "+roleBasedAuthList);
-        return roleBasedAuthList;
-    }
+//    @Bean("roleBasedAuthList")
+//    public Map<String, List<String>> roleBasedAuthList(){
+//        Map<String, List<String>> roleBasedAuthList =  authService.getAllRoleBasedUrls();
+//        System.out.println("JB Map<String, List<String>> roleBasedAuthList : "+roleBasedAuthList);
+//        return roleBasedAuthList;
+//    }
 
     @Bean("accessAuthFilterFactory")
     Supplier<AccessAuthFilter> accessAuthFilterFactory(
-            ObjectMapper objectMapper,
-            @Qualifier("roleBasedAuthList") Map<String, List<String>> roleBasedAuthList
+            ObjectMapper objectMapper
     ){
         System.out.println("JB Security accountAuthFilterFactory");
         return () -> new AccessAuthFilter(
                 objectMapper,
                 defaultPermitAllPathMatcher,
-                roleBasedAuthList,
+                authService,
                 tokenProvider
         );
     }

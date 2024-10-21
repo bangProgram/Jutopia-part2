@@ -1,6 +1,7 @@
 package com.jbproject.jutopia.config.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jbproject.jutopia.auth.service.AuthService;
 import com.jbproject.jutopia.config.security.constant.JwtTokenConstants;
 import com.jbproject.jutopia.config.security.constant.SecurityErrorCode;
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
@@ -12,6 +13,7 @@ import com.jbproject.jutopia.config.security.util.SecurityUtils;
 import com.jbproject.jutopia.exception.ErrorCode;
 import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.exception.model.ExceptionModel;
+import com.jbproject.jutopia.rest.model.result.RoleMenuResult;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -39,16 +41,16 @@ public class AccessAuthFilter extends OncePerRequestFilter {
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final ObjectMapper objectMapper;
     private final RequestMatcher defaultPermitAllPath;
-    private final Map<String,List<String>> roleBasedAuthList;
     private final TokenProvider tokenProvider;
+    private final AuthService authService;
 
 
     public AccessAuthFilter(
-            ObjectMapper objectMapper, RequestMatcher defaultPermitAllPath, Map<String,List<String>> roleBasedAuthList, TokenProvider tokenProvider
+            ObjectMapper objectMapper, RequestMatcher defaultPermitAllPath, AuthService authService, TokenProvider tokenProvider
     ){
         this.objectMapper = objectMapper;
         this.defaultPermitAllPath = defaultPermitAllPath;
-        this.roleBasedAuthList = roleBasedAuthList;
+        this.authService = authService;
         this.tokenProvider = tokenProvider;
     }
 
@@ -101,19 +103,41 @@ public class AccessAuthFilter extends OncePerRequestFilter {
             newContext.setAuthentication(accessJwtToken);
             securityContextHolderStrategy.setContext(newContext);
 
-            Map<String, List<String>> roleBasedUrls = roleBasedAuthList;
-            List<String> whiteList = roleBasedUrls.get(role);
+            List<RoleMenuResult> roleBasedUrls = authService.getRoleBasedWhiteList(role);
 
-            System.out.println("roleBasedUrls : "+roleBasedUrls+ " / "+requestURI);
-            System.out.println("JB whiteList : "+role + " / "+whiteList);
-            System.out.println("JB whiteList : "+(whiteList != null && whiteList.contains(requestURI)) + " / "+role.equals(Role.SYSTEM.name()));
+            System.out.println("roleBasedUrls : "+roleBasedUrls.stream().toList()+ " / "+requestURI);
 
-            if ( (whiteList != null && whiteList.contains(requestURI)) || role.equals(Role.SYSTEM.name()) ) {
+            if ( (isAuthorization(requestURI, roleBasedUrls)) || role.equals(Role.SYSTEM.name()) ) {
                 System.out.println("필터 들어옴");
                 filterChain.doFilter(request, response);  // 허용된 URI일 경우 필터를 통과시킴
             } else {
                 SecurityUtils.sendErrorResponse(request,response,SecurityErrorCode.FORBIDDEN_ERROR_02);
             }
         }
+    }
+
+
+
+    private boolean isAuthorization(String requestUrl, List<RoleMenuResult> roleBasedUrls) {
+
+        String isCud = "N";
+        String request = requestUrl;
+
+        System.out.println("requestURL : "+requestUrl);
+        if(requestUrl.contains("/cud")){
+            isCud = "Y";
+            request = requestUrl.replace("/cud", "");
+        }
+        System.out.println("requestURL : "+requestUrl);
+        for(RoleMenuResult result : roleBasedUrls){
+            System.out.println(result.getMenuUrl() + " / "+request);
+            System.out.println(result.getIsCud() + " / "+isCud);
+
+            if(result.getMenuUrl().equals(request) && result.getIsCud().equals(isCud)){
+                return true;
+            }
+        }
+
+        return false;
     }
 }

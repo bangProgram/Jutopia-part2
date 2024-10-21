@@ -16,7 +16,10 @@
 
 <div class="buttonDiv-row">
     <div class="adminAuthButton" th:each="roleType : ${roleTypes}" >
-        <button type="button" th:onclick="goPage([[${roleType.code}]])">
+        <button type="button" th:if="${roleType.code == 'SYSTEM' && isRole == 'SYSTEM'}" th:onclick="goPage([[${roleType.code}]])">
+            <span th:text="${roleType.code}">Button Name</span>
+        </button>
+        <button type="button" th:if="${roleType.code != 'SYSTEM'}" th:onclick="goPage([[${roleType.code}]])">
             <span th:text="${roleType.code}">Button Name</span>
         </button>
     </div>
@@ -32,7 +35,8 @@
                     <li>메뉴 명</li>
                     <li>메뉴 URL</li>
                     <li>상위 메뉴</li>
-                    <li>승인</li>
+                    <li>보기</li>
+                    <li>수정</li>
                 </ul>
             </div>
             <div class="menuList" th:if="${authResult.userMenuRoleList.size() <= 0}">
@@ -45,20 +49,49 @@
                     <li><span th:text="${menuResult.menuName}">menuNm</span></li>
                     <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
                     <li><span th:text="${menuResult.parentId}">parentId</span></li>
-                    <li><input type="checkbox" name="menuId" th:value="${menuResult.menuId}" th:checked="${menuResult.roleId != null}"></li>
-                    <div class="depth2">
+                    <li>
+                        <input type="checkbox" name="menuId"
+                               th:id="'view_' + ${menuResult.menuId}"
+                               th:value="${menuResult.menuId}"
+                               th:checked="${menuResult.roleMenuResult.roleId != null}"
+                               th:onclick="toggleCheckbox([[${menuResult.menuId}]])"
+                        >
+                    </li>
+                    <li>
+                        <input type="checkbox" name="cudMenuId"
+                               th:id="'cud_' + ${menuResult.menuId}"
+                               th:value="${menuResult.menuId}"
+                               th:checked="${menuResult.roleMenuResult.isCud != null && menuResult.roleMenuResult.isCud == 'Y'}"
+                               th:disabled="${menuResult.roleMenuResult.roleId == null}"
+                        >
+                    </li>
+                    <div class="menuList">
                         <ul th:each="childMenu : ${menuResult.childMenu}" >
                             <input type="hidden" name="chkMenuId" th:value="${childMenu.menuId}">
                             <li><span th:text="${childMenu.menuId}">menuId</span></li>
                             <li><span th:text="${childMenu.menuName}">menuNm</span></li>
                             <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
                             <li><span th:text="${childMenu.parentId}">parentId</span></li>
-                            <li><input type="checkbox" name="menuId" th:value="${childMenu.menuId}" th:checked="${childMenu.roleId != null}"></li>
+                            <li>
+                                <input type="checkbox" name="menuId"
+                                       th:id="'view_' + ${childMenu.menuId}"
+                                       th:value="${childMenu.menuId}"
+                                       th:checked="${childMenu.roleMenuResult.roleId != null}"
+                                       th:onclick="toggleCheckbox([[${childMenu.menuId}]])"
+                                >
+                            </li>
+                            <li>
+                                <input type="checkbox" name="cudMenuId"
+                                       th:id="'cud_' + ${childMenu.menuId}"
+                                       th:value="${childMenu.menuId}"
+                                       th:checked="${childMenu.roleMenuResult.isCud != null && childMenu.roleMenuResult.isCud == 'Y'}"
+                                       th:disabled="${childMenu.roleMenuResult.roleId == null}"
+                                >
+                            </li>
                         </ul>
                     </div>
                 </ul>
-            </div>
-        </div>
+            </div>        </div>
         <button type="submit">
             저장
         </button>
@@ -72,7 +105,8 @@
                     <li>메뉴 명</li>
                     <li>메뉴 URL</li>
                     <li>상위 메뉴</li>
-                    <li>승인</li>
+                    <li>보기</li>
+                    <li>수정</li>
                 </ul>
             </div>
             <div class="menuList" id="test1" th:if="${authResult.adminMenuRoleList.size() <= 0 }">
@@ -85,15 +119,45 @@
                     <li><span th:text="${menuResult.menuName}">menuNm</span></li>
                     <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
                     <li><span th:text="${menuResult.parentId}">parentId</span></li>
-                    <li><input type="checkbox" name="menuId" th:value="${menuResult.menuId}" th:checked="${menuResult.roleId != null}"></li>
-                    <div class="depth2">
+                    <li>
+                        <input type="checkbox" name="menuId"
+                                th:id="'view_' + ${menuResult.menuId}"
+                                th:value="${menuResult.menuId}"
+                                th:checked="${menuResult.roleMenuResult.roleId != null}"
+                                th:onclick="toggleCheckbox([[${menuResult.menuId}]])"
+                        >
+                    </li>
+                    <li>
+                        <input type="checkbox" name="cudMenuId"
+                               th:id="'cud_' + ${menuResult.menuId}"
+                               th:value="${menuResult.menuId}"
+                               th:checked="${menuResult.roleMenuResult.isCud != null && menuResult.roleMenuResult.isCud == 'Y'}"
+                               th:disabled="${menuResult.roleMenuResult.roleId == null}"
+                        >
+                    </li>
+                    <div class="menuList">
                         <ul th:each="childMenu : ${menuResult.childMenu}" >
                             <input type="hidden" name="chkMenuId" th:value="${childMenu.menuId}">
                             <li><span th:text="${childMenu.menuId}">menuId</span></li>
                             <li><span th:text="${childMenu.menuName}">menuNm</span></li>
                             <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
                             <li><span th:text="${childMenu.parentId}">parentId</span></li>
-                            <li><input type="checkbox" name="menuId" th:value="${childMenu.menuId}" th:checked="${childMenu.roleId != null}"></li>
+                            <li>
+                                <input type="checkbox" name="menuId"
+                                       th:id="'view_' + ${childMenu.menuId}"
+                                       th:value="${childMenu.menuId}"
+                                       th:checked="${childMenu.roleMenuResult.roleId != null}"
+                                       th:onclick="toggleCheckbox([[${childMenu.menuId}]])"
+                                >
+                            </li>
+                            <li>
+                                <input type="checkbox" name="cudMenuId"
+                                       th:id="'cud_' + ${childMenu.menuId}"
+                                       th:value="${childMenu.menuId}"
+                                       th:checked="${childMenu.roleMenuResult.isCud != null && childMenu.roleMenuResult.isCud == 'Y'}"
+                                       th:disabled="${childMenu.roleMenuResult.roleId == null}"
+                                >
+                            </li>
                         </ul>
                     </div>
                 </ul>
@@ -132,7 +196,7 @@
 
 .menuList > ul > li {
     display: inline-block;
-    width: 19%;
+    width: 15%;
 }
 
 .depth2 > ul {
@@ -156,6 +220,19 @@
     function goPage(roleType){
         location.href = "/admin/auth/main/"+roleType;
     }
+
+    function toggleCheckbox(menuId) {
+            const checkbox1 = document.getElementById('view_'+menuId);
+            const checkbox2 = document.getElementById('cud_'+menuId);
+
+            // 1번 체크박스가 체크되어 있으면 2번 체크박스를 활성화
+            if (checkbox1.checked) {
+                checkbox2.disabled = false;
+            } else {
+                checkbox2.checked = false; // 1번 체크박스가 체크 해제되면 2번 체크박스도 해제
+                checkbox2.disabled = true; // 2번 체크박스를 비활성화
+            }
+        }
 </script>
 </body>
 </html>
