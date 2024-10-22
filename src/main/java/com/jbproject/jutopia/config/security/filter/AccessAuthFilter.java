@@ -30,10 +30,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -106,8 +108,10 @@ public class AccessAuthFilter extends OncePerRequestFilter {
             List<RoleMenuResult> roleBasedUrls = authService.getRoleBasedWhiteList(role);
 
             System.out.println("roleBasedUrls : "+roleBasedUrls.stream().toList()+ " / "+requestURI);
+            boolean chk = isAuthorization(requestURI, roleBasedUrls);
 
-            if ( (isAuthorization(requestURI, roleBasedUrls)) || role.equals(Role.SYSTEM.name()) ) {
+            System.out.println("인가 체크 : "+chk);
+            if ( (chk) || role.equals(Role.SYSTEM.name()) ) {
                 System.out.println("필터 들어옴");
                 filterChain.doFilter(request, response);  // 허용된 URI일 경우 필터를 통과시킴
             } else {
@@ -124,17 +128,38 @@ public class AccessAuthFilter extends OncePerRequestFilter {
         String request = requestUrl;
 
         System.out.println("requestURL : "+requestUrl);
+
         if(requestUrl.contains("/cud")){
             isCud = "Y";
             request = requestUrl.replace("/cud", "");
         }
+
         System.out.println("requestURL : "+requestUrl);
         for(RoleMenuResult result : roleBasedUrls){
             System.out.println(result.getMenuUrl() + " / "+request);
             System.out.println(result.getIsCud() + " / "+isCud);
 
-            if(result.getMenuUrl().equals(request) && result.getIsCud().equals(isCud)){
-                return true;
+            // 1. 현재 동작이 CUD 일 경우
+            if(isCud.equals("Y")){
+                /*
+                    1-1. 사용자 메뉴 쓰기권한 확인
+                    쓰기권한 확인 시 메뉴 접근권한 + 쓰기권한 함께 확인
+                    roleBasedUrls.getMenuUrl = requestUrl 체크
+                    roleBasedUrls.getIsCud = "Y" 체크
+                */
+                if(result.getMenuUrl().equals(request) && result.getIsCud().equals("Y")){
+                    return true;
+                }
+            }
+            // 2. 현재 동작이 CUD 가 아닐경우 메뉴 접근권한 체크
+            else{
+                /*
+                    2-1. 사용자 메뉴 접근권한 확인
+                    roleBasedUrls.getMenuUrl = requestUrl 체크
+                */
+                if(result.getMenuUrl().equals(request)){
+                    return true;
+                }
             }
         }
 

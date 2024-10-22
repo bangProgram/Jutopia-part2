@@ -26,8 +26,8 @@
 </div>
 
 <div class="listDiv">
-    <form action="/admin/auth/cud" method="post" name="userForm">
-        <input type="hidden" name="roleType" th:value="${roleType}">
+    <form th:action="${formUrl} + '/cud'" method="post" name="userForm">
+<!--        <input type="hidden" name="roleType" th:value="${roleType}">-->
         <div class="userMenuList">
             <div class="menuList">
                 <ul>
@@ -96,8 +96,8 @@
             저장
         </button>
     </form>
-    <form action="/admin/auth/cud" method="post" name="adminForm">
-        <input type="hidden" name="roleType" th:value="${roleType}">
+    <form th:action="${formUrl} + '/cud'" method="post" name="adminForm">
+<!--        <input type="hidden" name="roleType" th:value="${roleType}">-->
         <div class="adminMenuList">
             <div class="menuList">
                 <ul>
