@@ -104,7 +104,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(
             HttpSecurity httpSecurity
-//            , @Qualifier("customAuthenticationFilterFactory") Supplier<CustomAuthenticationFilter> customAuthenticationFilterFactory
+            , @Qualifier("customAuthenticationFilterFactory") Supplier<CustomAuthenticationFilter> customAuthenticationFilterFactory
             , @Qualifier("accessAuthFilterFactory")Supplier<AccessAuthFilter> accessAuthFilterFactory
 //            , @Qualifier("refreshAuthFilterFactory")Supplier<RefreshAuthFilter> refreshAuthFilterFactory
             ) throws Exception {
@@ -130,8 +130,8 @@ public class SecurityConfig {
                                         .anyRequest().authenticated() // 그 외 인증 없이 접근X
                 )
                 .addFilterBefore(characterEncodingFilter(), CsrfFilter.class)
-//                .addFilterBefore(customAuthenticationFilterFactory.get() , UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(accessAuthFilterFactory.get(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(customAuthenticationFilterFactory.get() , UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(accessAuthFilterFactory.get(), CustomAuthenticationFilter.class)
 //                .addFilterAfter(refreshAuthFilterFactory.get(), AccessAuthFilter.class)
                 .build();
     }

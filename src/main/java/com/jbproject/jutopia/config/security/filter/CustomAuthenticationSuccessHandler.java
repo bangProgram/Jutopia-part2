@@ -16,7 +16,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-//    private final AccessJwtTokenProvider accessJwtTokenProvider;
     private final TokenProvider tokenProvider;
 
     @Override
@@ -25,14 +24,20 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         if(authentication instanceof AccessJwtToken accessJwtToken){
             // JWT 토큰 생성
             System.out.println("AccessJwtToken Authentication 주입 완료");
-/*
 
-            JwtTokenInfo jwtTokenInfo = tokenProvider.generateToken(accessJwtToken);
+            JwtTokenInfo jwtTokenInfo = tokenProvider.generateToken(
+                    AccessJwtToken.CustomClaims.builder()
+                            .id(accessJwtToken.getPrincipal().getId())
+                            .userId(accessJwtToken.getPrincipal().getUserId())
+                            .userName(accessJwtToken.getPrincipal().getUserName())
+                            .role(accessJwtToken.getPrincipal().getRole())
+                            .build()
+            );
 
             Cookie accessCookie = new Cookie("X-Access-Token", jwtTokenInfo.getAccessToken());
             accessCookie.setHttpOnly(true);  // XSS 방지
             accessCookie.setPath("/");  // 모든 경로에서 쿠키를 사용할 수 있도록 설정
-//            accessCookie.setMaxAge((int) tokenProvider.getExpirationTime(JwtTokenConstants.ACCESS.getName()));  // 쿠키 유효 기간 (임시 1분)
+            // accessCookie.setMaxAge((int) tokenProvider.getExpirationTime(JwtTokenConstants.ACCESS.getName()));  // 쿠키 유효 기간 (임시 1분)
             response.addCookie(accessCookie);
 
             Cookie refreshCookie = new Cookie("X-Refresh-Token", jwtTokenInfo.getRefreshToken());
@@ -41,11 +46,10 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 //            refreshCookie.setMaxAge((int) tokenProvider.getExpirationTime(JwtTokenConstants.REFRESH.getName()));  // 쿠키 유효 기간 (10시간)
             response.addCookie(refreshCookie);
 
-*/
 
             // /main 경로로 리다이렉트
             System.out.println("성공합니다.");
-            response.sendRedirect("/home");
+            response.sendRedirect("/home/main");
         }
     }
 }

@@ -41,17 +41,17 @@ import java.util.Map;
 
 public class AccessAuthFilter extends OncePerRequestFilter {
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
-    private final ObjectMapper objectMapper;
+    private final List<RoleMenuResult> visitorBasedAuthList;
     private final RequestMatcher defaultPermitAllPath;
     private final TokenProvider tokenProvider;
     private final AuthService authService;
 
 
     public AccessAuthFilter(
-            ObjectMapper objectMapper, RequestMatcher defaultPermitAllPath, AuthService authService, TokenProvider tokenProvider
+            RequestMatcher defaultPermitAllPath, List<RoleMenuResult> visitorBasedAuthList, AuthService authService, TokenProvider tokenProvider
     ){
-        this.objectMapper = objectMapper;
         this.defaultPermitAllPath = defaultPermitAllPath;
+        this.visitorBasedAuthList = visitorBasedAuthList;
         this.authService = authService;
         this.tokenProvider = tokenProvider;
     }
@@ -66,10 +66,21 @@ public class AccessAuthFilter extends OncePerRequestFilter {
         }
         // 모든 경로에 대한 인증및 인가 검증
         else{
+            Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+
+            System.out.println("authentication 존재여부33 : "+(authentication != null) + " / "+ authentication);
             JwtTokenInfo jwtTokenInfo = SecurityUtils.handleAuthentication(request) ;
-            String role = "VISITOR";  // 기본적으로 비로그인 상태는 'visitor'로 간주
+            /*
+                기본적으로 비로그인 상태는 'visitor'로 간주
+                roleBasedUrls 인가 체크 또한 visitor 기준 세팅
+            */
+            String role = "VISITOR";
+            List<RoleMenuResult> roleBasedUrls = visitorBasedAuthList;
+
+
             AccessJwtToken accessJwtToken = new AccessJwtToken();
 
+            // Access Token 이 존재할 경우
             if(!jwtTokenInfo.getAccessToken().isEmpty()){
                 try{
                     accessJwtToken = tokenProvider.getAccessAuthentication(jwtTokenInfo.getAccessToken());
@@ -97,15 +108,39 @@ public class AccessAuthFilter extends OncePerRequestFilter {
                 role = accessJwtToken.getPrincipal().getRole(); // 인증된 사용자의 역할 가져오기
                 accessJwtToken.setRole(role);
 
+                // Access Token 이 있을경우 Role 에 해당하는 인가 경로 변경
+                System.out.println("JB authentication 확인 " + (authentication != null));
+                if(authentication == null) {
+                    roleBasedUrls = authService.getRoleBasedWhiteList(role);
+                    accessJwtToken.setRoleBasedUrls(roleBasedUrls);
+
+                    accessJwtToken.setAuthenticated(true);
+                    SecurityContext newContext = securityContextHolderStrategy.createEmptyContext();
+                    newContext.setAuthentication(accessJwtToken);
+                    securityContextHolderStrategy.setContext(newContext);
+                }else{
+                    if(authentication instanceof AccessJwtToken authToken){
+                        roleBasedUrls = authToken.getRoleBasedUrls();
+                    }
+                }
+
                 System.out.println("JB authentication : "+role);
             }
+            // Access Token 이 존재하지 않을경우 VISITOR 로 간주하고 인증 및 인가 진행
+            else{
+                System.out.println("Token 없음 : Visitor 인증 시도");
+                accessJwtToken.setAccessJwtPrincipal(
+                        AccessJwtToken.AccessJwtPrincipal.builder()
+                                .role(Role.VISITOR.name())
+                                .build()
+                );
 
-            accessJwtToken.setAuthenticated(true);
-            SecurityContext newContext = securityContextHolderStrategy.createEmptyContext();
-            newContext.setAuthentication(accessJwtToken);
-            securityContextHolderStrategy.setContext(newContext);
-
-            List<RoleMenuResult> roleBasedUrls = authService.getRoleBasedWhiteList(role);
+                // Access Token 이 없을 경우 VISITOR 로써 인증
+                accessJwtToken.setAuthenticated(true);
+                SecurityContext newContext = securityContextHolderStrategy.createEmptyContext();
+                newContext.setAuthentication(accessJwtToken);
+                securityContextHolderStrategy.setContext(newContext);
+            }
 
             System.out.println("roleBasedUrls : "+roleBasedUrls.stream().toList()+ " / "+requestURI);
             boolean chk = isAuthorization(requestURI, roleBasedUrls);

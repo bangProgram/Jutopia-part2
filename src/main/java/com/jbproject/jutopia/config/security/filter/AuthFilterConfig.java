@@ -2,7 +2,9 @@ package com.jbproject.jutopia.config.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.auth.service.AuthService;
+import com.jbproject.jutopia.config.security.model.Role;
 import com.jbproject.jutopia.config.security.provider.TokenProvider;
+import com.jbproject.jutopia.rest.model.result.RoleMenuResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,21 +26,19 @@ public class AuthFilterConfig {
     private final RequestMatcher defaultPermitAllPathMatcher;
     private final TokenProvider tokenProvider;
 
-//    @Bean("roleBasedAuthList")
-//    public Map<String, List<String>> roleBasedAuthList(){
-//        Map<String, List<String>> roleBasedAuthList =  authService.getAllRoleBasedUrls();
-//        System.out.println("JB Map<String, List<String>> roleBasedAuthList : "+roleBasedAuthList);
-//        return roleBasedAuthList;
-//    }
+    @Bean("visitorBasedAuthList")
+    public List<RoleMenuResult> visitorBasedAuthList(){
+        List<RoleMenuResult> visitorBasedAuthList =  authService.getRoleBasedWhiteList(Role.VISITOR.name());
+        System.out.println("JB Map<String, List<String>> roleBasedAuthList : "+visitorBasedAuthList);
+        return visitorBasedAuthList;
+    }
 
     @Bean("accessAuthFilterFactory")
-    Supplier<AccessAuthFilter> accessAuthFilterFactory(
-            ObjectMapper objectMapper
-    ){
+    Supplier<AccessAuthFilter> accessAuthFilterFactory(){
         System.out.println("JB Security accountAuthFilterFactory");
         return () -> new AccessAuthFilter(
-                objectMapper,
                 defaultPermitAllPathMatcher,
+                visitorBasedAuthList(),
                 authService,
                 tokenProvider
         );

@@ -46,6 +46,7 @@ public class AuthController {
         return "/user/auth/loginPage";
     }
 
+    /*
     @PostMapping("/login")
     public RedirectView loginPorc(HttpServletRequest request, HttpServletResponse response, Model model, LoginPayload loginPayload) {
         model.addAttribute("loginPayload", loginPayload);
@@ -63,6 +64,7 @@ public class AuthController {
             return new RedirectView("/auth/login");
         }
     }
+    */
 
     @PostMapping("/refresh")
     public RedirectView refreshPorc(HttpServletRequest request, HttpServletResponse response, Model model) {

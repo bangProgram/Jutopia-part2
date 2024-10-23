@@ -7,6 +7,7 @@ import com.jbproject.jutopia.config.security.jwt.JwtTokenInfo;
 import com.jbproject.jutopia.exception.ErrorCode;
 import com.jbproject.jutopia.exception.model.ExceptionModel;
 import com.jbproject.jutopia.rest.entity.UserEntity;
+import com.jbproject.jutopia.rest.model.result.RoleMenuResult;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,12 +17,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 public class CustomAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
@@ -52,14 +56,27 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
             authenticationToken.setAccessJwtPrincipal(
                     AccessJwtToken.AccessJwtPrincipal.builder()
                             .id(userDetail.getId())
+                            .userId(userDetail.getUserId())
+                            .userName(userDetail.getName())
+                            .role(userDetail.getRole())
                             .build()
             );
             System.out.println("Token Authentication 발급 완료");
 
             authenticationToken.setRole(userDetail.getRole());
-            authenticationToken.setAuthenticated(true);
             System.out.println("Token Authentication Role 주입 완료");
 
+            List<RoleMenuResult> roleBasedUrls = authService.getRoleBasedWhiteList(userDetail.getRole());
+            authenticationToken.setRoleBasedUrls(roleBasedUrls);
+
+            Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+            System.out.println("authentication 존재여부11 : "+(authentication != null) + " / "+ authentication);
+
+            authenticationToken.setAuthenticated(true);
+            SecurityContext newContext = securityContextHolderStrategy.createEmptyContext();
+            newContext.setAuthentication(authenticationToken);
+            securityContextHolderStrategy.setContext(newContext);
+            System.out.println("authentication 존재여부22 : "+(authentication != null) + " / "+ authentication);
             return authenticationToken;
         }else{
             return null;
