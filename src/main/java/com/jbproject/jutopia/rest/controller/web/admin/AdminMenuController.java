@@ -51,7 +51,7 @@ public class AdminMenuController {
         return "/admin/menu/mainPage";
     }
 
-    @PostMapping("/cud")
+    @PostMapping("/main/cud")
     public RedirectView cudProc(HttpServletRequest request, Model model, MenuCudPayload payload){
         Long menuId = payload.getMenuId();
         System.out.println("payload : "+payload.getParentId());

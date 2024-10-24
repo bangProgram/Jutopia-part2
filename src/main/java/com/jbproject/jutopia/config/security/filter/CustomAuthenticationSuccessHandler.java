@@ -9,22 +9,24 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
 
     private final TokenProvider tokenProvider;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        System.out.println("Success Handler 동작 시작");
         if(authentication instanceof AccessJwtToken accessJwtToken){
             // JWT 토큰 생성
-            System.out.println("AccessJwtToken Authentication 주입 완료");
-
             JwtTokenInfo jwtTokenInfo = tokenProvider.generateToken(
                     AccessJwtToken.CustomClaims.builder()
                             .id(accessJwtToken.getPrincipal().getId())
@@ -48,7 +50,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
 
             // /main 경로로 리다이렉트
-            System.out.println("성공합니다.");
             response.sendRedirect("/home/main");
         }
     }

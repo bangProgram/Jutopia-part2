@@ -108,31 +108,38 @@ public class MenuCustomImpl implements MenuCustom {
                 .leftJoin(roleEntity).on(roleMenuRelation.roleEntity.role.eq(roleEntity.role))
                 .fetch();
 
-        List<MenuResult> userMenuRoleList;
-        List<MenuResult> adminMenuRoleList;
-
-        userMenuRoleList = result.stream()
+        List<MenuResult> userMenuRoleList = result.stream()
                 .filter(menu -> menu.getParentId() == null)
-                .collect(Collectors.groupingBy(MenuResult::getMenuType)).get(CommonConstatns.MENU_ROLE_USER);
+                .collect(Collectors.groupingBy(MenuResult::getMenuType))
+                .get(CommonConstatns.MENU_ROLE_USER);
 
-        for(MenuResult parent : userMenuRoleList){
-            parent.setChildMenu(
-                    result.stream()
-                    .filter(menu -> menu.getParentId() != null)
-                    .collect(Collectors.groupingBy(MenuResult::getParentId)).get(parent.getMenuId())
-            );
+        if(userMenuRoleList != null){
+            for(MenuResult parent : userMenuRoleList){
+                parent.setChildMenu(
+                        result.stream()
+                                .filter(menu -> menu.getParentId() != null)
+                                .collect(Collectors.groupingBy(MenuResult::getParentId)).get(parent.getMenuId())
+                );
+            }
+        }else{
+            userMenuRoleList = new ArrayList<>();
         }
 
-        adminMenuRoleList = result.stream()
+        List<MenuResult> adminMenuRoleList = result.stream()
                 .filter(menu -> menu.getParentId() == null)
-                .collect(Collectors.groupingBy(MenuResult::getMenuType)).get(CommonConstatns.MENU_ROLE_ADMIN);
+                .collect(Collectors.groupingBy(MenuResult::getMenuType))
+                .get(CommonConstatns.MENU_ROLE_ADMIN);
 
-        for(MenuResult parent : adminMenuRoleList){
-            parent.setChildMenu(
-                    result.stream()
-                            .filter(menu -> menu.getParentId() != null)
-                            .collect(Collectors.groupingBy(MenuResult::getParentId)).get(parent.getMenuId())
-            );
+        if(adminMenuRoleList != null){
+            for(MenuResult parent : adminMenuRoleList){
+                parent.setChildMenu(
+                        result.stream()
+                                .filter(menu -> menu.getParentId() != null)
+                                .collect(Collectors.groupingBy(MenuResult::getParentId)).get(parent.getMenuId())
+                );
+            }
+        }else{
+            adminMenuRoleList = new ArrayList<>();
         }
 
         AuthResult authResult = new AuthResult();

@@ -2,6 +2,14 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 페이지가 로드되자마자 실행될 JavaScript 코드
+        const serverMessage = '[[${serverMessage}]]';
+        if (serverMessage) {
+            alert(serverMessage); // 팝업 메시지
+        }
+    });
+
     function test() {
         console.log("test123");
     }

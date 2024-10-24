@@ -23,10 +23,6 @@ public class AccessJwtToken implements Authentication {
     private AccessJwtToken.AccessJwtPrincipal accessJwtPrincipal;
     String role = "VISITOR";
 
-    @Setter
-    @Getter
-    private List<RoleMenuResult> roleBasedUrls;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

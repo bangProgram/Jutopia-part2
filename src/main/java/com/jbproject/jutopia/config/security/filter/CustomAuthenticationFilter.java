@@ -48,11 +48,9 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
 
         System.out.println("JB 사용자 입력 : "+ userId + " / "+password);
         UserEntity userDetail = authService.getUserInfoByUserid(userId);
+        AccessJwtToken authenticationToken = new AccessJwtToken();
 
-        System.out.println("JB 사용자 정보 확인 pw : "+password + " / " +userDetail.getPassword() + " : " +authService.passwordMatcher(password,userDetail.getPassword()));
-        if(authService.passwordMatcher(password,userDetail.getPassword())){
-            System.out.println("JB 사용자 정보 확인 : "+userDetail.getEmail());
-            AccessJwtToken authenticationToken = new AccessJwtToken();
+        if(userDetail != null && authService.passwordMatcher(password,userDetail.getPassword())){
             authenticationToken.setAccessJwtPrincipal(
                     AccessJwtToken.AccessJwtPrincipal.builder()
                             .id(userDetail.getId())
@@ -66,37 +64,15 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
             authenticationToken.setRole(userDetail.getRole());
             System.out.println("Token Authentication Role 주입 완료");
 
-            List<RoleMenuResult> roleBasedUrls = authService.getRoleBasedWhiteList(userDetail.getRole());
-            authenticationToken.setRoleBasedUrls(roleBasedUrls);
-
-            Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
-            System.out.println("authentication 존재여부11 : "+(authentication != null) + " / "+ authentication);
-
             authenticationToken.setAuthenticated(true);
             SecurityContext newContext = securityContextHolderStrategy.createEmptyContext();
             newContext.setAuthentication(authenticationToken);
             securityContextHolderStrategy.setContext(newContext);
-            System.out.println("authentication 존재여부22 : "+(authentication != null) + " / "+ authentication);
             return authenticationToken;
         }else{
+            System.out.println("login false");
             return null;
         }
 
-    }
-
-    private void sendErrorResponse(HttpServletRequest request, HttpServletResponse response, ErrorCode exception) throws IOException {
-
-        ExceptionModel exceptionModel = new ExceptionModel(
-                request.getRequestURI(),
-                exception.getErrorCode(),
-                exception.getErrorMsg()
-        );
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        String body = objectMapper.writeValueAsString(exceptionModel);
-        response.getWriter().write(body);
-        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
     }
 }

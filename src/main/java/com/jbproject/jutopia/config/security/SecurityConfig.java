@@ -130,8 +130,8 @@ public class SecurityConfig {
                                         .anyRequest().authenticated() // 그 외 인증 없이 접근X
                 )
                 .addFilterBefore(characterEncodingFilter(), CsrfFilter.class)
-                .addFilterBefore(customAuthenticationFilterFactory.get() , UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(accessAuthFilterFactory.get(), CustomAuthenticationFilter.class)
+//                .addFilterBefore(customAuthenticationFilterFactory.get() , UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(accessAuthFilterFactory.get(), UsernamePasswordAuthenticationFilter.class)
 //                .addFilterAfter(refreshAuthFilterFactory.get(), AccessAuthFilter.class)
                 .build();
     }

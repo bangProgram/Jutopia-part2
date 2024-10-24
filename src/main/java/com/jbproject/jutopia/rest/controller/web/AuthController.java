@@ -2,6 +2,7 @@ package com.jbproject.jutopia.rest.controller.web;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jbproject.jutopia.config.security.constant.SecurityErrorCode;
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.config.security.jwt.JwtTokenInfo;
 import com.jbproject.jutopia.config.security.jwt.RefreshJwtToken;
@@ -26,6 +27,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
@@ -46,25 +48,27 @@ public class AuthController {
         return "/user/auth/loginPage";
     }
 
-    /*
     @PostMapping("/login")
-    public RedirectView loginPorc(HttpServletRequest request, HttpServletResponse response, Model model, LoginPayload loginPayload) {
+    public RedirectView loginPorc(
+            HttpServletRequest request, HttpServletResponse response, Model model, LoginPayload loginPayload
+            ,RedirectAttributes redirectAttributes
+    ) {
         model.addAttribute("loginPayload", loginPayload);
         String userId = loginPayload.getUserId();
         String password = loginPayload.getPassword();
 
         UserEntity userEntity = authService.getUserInfoByUserid(userId);
 
-        if(authService.passwordMatcher(password,userEntity.getPassword())){
+        if(userEntity != null && authService.passwordMatcher(password,userEntity.getPassword())){
             System.out.println("JB 사용자 정보 확인 : "+userEntity.getEmail());
             generateToken(response, userEntity);
 
             return new RedirectView("/home/main");
         }else{
+            redirectAttributes.addFlashAttribute("serverMessage",SecurityErrorCode.LOGIN_ERROR_01.getErrorMsg());
             return new RedirectView("/auth/login");
         }
     }
-    */
 
     @PostMapping("/refresh")
     public RedirectView refreshPorc(HttpServletRequest request, HttpServletResponse response, Model model) {

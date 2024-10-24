@@ -2,6 +2,7 @@ package com.jbproject.jutopia.rest.model.result;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data

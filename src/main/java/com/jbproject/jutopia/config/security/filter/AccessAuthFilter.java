@@ -66,9 +66,6 @@ public class AccessAuthFilter extends OncePerRequestFilter {
         }
         // 모든 경로에 대한 인증및 인가 검증
         else{
-            Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
-
-            System.out.println("authentication 존재여부33 : "+(authentication != null) + " / "+ authentication);
             JwtTokenInfo jwtTokenInfo = SecurityUtils.handleAuthentication(request) ;
             /*
                 기본적으로 비로그인 상태는 'visitor'로 간주
@@ -109,22 +106,12 @@ public class AccessAuthFilter extends OncePerRequestFilter {
                 accessJwtToken.setRole(role);
 
                 // Access Token 이 있을경우 Role 에 해당하는 인가 경로 변경
-                System.out.println("JB authentication 확인 " + (authentication != null));
-                if(authentication == null) {
-                    roleBasedUrls = authService.getRoleBasedWhiteList(role);
-                    accessJwtToken.setRoleBasedUrls(roleBasedUrls);
+                roleBasedUrls = authService.getRoleBasedWhiteList(role);
 
-                    accessJwtToken.setAuthenticated(true);
-                    SecurityContext newContext = securityContextHolderStrategy.createEmptyContext();
-                    newContext.setAuthentication(accessJwtToken);
-                    securityContextHolderStrategy.setContext(newContext);
-                }else{
-                    if(authentication instanceof AccessJwtToken authToken){
-                        roleBasedUrls = authToken.getRoleBasedUrls();
-                    }
-                }
-
-                System.out.println("JB authentication : "+role);
+                accessJwtToken.setAuthenticated(true);
+                SecurityContext newContext = securityContextHolderStrategy.createEmptyContext();
+                newContext.setAuthentication(accessJwtToken);
+                securityContextHolderStrategy.setContext(newContext);
             }
             // Access Token 이 존재하지 않을경우 VISITOR 로 간주하고 인증 및 인가 진행
             else{
@@ -146,6 +133,7 @@ public class AccessAuthFilter extends OncePerRequestFilter {
             boolean chk = isAuthorization(requestURI, roleBasedUrls);
 
             System.out.println("인가 체크 : "+chk);
+
             if ( (chk) || role.equals(Role.SYSTEM.name()) ) {
                 System.out.println("필터 들어옴");
                 filterChain.doFilter(request, response);  // 허용된 URI일 경우 필터를 통과시킴
@@ -181,8 +169,14 @@ public class AccessAuthFilter extends OncePerRequestFilter {
                     쓰기권한 확인 시 메뉴 접근권한 + 쓰기권한 함께 확인
                     roleBasedUrls.getMenuUrl = requestUrl 체크
                     roleBasedUrls.getIsCud = "Y" 체크
+
+                    20241024 변경
+                    cud 로직일 경우 메뉴에 대한 권한 체크만 확인하는 것으로 변경
                 */
-                if(result.getMenuUrl().equals(request) && result.getIsCud().equals("Y")){
+                System.out.println("url Check : "+request + " / "+result.getMenuUrl());
+                if( request.contains(result.getMenuUrl())
+//                        && result.getIsCud().equals("Y")
+                ){
                     return true;
                 }
             }
@@ -192,7 +186,8 @@ public class AccessAuthFilter extends OncePerRequestFilter {
                     2-1. 사용자 메뉴 접근권한 확인
                     roleBasedUrls.getMenuUrl = requestUrl 체크
                 */
-                if(result.getMenuUrl().equals(request)){
+                System.out.println("url Check : "+request + " / "+result.getMenuUrl());
+                if(request.contains(result.getMenuUrl())){
                     return true;
                 }
             }

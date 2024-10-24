@@ -11,7 +11,7 @@
 </head>
 <body>
 <h1>
-  어드민 권한관리 화면 이라네요
+    [[${roleType}]] 권한관리 화면
 </h1>
 
 <div class="buttonDiv-row">
@@ -26,8 +26,8 @@
 </div>
 
 <div class="listDiv">
-    <form th:action="${formUrl} + '/cud'" method="post" name="userForm">
-<!--        <input type="hidden" name="roleType" th:value="${roleType}">-->
+    <form action="/admin/auth/main/cud" method="post" name="userForm">
+        <input type="hidden" name="roleType" th:value="${roleType}">
         <div class="userMenuList">
             <div class="menuList">
                 <ul>
@@ -39,10 +39,10 @@
                     <li>수정</li>
                 </ul>
             </div>
-            <div class="menuList" th:if="${authResult.userMenuRoleList.size() <= 0}">
+            <div class="menuList" th:if="${authResult.userMenuRoleList.size() <= 0 || authResult.userMenuRoleList == null}">
                 등록된 사용자 메뉴가 없습니다.
             </div>
-            <div class="menuList" th:if="${authResult.userMenuRoleList.size() > 0}">
+            <div class="menuList" th:if="${authResult.userMenuRoleList.size() > 0 && authResult.userMenuRoleList != null}">
                 <ul th:each="menuResult : ${authResult.userMenuRoleList}">
                     <input type="hidden" name="chkMenuId" th:value="${menuResult.menuId}" >
                     <li><span th:text="${menuResult.menuId}">menuId</span></li>
@@ -91,13 +91,14 @@
                         </ul>
                     </div>
                 </ul>
-            </div>        </div>
+            </div>
+        </div>
         <button type="submit">
             저장
         </button>
     </form>
-    <form th:action="${formUrl} + '/cud'" method="post" name="adminForm">
-<!--        <input type="hidden" name="roleType" th:value="${roleType}">-->
+    <form action="/admin/auth/main/cud" method="post" name="adminForm">
+        <input type="hidden" name="roleType" th:value="${roleType}">
         <div class="adminMenuList">
             <div class="menuList">
                 <ul>
@@ -109,10 +110,10 @@
                     <li>수정</li>
                 </ul>
             </div>
-            <div class="menuList" id="test1" th:if="${authResult.adminMenuRoleList.size() <= 0 }">
+            <div class="menuList" id="test1" th:if="${authResult.adminMenuRoleList.size() <= 0 || authResult.adminMenuRoleList == null}">
                 등록된 관리자 메뉴가 없습니다.
             </div>
-            <div class="menuList" id="test2" th:if="${authResult.adminMenuRoleList.size() > 0 }">
+            <div class="menuList" id="test2" th:if="${authResult.adminMenuRoleList.size() > 0 && authResult.adminMenuRoleList != null}">
                 <ul th:each="menuResult : ${authResult.adminMenuRoleList}">
                     <input type="hidden" name="chkMenuId" th:value="${menuResult.menuId}" >
                     <li><span th:text="${menuResult.menuId}">menuId</span></li>
@@ -211,9 +212,9 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // 페이지가 로드되자마자 실행될 JavaScript 코드
-        const successMessage = '[[${successMessage}]]';
-        if (successMessage) {
-            alert(successMessage); // 팝업 메시지
+        const serverMessage = '[[${serverMessage}]]';
+        if (serverMessage) {
+            alert(serverMessage); // 팝업 메시지
         }
     });
 

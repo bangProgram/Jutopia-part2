@@ -32,11 +32,18 @@ public class CustomAuthenticationConfig {
         return new CustomAuthenticationSuccessHandler(tokenProvider);
     }
 
+    @Bean
+    CustomAuthenticationFailureHandler customAuthenticationFailureHandler(
+    ){
+        return new CustomAuthenticationFailureHandler();
+    }
+
     @Bean("customAuthenticationFilterFactory")
     Supplier<CustomAuthenticationFilter> customAuthenticationFilterFactory(
             ObjectMapper objectMapper,
             AuthService authService,
-            CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler
+            CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
+            CustomAuthenticationFailureHandler customAuthenticationFailureHandler
     ) throws Exception {
         System.out.println("JB Security customAuthenticationFilterFactory");
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(
@@ -44,7 +51,7 @@ public class CustomAuthenticationConfig {
                 authService
         );
         customAuthenticationFilter.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);
-        customAuthenticationFilter.setAuthenticationFailureHandler(new CustomAuthenticationFailureHandler());
+        customAuthenticationFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
 
         return () -> customAuthenticationFilter;
     }

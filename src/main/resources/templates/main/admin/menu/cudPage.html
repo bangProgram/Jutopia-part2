@@ -4,7 +4,7 @@
     <h1>
       어드민 메뉴 등록 화면 이라네요
     </h1>
-    <form action="#" name="cudForm" th:action="@{/admin/menu/cud}" th:object="${menuCudPayload}" th:method="post">
+    <form action="#" name="cudForm" th:action="@{/admin/menu/main/cud}" th:object="${menuCudPayload}" th:method="post">
         <input type="hidden" th:field="*{menuId}" value="0">
         <input type="hidden" th:field="*{menuType}">
         <table>
