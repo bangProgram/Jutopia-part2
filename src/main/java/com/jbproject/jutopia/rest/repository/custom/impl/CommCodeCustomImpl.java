@@ -22,18 +22,18 @@ public class CommCodeCustomImpl implements CommCodeCustom {
     public List<CommCodeResult> getCommCodeListByGroupCode(String groupCode) {
 
         return jpaQueryFactory.select(
-                        Projections.fields(
-                                CommCodeResult.class,
-                                commCodeEntity.code.as("code"),
-                                commCodeEntity.groupCode.as("groupCode"),
-                                commCodeEntity.codeName.as("codeName"),
-                                commCodeEntity.seq.as("seq"),
-                                commCodeEntity.useYn.as("useYn")
-                        )
-                )
-                .from(commCodeEntity)
-                .where(commCodeEntity.groupCode.eq(groupCode))
-                .orderBy(commCodeEntity.seq.asc())
-                .fetch();
+                    Projections.fields(
+                        CommCodeResult.class,
+                        commCodeEntity.code.as("code"),
+                        commCodeEntity.groupCode.as("groupCode"),
+                        commCodeEntity.codeName.as("codeName"),
+                        commCodeEntity.seq.as("seq"),
+                        commCodeEntity.useYn.as("useYn")
+                    )
+            )
+            .from(commCodeEntity)
+            .where(commCodeEntity.groupCode.eq(groupCode))
+            .orderBy(commCodeEntity.seq.asc())
+            .fetch();
     }
 }

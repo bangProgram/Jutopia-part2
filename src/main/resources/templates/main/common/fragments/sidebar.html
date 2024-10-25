@@ -1,0 +1,30 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <div th:fragment="sidebarFragment" id="sidebarDiv">
+        사이드바영역
+        <!--
+        <div id="sidebarDiv-button" th:each="sideMenu : ${sideMenuList}">
+            <div id="activeDiv">
+                <button type="button" th:onclick="|location.href='@{${sideMenu.menuUrl}}'|">
+                </button>
+            </div>
+        </div>
+        -->
+        <div id="sidebarDiv-button">
+            <div class="activeDiv">
+                <button type="button" th:onclick="|location.href='@{/admin/home/main}'|">
+                    관리자홈
+                </button>
+            </div>
+            <div >
+                <button type="button" th:onclick="|location.href='@{/admin/menu/main}'|">
+                    관리자메뉴
+                </button>
+            </div>
+            <div >
+                <button type="button" th:onclick="|location.href='@{/admin/auth/main}'|">
+                    관리자권한
+                </button>
+            </div>
+        </div>
+    </div>
+</html>
