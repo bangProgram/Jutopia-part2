@@ -1,9 +1,8 @@
 package com.jbproject.jutopia.rest.service.impl;
 
-import com.jbproject.jutopia.constant.ErrorCodeConstants;
+import com.jbproject.jutopia.constant.CommonErrorCode;
 import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.rest.entity.UserEntity;
-import com.jbproject.jutopia.rest.model.payload.LoginPayload;
 import com.jbproject.jutopia.rest.model.payload.SignupPayload;
 import com.jbproject.jutopia.rest.repository.UserRepository;
 import com.jbproject.jutopia.rest.service.UserService;
@@ -11,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -46,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     public UserEntity findById(Long id){
         return userRepository.findById(id).orElseThrow(
-                () -> new ExceptionProvider(ErrorCodeConstants.AUTHENTICATION_400_01)
+                () -> new ExceptionProvider(CommonErrorCode.AUTHENTICATION_400_01)
         );
     }
 }

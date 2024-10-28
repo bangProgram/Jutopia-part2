@@ -43,16 +43,4 @@ public class AuthFilterConfig {
                 tokenProvider
         );
     }
-
-    @Bean("refreshAuthFilterFactory")
-    Supplier<RefreshAuthFilter> refreshAuthFilterFactory(
-            ObjectMapper objectMapper
-    ){
-        System.out.println("JB Security accountAuthFilterFactory");
-        return () -> new RefreshAuthFilter(
-                objectMapper,
-                new AntPathRequestMatcher("/auth/refresh","POST"),
-                tokenProvider
-        );
-    }
 }

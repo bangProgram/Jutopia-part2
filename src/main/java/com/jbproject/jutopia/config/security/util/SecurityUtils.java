@@ -51,23 +51,6 @@ public class SecurityUtils {
         return jwtTokenInfo;
     }
 
-
-
-    public static void sendErrorResponse(HttpServletRequest request, HttpServletResponse response, ErrorCode errorCode) throws IOException, ServletException {
-
-        ExceptionModel exceptionModel = new ExceptionModel(
-                Integer.toString(errorCode.getStatusCode()),
-                errorCode.getErrorCode(),
-                errorCode.getErrorMsg()
-        );
-
-        System.out.println("sendErrorResponse");
-        String body = new ObjectMapper().writeValueAsString(exceptionModel);
-        request.setAttribute("errorBody", body);
-        request.getRequestDispatcher("/error/auth").forward(request, response);
-    }
-
-
      public static void logSecurityContext(String message) {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();

@@ -70,7 +70,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/refresh")
+    @GetMapping("/refresh")
     public RedirectView refreshPorc(HttpServletRequest request, HttpServletResponse response, Model model) {
         JwtTokenInfo jwtTokenInfo = SecurityUtils.handleAuthentication(request);
         RefreshJwtToken token;

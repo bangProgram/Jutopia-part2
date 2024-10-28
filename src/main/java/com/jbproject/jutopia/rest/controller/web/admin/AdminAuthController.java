@@ -2,14 +2,14 @@ package com.jbproject.jutopia.rest.controller.web.admin;
 
 import com.jbproject.jutopia.config.security.model.Role;
 import com.jbproject.jutopia.constant.CommonConstatns;
-import com.jbproject.jutopia.rest.model.payload.MenuCudPayload;
+import com.jbproject.jutopia.constant.CommonErrorCode;
+import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.rest.model.result.AuthResult;
 import com.jbproject.jutopia.rest.model.result.CommCodeResult;
-import com.jbproject.jutopia.rest.model.result.MenuResult;
 import com.jbproject.jutopia.rest.service.AdminAuthService;
 import com.jbproject.jutopia.rest.service.CommCodeService;
-import com.jbproject.jutopia.rest.service.MenuService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -34,12 +34,19 @@ public class AdminAuthController {
             "/main/{roleType}"
     })
     public String goMain(
-            HttpServletRequest request, Model model
+            HttpServletRequest request, HttpServletResponse response, Model model
             , @PathVariable(value = "roleType", required = false) String roleType
-    ){
+    ) throws Exception{
         // 현재 접속된 그룹 전송
         if(roleType == null){
             roleType = Role.VISITOR.name();
+        }else{
+            List<String> roleTypeList = commCodeService.getCommCodeListByGroupCode(CommonConstatns.ROLE_TYPE).stream().map(
+                    CommCodeResult::getCode
+            ).toList();
+            if(!roleTypeList.contains(roleType)){
+                ExceptionProvider.sendErrorResponse(request, response, CommonErrorCode.COMMON_404_02);
+            }
         }
         model.addAttribute("roleType",roleType);
 

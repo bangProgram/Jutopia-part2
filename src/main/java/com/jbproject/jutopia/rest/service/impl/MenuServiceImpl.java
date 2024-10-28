@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.service.impl;
 
-import com.jbproject.jutopia.constant.ErrorCodeConstants;
+import com.jbproject.jutopia.constant.CommonErrorCode;
 import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.rest.entity.MenuEntity;
 import com.jbproject.jutopia.rest.model.payload.MenuCudPayload;
@@ -33,7 +33,7 @@ public class MenuServiceImpl implements MenuService {
 
         if(payload.getParentId() != null){
             MenuEntity parentMenu = menuRepository.findById(payload.getParentId()).orElseThrow(
-                    () -> new ExceptionProvider(ErrorCodeConstants.MENU_404_01)
+                    () -> new ExceptionProvider(CommonErrorCode.MENU_404_01)
             );
             newMenu.setParentMenu(parentMenu);
         }
@@ -43,14 +43,14 @@ public class MenuServiceImpl implements MenuService {
 
     public void modMenu(MenuCudPayload payload) {
         MenuEntity curMenu = menuRepository.findById(payload.getMenuId()).orElseThrow(
-                () -> new ExceptionProvider(ErrorCodeConstants.MENU_404_01)
+                () -> new ExceptionProvider(CommonErrorCode.MENU_404_01)
         );
 
         curMenu.modMenu(payload);
 
         if(!payload.getParentId().equals(curMenu.getParentMenu().getId())){
             MenuEntity parentMenu = menuRepository.findById(payload.getParentId()).orElseThrow(
-                    () -> new ExceptionProvider(ErrorCodeConstants.MENU_404_01)
+                    () -> new ExceptionProvider(CommonErrorCode.MENU_404_01)
             );
             curMenu.setParentMenu(parentMenu);
         }

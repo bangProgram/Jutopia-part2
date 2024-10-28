@@ -9,7 +9,7 @@
             </div>
             <div th:each="childMenu : ${sideBarMenu.childMenu}" >
                 <button type="button" th:onclick="|location.href='@{${sideBarMenu.menuUrl}}'|">
-                    <span th:text="${sideBarMenu.menuName}">Button Name</span>
+                    <span th:text="${childMenu.menuName}">Button Name</span>
                 </button>
             </div>
         </div>

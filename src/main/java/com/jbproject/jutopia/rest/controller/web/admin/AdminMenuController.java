@@ -1,12 +1,15 @@
 package com.jbproject.jutopia.rest.controller.web.admin;
 
 import com.jbproject.jutopia.constant.CommonConstatns;
+import com.jbproject.jutopia.constant.CommonErrorCode;
+import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.rest.model.payload.MenuCudPayload;
 import com.jbproject.jutopia.rest.model.result.CommCodeResult;
 import com.jbproject.jutopia.rest.model.result.MenuResult;
 import com.jbproject.jutopia.rest.service.CommCodeService;
 import com.jbproject.jutopia.rest.service.MenuService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -33,13 +36,20 @@ public class AdminMenuController {
             "/main/{menuType}"
     })
     public String goMain(
-            HttpServletRequest request, Model model
+            HttpServletRequest request, HttpServletResponse response, Model model
             , @PathVariable(value = "menuType", required = false) String menuType
             , MenuCudPayload payload
-        ){
+        ) throws Exception {
         // 현재 접속된 그룹 전송
         if(menuType == null){
             menuType = CommonConstatns.MENU_ROLE_USER;
+        }else{
+            List<String> menuTypeList = commCodeService.getCommCodeListByGroupCode(CommonConstatns.MENU_TYPE).stream().map(
+                    CommCodeResult::getCode
+            ).toList();
+            if(!menuTypeList.contains(menuType)){
+                ExceptionProvider.sendErrorResponse(request, response, CommonErrorCode.COMMON_404_01);
+            }
         }
         payload.setMenuType(menuType);
         model.addAttribute("menuCudPayload", payload);

@@ -1,9 +1,7 @@
 package com.jbproject.jutopia.config.security;
 
-import com.jbproject.jutopia.config.security.filter.CustomAuthenticationFilter;
 import com.jbproject.jutopia.config.security.filter.FilterAuthEntryPoint;
 import com.jbproject.jutopia.config.security.filter.AccessAuthFilter;
-import com.jbproject.jutopia.config.security.filter.RefreshAuthFilter;
 import com.jbproject.jutopia.config.security.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -104,7 +102,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(
             HttpSecurity httpSecurity
-            , @Qualifier("customAuthenticationFilterFactory") Supplier<CustomAuthenticationFilter> customAuthenticationFilterFactory
             , @Qualifier("accessAuthFilterFactory")Supplier<AccessAuthFilter> accessAuthFilterFactory
 //            , @Qualifier("refreshAuthFilterFactory")Supplier<RefreshAuthFilter> refreshAuthFilterFactory
             ) throws Exception {
@@ -130,9 +127,7 @@ public class SecurityConfig {
                                         .anyRequest().authenticated() // 그 외 인증 없이 접근X
                 )
                 .addFilterBefore(characterEncodingFilter(), CsrfFilter.class)
-//                .addFilterBefore(customAuthenticationFilterFactory.get() , UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(accessAuthFilterFactory.get(), UsernamePasswordAuthenticationFilter.class)
-//                .addFilterAfter(refreshAuthFilterFactory.get(), AccessAuthFilter.class)
                 .build();
     }
 }

@@ -83,7 +83,7 @@ public class AccessAuthFilter extends OncePerRequestFilter {
                     accessJwtToken = tokenProvider.getAccessAuthentication(jwtTokenInfo.getAccessToken());
                 }catch (RuntimeException runtimeException){
                     if(!tokenProvider.validateToken(jwtTokenInfo.getRefreshToken(), JwtTokenConstants.REFRESH.getName())){
-                        SecurityUtils.sendErrorResponse(request,response, SecurityErrorCode.JWT_AUTH_ERROR_07);
+                        ExceptionProvider.sendErrorResponse(request,response, SecurityErrorCode.JWT_AUTH_ERROR_07);
                         return;
                     }
                     accessJwtToken.setAuthenticated(false);
@@ -99,7 +99,7 @@ public class AccessAuthFilter extends OncePerRequestFilter {
                         default -> SecurityErrorCode.JWT_AUTH_ERROR_04;
                     };
 
-                    SecurityUtils.sendErrorResponse(request,response,errorCode);
+                    ExceptionProvider.sendErrorResponse(request,response,errorCode);
                     return;
                 }
                 role = accessJwtToken.getPrincipal().getRole(); // 인증된 사용자의 역할 가져오기
@@ -138,7 +138,7 @@ public class AccessAuthFilter extends OncePerRequestFilter {
                 System.out.println("필터 들어옴");
                 filterChain.doFilter(request, response);  // 허용된 URI일 경우 필터를 통과시킴
             } else {
-                SecurityUtils.sendErrorResponse(request,response,SecurityErrorCode.FORBIDDEN_ERROR_02);
+                ExceptionProvider.sendErrorResponse(request,response,SecurityErrorCode.FORBIDDEN_ERROR_02);
             }
         }
     }

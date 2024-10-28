@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/error")
 public class ErrorController {
 
-    @GetMapping("/auth")
-    public String goErrorAuth(HttpServletRequest request, HttpServletResponse response, Model model) throws JsonProcessingException {
+    @GetMapping({
+            "/main",
+            "/auth"
+    })
+    public String goError(HttpServletRequest request, HttpServletResponse response, Model model) throws JsonProcessingException {
 
         String body = request.getAttribute("errorBody").toString();
         ExceptionModel exceptionModel = new ObjectMapper().readValue(body,ExceptionModel.class);

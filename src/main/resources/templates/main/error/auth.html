@@ -32,11 +32,8 @@
             }
             else {
                 if(confirm(message + "\n로그인 연장 하시겠습니까?")){
-                    let form = document.createElement("form");
-                    form.setAttribute("method","post");
-                    form.setAttribute("action",refreshTokenUrl);
-                    document.body.appendChild(form);
-                    form.submit();
+                    location.href = refreshTokenUrl;
+                    return;
                 }else{
                     location.href = loginUrl;
                     return;
