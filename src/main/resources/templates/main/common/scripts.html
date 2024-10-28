@@ -5,6 +5,18 @@
     <title>Title</title>
 </head>
 <body>
+<script>
+    var isActiveSidebar = true;
 
+    function toggleActiveSidebar() {
+        isActiveSidebar = !isActiveSidebar;
+        var sidebarDiv = document.getElementById('sidebarDiv');
+        if(isActiveSidebar) {
+            sidebarDiv.style.display = 'block';
+        }else{
+            sidebarDiv.style.display = 'none';
+        }
+    }
+</script>
 </body>
 </html>

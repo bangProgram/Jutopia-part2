@@ -103,12 +103,12 @@ public class AuthController {
         return new RedirectView("/auth/login");
     }
 
-    @PostMapping("/auth/logout")
-    public RedirectView logoutProc(HttpServletResponse response, Model model) {
+    @GetMapping("/logout")
+    public RedirectView logoutProc(HttpServletResponse response) {
         securityContextHolderStrategy.clearContext();
         clearToken(response);
 
-        return new RedirectView("/auth/login");
+        return new RedirectView("/home/main");
     }
 
     private void generateToken(HttpServletResponse response, UserEntity userEntity){

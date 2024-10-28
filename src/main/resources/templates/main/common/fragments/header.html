@@ -1,14 +1,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <nav th:fragment="headerFragment">
         <div id="headerDiv">
-            헤더영역
             <div id="headerDiv-button">
-                <div id="activeDiv">
-                    <button type="button" th:onclick="|location.href='@{/auth/login}'|" >로그아웃</button>
+                <div class="sidebarDiv" >
+                    <button type="button" th:onclick="toggleActiveSidebar()" >사이드바버튼</button>
+                </div>
+                <div class="titleDiv">
+                    <button type="button" th:onclick="|location.href='@{/home/main}'|" >주토피아</button>
+                </div>
+                <div id="activeDiv" class="authDiv" th:if="${isRole != 'VISITOR'}">
+                    <button type="button" th:onclick="|location.href='@{/auth/logout}'|" >로그아웃</button>
                     <button type="button" th:if="${isAdmin}" th:onclick="|location.href='@{/admin/home/main}'|">관리자 메인 이동</button>
                     <button type="button" th:if="${isAdmin}" th:onclick="|location.href='@{/home/main}'|">사용자 메인 이동</button>
                 </div>
-                <div id="inActiveDiv">
+                <div id="inActiveDiv" class="authDiv" th:if="${isRole == 'VISITOR'}">
                     <button type="button" th:onclick="|location.href='@{/auth/login}'|" >로그인</button>
                 </div>
             </div>
