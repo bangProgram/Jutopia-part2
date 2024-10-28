@@ -28,13 +28,19 @@ public class AdminMenuController {
     private final MenuService menuService;
     private final CommCodeService commCodeService;
 
-    @GetMapping("/main/{menuType}")
+    @GetMapping({
+            "/main",
+            "/main/{menuType}"
+    })
     public String goMain(
             HttpServletRequest request, Model model
             , @PathVariable(value = "menuType", required = false) String menuType
             , MenuCudPayload payload
         ){
         // 현재 접속된 그룹 전송
+        if(menuType == null){
+            menuType = CommonConstatns.MENU_ROLE_USER;
+        }
         payload.setMenuType(menuType);
         model.addAttribute("menuCudPayload", payload);
 

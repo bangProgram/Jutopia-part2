@@ -6,6 +6,15 @@
 </head>
 <body>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const isAdmin = '[[${isAdmin}]]';
+        const isRole = '[[${isRole}]]';
+        const roleBasedUrls = '[[${roleBasedUrls}]]';
+
+        console.log(isAdmin + " / "+ isRole);
+        console.log('roleBasedUrls : '+roleBasedUrls);
+    });
+
     var isActiveSidebar = true;
 
     function toggleActiveSidebar() {
