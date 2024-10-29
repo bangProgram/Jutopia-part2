@@ -6,26 +6,34 @@
 </head>
 <body>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const isAdmin = '[[${isAdmin}]]';
-        const isRole = '[[${isRole}]]';
-        const roleBasedUrls = '[[${roleBasedUrls}]]';
+document.addEventListener('DOMContentLoaded', function() {
+        // 페이지가 로드되자마자 실행될 JavaScript 코드
+    const isAdmin = '[[${isAdmin}]]';
+    const isRole = '[[${isRole}]]';
+    const roleBasedUrls = '[[${roleBasedUrls}]]';
 
-        console.log(isAdmin + " / "+ isRole);
-        console.log('roleBasedUrls : '+roleBasedUrls);
-    });
+    console.log(isAdmin + " / "+ isRole);
+    console.log('roleBasedUrls : '+roleBasedUrls);
 
-    var isActiveSidebar = true;
 
-    function toggleActiveSidebar() {
-        isActiveSidebar = !isActiveSidebar;
-        var sidebarDiv = document.getElementById('sidebarDiv');
-        if(isActiveSidebar) {
-            sidebarDiv.style.display = 'block';
-        }else{
-            sidebarDiv.style.display = 'none';
-        }
+    const serverMessage = '[[${serverMessage}]]';
+
+    if (serverMessage) {
+        alert(serverMessage); // 팝업 메시지
     }
+});
+
+var isActiveSidebar = true;
+
+function toggleActiveSidebar() {
+    isActiveSidebar = !isActiveSidebar;
+    var sidebarDiv = document.getElementById('sidebarDiv');
+    if(isActiveSidebar) {
+        sidebarDiv.style.display = 'block';
+    }else{
+        sidebarDiv.style.display = 'none';
+    }
+}
 </script>
 </body>
 </html>

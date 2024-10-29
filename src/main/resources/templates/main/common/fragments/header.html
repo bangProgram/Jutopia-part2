@@ -2,7 +2,7 @@
     <nav th:fragment="headerFragment">
         <div id="headerDiv">
             <div id="headerDiv-button">
-                <div class="sidebarDiv" >
+                <div class="sidebarDiv" th:if="${curPage == 'ADMIN'}" >
                     <button type="button" th:onclick="toggleActiveSidebar()" >사이드바버튼</button>
                 </div>
                 <div class="titleDiv">

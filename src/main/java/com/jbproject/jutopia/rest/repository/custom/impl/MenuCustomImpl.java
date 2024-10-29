@@ -50,6 +50,8 @@ public class MenuCustomImpl implements MenuCustom {
             result.setUseYn(menu.getUseYn());
             result.setSeq(menu.getSeq());
             result.setParentId(menu.getParentId());
+            result.setMenuType(menu.getMenuType());
+            result.setIsShowBar(menu.getIsShowBar());
             result.setChildMenu(menu.getChildMenu().stream().map(child -> {
                 MenuResult childResult = new MenuResult();
                 childResult.setMenuId(child.getId());
@@ -58,26 +60,13 @@ public class MenuCustomImpl implements MenuCustom {
                 childResult.setUseYn(child.getUseYn());
                 childResult.setSeq(child.getSeq());
                 childResult.setParentId(child.getParentId());
+                child.setMenuType(child.getMenuType());
+                childResult.setIsShowBar(child.getIsShowBar());
                 return childResult;
             }).collect(Collectors.toList()));
             return result;
         }).collect(Collectors.toList());
 
-//        return queryFactory.select(
-//                Projections.fields(
-//                        MenuResult.class
-//                        ,menuEntity.id.as("menuId")
-//                        ,menuEntity.menuName.as("menuName")
-//                        ,menuEntity.menuUrl.as("menuUrl")
-//                        ,menuEntity.useYn.as("useYn")
-//                        ,menuEntity.seq.as("seq")
-//                        ,menuEntity.parentId.as("parentId")
-//                        ,menuEntity.childMenu.as("childMenu")
-//                )
-//        )
-//        .from(menuEntity)
-//        .where(whereCondition)
-//        .fetch();
     }
 
     public AuthResult getMenuRoleList(String roleType){
@@ -93,7 +82,8 @@ public class MenuCustomImpl implements MenuCustom {
                             menuEntity.useYn.as("useYn"),
                             menuEntity.seq.as("seq"),
                             menuEntity.parentId.as("parentId"),
-                            menuEntity.menuType.as("menuType"),
+                            menuEntity.menuType,
+                            menuEntity.isShowBar,
                             Projections.fields(
                                     RoleMenuResult.class,
                                     roleMenuRelation.roleId,

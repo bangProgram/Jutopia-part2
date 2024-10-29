@@ -1,0 +1,17 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <div th:fragment="sidebarFragment" id="sidebarDiv" th:if="${curPage == 'ADMIN'}" >
+        사이드바 영역
+        <div id="sidebarDiv-button">
+            <div>
+                <button type="button" th:onclick="|location.href='@{/admin/menu/main/USER}'|">
+                    관리자 메뉴 화면 이동
+                </button>
+            </div>
+            <div>
+                <button type="button" th:onclick="|location.href='@{/admin/auth/main/VISITOR}'|">
+                    관리자 권한 화면 이동
+                </button>
+            </div>
+        </div>
+    </div>
+</html>

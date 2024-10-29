@@ -38,6 +38,7 @@ dependencies {
 	// 현재 DB : h2 > 추후 test 용 Inmemory DB로 변경
 	// DB 사용은 Mysql 사용 할 것으로 예상 (aws : rds)
 	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 
 	// QueryDSL 의존성 추가
 	implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"

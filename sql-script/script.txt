@@ -22,3 +22,16 @@ VALUES( 'ROLE_TYPE','ADMIN','Y',5)
 iNSERT INTO TB_COMM_CODE (GROUP_CODE, CODE, USE_YN, SEQ)
 VALUES( 'ROLE_TYPE','SYSTEM','Y',6)
 ;
+
+insert into tb_role(role,create_dttm,create_id,update_dttm,update_id,role_name)
+values ('VISITOR', sysdate(), 'SYSTEM' , sysdate(), 'SYSTEM', '방문자' );
+insert into tb_role(role,create_dttm,create_id,update_dttm,update_id,role_name)
+values ('JUTOPIAN', sysdate(), 'SYSTEM' , sysdate(), 'SYSTEM', '주토피안' );
+insert into tb_role(role,create_dttm,create_id,update_dttm,update_id,role_name)
+values ('TRADER', sysdate(), 'SYSTEM' , sysdate(), 'SYSTEM', '주토피안(인증)' );
+insert into tb_role(role,create_dttm,create_id,update_dttm,update_id,role_name)
+values ('FUNDMANAGER', sysdate(), 'SYSTEM' , sysdate(), 'SYSTEM', '펀드매니저' );
+insert into tb_role(role,create_dttm,create_id,update_dttm,update_id,role_name)
+values ('ADMIN', sysdate(), 'SYSTEM' , sysdate(), 'SYSTEM', '관리자' );
+insert into tb_role(role,create_dttm,create_id,update_dttm,update_id,role_name)
+values ('SYSTEM', sysdate(), 'SYSTEM' , sysdate(), 'SYSTEM', '시스템관리자' );

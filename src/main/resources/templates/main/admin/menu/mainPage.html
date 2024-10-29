@@ -16,7 +16,10 @@
 
 <div class="buttonDiv-row">
     <div class="adminMenuButton" th:each="menuType : ${menuTypes}" >
-        <button type="button" th:onclick="goPage([[${menuType.code}]])">
+        <button type="button" th:onclick="goPage([[${menuType.code}]])" th:if="${isRole != 'SYSTEM' && menuType != 'ADMIN'}">
+            <span th:text="${menuType.code}">Button Name</span>
+        </button>
+        <button type="button" th:onclick="goPage([[${menuType.code}]])" th:if="${isRole == 'SYSTEM'}">
             <span th:text="${menuType.code}">Button Name</span>
         </button>
     </div>
@@ -27,11 +30,12 @@
     <input type="hidden" th:field="*{menuType}">
     <table>
         <tr>
-            <td>menuNm</td>
-            <td>menuUrl</td>
-            <td>parentMenuId</td>
-            <td>seq</td>
-            <td>useYn</td>
+            <td>메뉴 명</td>
+            <td>메뉴 경로</td>
+            <td>부모메뉴 ID</td>
+            <td>순서</td>
+            <td>사용 여부</td>
+            <td>메뉴표시 여부</td>
             <td>저장</td>
         </tr>
         <tr>
@@ -51,6 +55,9 @@
                 <label><input type="text" th:field="*{useYn}"></label>
             </td>
             <td>
+                <label><input type="text" th:field="*{isShowBar}"></label>
+            </td>
+            <td>
                 <button type="submit">
                     메뉴등록
                 </button>
@@ -64,12 +71,14 @@
 </table>
 <div class="menuList">
     <ul>
-        <li>menuId</li>
-        <li>menuName</li>
-        <li>menuUrl</li>
-        <li>parentId</li>
-        <li>seq</li>
-        <li>useYn</li>
+        <li>메뉴 Id</li>
+        <li>메뉴 명</li>
+        <li>메뉴 경로</li>
+        <li>부모메뉴 ID</li>
+        <li>순서</li>
+        <li>사용 여부</li>
+        <li>메뉴표시 여부</li>
+        <li>수정</li>
     </ul>
 </div>
 <div id="depth1" class="menuList">
@@ -80,6 +89,20 @@
         <li><span th:text="${menuResult.parentId}">parentId</span></li>
         <li><span th:text="${menuResult.seq}">seq</span></li>
         <li><span th:text="${menuResult.useYn}">useYn</span></li>
+        <li><span th:text="${menuResult.isShowBar}">useYn</span></li>
+        <li>
+            <button type="button"  th:onclick="fillInput(
+                [[${menuResult.menuId}]]
+                ,[[${menuResult.menuName}]]
+                ,[[${menuResult.menuUrl}]]
+                ,[[${menuResult.parentId}]]
+                ,[[${menuResult.seq}]]
+                ,[[${menuResult.useYn}]]
+                ,[[${menuResult.isShowBar}]]
+            )">
+                <span>수정</span>
+            </button>
+        </li>
         <div id="depth2">
             <ul th:each="childMenu : ${menuResult.childMenu}" >
                 <li><span th:text="${childMenu.menuId}">menuId</span></li>
@@ -88,6 +111,20 @@
                 <li><span th:text="${childMenu.parentId}">parentId</span></li>
                 <li><span th:text="${childMenu.seq}">seq</span></li>
                 <li><span th:text="${childMenu.useYn}">useYn</span></li>
+                <li><span th:text="${childMenu.isShowBar}">useYn</span></li>
+                <li>
+                    <button type="button"  th:onclick="fillInput(
+                        [[${childMenu.menuId}]]
+                        ,[[${childMenu.menuName}]]
+                        ,[[${childMenu.menuUrl}]]
+                        ,[[${childMenu.parentId}]]
+                        ,[[${childMenu.seq}]]
+                        ,[[${childMenu.useYn}]]
+                        ,[[${childMenu.isShowBar}]]
+                    )">
+                        <span>수정</span>
+                    </button>
+                </li>
             </ul>
         </div>
     </ul>
@@ -109,7 +146,7 @@
 
 .menuList > ul > li {
     display: inline-block;
-    width: 15.6%;
+    width: 13%;
 }
 
 #depth2 > ul {
@@ -125,6 +162,16 @@
 <script>
     function goPage(menuType){
         location.href = "/admin/menu/main/"+menuType;
+    }
+
+    function fillInput(menuId
+,menuName
+,menuUrl
+,parentId
+,seq
+,useYn
+,isShowBar) {
+
     }
 </script>
 </body>

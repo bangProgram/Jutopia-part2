@@ -7,24 +7,32 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-#        dialect: org.hibernate.dialect.MySQLDialect
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
+#        dialect: org.hibernate.dialect.H2Dialect
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #    url:
 #    username:
 #    password:
 
-  # 노트북 datasource
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/admindev
-    username: sa
-    password: sa
+  # 노트북 datasource - H2
+#  datasource:
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:tcp://localhost/~/admindev
+#    username: sa
+#    password: sa
 
-  # 데스크탑 datasource
+  # 데스크탑 datasource - H2
 #  datasource:
 #    driver-class-name: org.h2.Driver
 #    url: jdbc:h2:tcp://localhost/~/jpashop
 #    username: sa
 #    password:
+
+  # MySQL datasource
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/jutopia
+    username: FINUSER
+    password: FINPASS

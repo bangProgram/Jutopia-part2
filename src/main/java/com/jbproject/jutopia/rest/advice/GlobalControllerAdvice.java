@@ -30,7 +30,7 @@ public class GlobalControllerAdvice {
         Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
 
         if (authentication instanceof AccessJwtToken accessJwtToken && accessJwtToken.isAuthenticated()) {
-            return Role.ADMIN.getAccessRole().contains(accessJwtToken.getPrincipal().getRole());
+            return Role.getAccessRole(accessJwtToken.getPrincipal().getRole()).contains("ADMIN");
         }
 
         return false;
@@ -47,16 +47,22 @@ public class GlobalControllerAdvice {
         return "VISITOR";
     }
 
+    @ModelAttribute("curPage")
+    public String curPage(HttpServletRequest request) {
+        String requestUrl = request.getRequestURI();
+        return requestUrl.contains("/admin") ? "ADMIN" : "USER";
+    }
+
     @ModelAttribute("sideBarMenus")
     public List<MenuResult> sideBarMenu(HttpServletRequest request) {
         String requestUrl = request.getRequestURI();
-        String menuType = requestUrl.contains("/admin") ? CommonConstatns.MENU_ROLE_ADMIN : CommonConstatns.MENU_ROLE_USER;
-        Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
-
-        if (authentication instanceof AccessJwtToken accessJwtToken && accessJwtToken.isAuthenticated()) {
-            return menuService.getMenuList(menuType);
+        if(!requestUrl.contains("/admin")){
+            return menuService.getMenuList(CommonConstatns.MENU_ROLE_USER);
+        }else{
+            return new ArrayList<>();
         }
 
-        return new ArrayList<>();
+
+
     }
 }

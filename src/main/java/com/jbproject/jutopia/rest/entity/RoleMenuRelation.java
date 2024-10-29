@@ -36,7 +36,6 @@ public class RoleMenuRelation {
     @Column(name = "menu_id")
     private Long menuId;
     @Column(name = "isCud")
-    @ColumnDefault("N")
     private String isCud;
 
     @ManyToOne

@@ -9,7 +9,8 @@ public class MenuCudPayload {
     private String menuDetail;
     private String menuUrl;
     private String useYn = "Y";
-    private int seq;
+    private int seq = 1;
     private Long parentId;
     private String menuType;
+    private String isShowBar = "N";
 }

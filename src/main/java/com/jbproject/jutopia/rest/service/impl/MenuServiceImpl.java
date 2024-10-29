@@ -29,6 +29,7 @@ public class MenuServiceImpl implements MenuService {
                 .seq(payload.getSeq())
                 .menuType(payload.getMenuType())
                 .menuDetail(payload.getMenuDetail())
+                .isShowBar(payload.getIsShowBar())
                 .build();
 
         if(payload.getParentId() != null){
