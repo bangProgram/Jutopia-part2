@@ -52,6 +52,17 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
+	// xml parsing 의존성 추가 - jaxb
+	implementation 'javax.xml.bind:jaxb-api'
+	runtimeOnly 'com.sun.xml.bind:jaxb-impl:3.0.0'
+	implementation 'org.glassfish.jaxb:jaxb-runtime'
+	implementation 'javax.activation:activation:1.1.1'
+
+	// xml parsing 의존성 추가 - jackson
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.16.1'
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.0'
+
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

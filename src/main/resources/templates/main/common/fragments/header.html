@@ -9,6 +9,7 @@
                     <button type="button" th:onclick="|location.href='@{/home/main}'|" >주토피아</button>
                 </div>
                 <div id="activeDiv" class="authDiv" th:if="${isRole != 'VISITOR'}">
+                    <button type="button" th:onclick="|location.href='@{/home/main}'|" >마이페이지</button>
                     <button type="button" th:onclick="|location.href='@{/auth/logout}'|" >로그아웃</button>
                     <button type="button" th:if="${isAdmin}" th:onclick="|location.href='@{/admin/home/main}'|">관리자 메인 이동</button>
                     <button type="button" th:if="${isAdmin}" th:onclick="|location.href='@{/home/main}'|">사용자 메인 이동</button>

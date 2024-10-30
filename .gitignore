@@ -43,3 +43,4 @@ src/main/generated/
 src/main/resources/static/
 src/main/resources/templates/index.html
 
+/src/main/resources/config/**/api-config.yml

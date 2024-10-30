@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
 @Controller
 @Slf4j
@@ -27,32 +28,10 @@ public class UserHomeController {
     @GetMapping("/test")
     public String test() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String input = br.readLine();
-        String[] nm = input.split(" ");
+        String[] textList = new String[100];
 
-        int[] numList = new int[Integer.parseInt(nm[0])];
-        for(int i=0; i< numList.length; i++){
-            numList[i] = i+1;
-        }
-
-
-        for(int i=0; i<Integer.parseInt(nm[1]); i++){
-            int temp = 0;
-            String input2 = br.readLine();
-            String[] holNum = input2.split(" ");
-
-            temp = numList[Integer.parseInt(holNum[0])-1];
-            numList[Integer.parseInt(holNum[0])-1] = numList[Integer.parseInt(holNum[1])-1];
-            numList[Integer.parseInt(holNum[1])-1] = temp;
-        }
-
-        for(int i=0; i<numList.length; i++){
-            if(i==0) {
-                System.out.print(numList[i]);
-            }else{
-                System.out.print(" "+numList[i]);
-            }
-        }
+        Scanner scan = new Scanner(System.in);
+        scan.hasNext();
 
         return "/user/home/mainPage";
     }

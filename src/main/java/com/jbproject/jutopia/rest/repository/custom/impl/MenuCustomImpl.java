@@ -32,6 +32,17 @@ public class MenuCustomImpl implements MenuCustom {
 
     private final JPAQueryFactory queryFactory;
 
+    public List<MenuResult> getMenuListByParentId (String parentId) {
+        BooleanBuilder whereCondition = new BooleanBuilder();
+        if(parentId != null){
+            whereCondition.and(menuEntity.parentId.eq(Long.parseLong(parentId)));
+        }else{
+            whereCondition.and(menuEntity.parentId.isNull());
+        }
+
+        return null;
+    }
+
     public List<MenuResult> getMenuList(String menuType){
 
         List<MenuEntity> menuEntities = queryFactory.selectFrom(menuEntity)

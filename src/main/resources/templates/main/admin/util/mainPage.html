@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="content"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>어드민 기업데이터 관리 화면입니다.</title>
+</head>
+<body>
+    <h6>
+      어드민 기업데이터 관리 화면.
+    </h6>
+
+    <div class="container-fluid">
+        재무정보 업로드
+        <form name="exform" id="exform" method="POST" enctype="multipart/form-data" style="margin: 30px;">
+            <input type="hidden" name="REPRT_NM" value=""/>
+            <input type="hidden" name="SJ_NM" value=""/>
+            <table>
+                <tr>
+                    <td colspan="2"><input type="text" name="BSNS_YEAR" id="BSNS_YEAR" class="requiredChk" value="" title="보고서 년도"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <select name="REPRT_CODE" id="REPRT_CODE" class="requiredChk" title="보고서 구분 선택" style="width: 200px;" >
+                            <option value = "">선택</option>
+                            <option value = "0304">사업보고서</option>
+                            <option value = "0303">3분기보고서</option>
+                            <option value = "0302">반기보고서</option>
+                            <option value = "0301">1분기보고서</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="SJ_DIV" id="SJ_DIV" class="requiredChk" title="보고서 계정 선택" style="width: 200px;" >
+                            <option value = "">선택</option>
+                            <option value = "0401">손익계산서</option>
+                            <option value = "0402">재무보고서</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="file" name="file" /></td>
+                </tr>
+                <tr>
+                    <td><a href="" onclick="goSave();return false;" >엑셀 업로드</a></td>
+                </tr>
+            </table>
+
+        </form>
+
+        기업정보(xml) 업로드
+        <form action="/admin/util/dart/corp" method="post" name="userForm" enctype="multipart/form-data">
+            <table>
+                <tr>
+                    <td colspan="2"><input type="file" name="file" /></td>
+                </tr>
+                <tr>
+                    <td><button onclick="submit()" >XML 업로드</button></td>
+                </tr>
+            </table>
+
+        </form>
+
+        기업 상세정보 현행화
+        <form name="corpForm" id="corpForm" method="GET" style="margin: 30px;">
+            <table>
+                <tr>
+                    <td>
+                        <select name="GUBN" id="GUBN" class="" title="최신화사업장 대상 구분선택" style="width: 200px;" >
+                            <option value = "">선택</option>
+                            <option value = "01">재무제표 기준</option>
+                            <option value = "02">상장기업 기준</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" name="CORP_CLS1" value="Y">코스피
+                        <input type="checkbox" name="CORP_CLS2" value="K">코스닥
+                        <input type="checkbox" name="CORP_CLS3" value="N">코넥스
+                        <input type="checkbox" name="CORP_CLS4" value="E">기타
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="text" name="stLimit" id="stLimit" value="" class="" title="시작 번호"> -
+                        <input type="text" name="edLimit" id="edLimit" value="" class="" title="종료 번호">
+                    </td>
+                </tr>
+                <tr>
+                    <td><a href="" onclick="goMerge();return false;" >사업장 최신화</a></td>
+                </tr>
+            </table>
+
+        </form>
+
+
+
+    </div>
+</body>
+<script>
+    function imageView(imageName) {
+        if(imageName == 'loading'){
+            LoadingWithMask('/images/loading.jpg');
+        }
+    }
+
+    function LoadingWithMask(gif) {
+        //화면의 높이와 너비를 구합니다.
+        var maskHeight = $(document).height();
+        var maskWidth  = window.document.body.clientWidth;
+
+        //화면에 출력할 마스크를 설정해줍니다.
+        var mask       = "<div id='mask' style='position:absolute; z-index:9000; background-color:#000000; display:none; left:0; top:0;'></div>";
+        var loadingImg = '';
+
+        loadingImg += "<div id='imgDiv' style='position:absolute;'>";
+        loadingImg += "<img src='"+ gif + "' id='loadingImg'/>";
+        loadingImg += "</div>";
+
+        //화면에 레이어 추가
+        $('body')
+            .append(mask).append(loadingImg);
+
+        //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채웁니다.
+        $('#mask').css({
+                'width' : maskWidth,
+                'height': maskHeight,
+                'opacity' : '0.3'
+        });
+
+        $('#imgDiv').css({
+            'left':maskWidth/2,
+            'top':maskHeight/2,
+        });
+
+        $('#loadingImg').css({
+            'width': '100px',
+            'height': '100px',
+        });
+
+        //마스크 표시
+        $('#mask').show();
+
+        //로딩중 이미지 표시
+        $('#loadingImg').show();
+    }
+
+    function closeLoadingWithMask() {
+        $('#mask, #loadingImg').hide();
+        $('#mask, #loadingImg').empty();
+    }
+
+    function requiredChk(){
+        for(var i=0; i<$('.requiredChk').length; i++){
+            var valChk = $('.requiredChk').eq(i).val();
+            if(valChk == ''){
+                var title = $('.requiredChk').eq(i).attr('title');
+                alert(title + '의 값을 입력해주세요.');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function goSave(){
+        var frm = document.exform;
+        if(!requiredChk()){
+            return;
+        };
+        //imageView('loading');
+        frm.action = '/cms/admin/exUp/cud';
+        frm.submit();
+    }
+
+    function goMerge(){
+        var frm = document.corpForm;
+        //imageView('loading');
+        frm.action = '/cms/admin/mergeCorp';
+        frm.submit();
+    }
+
+    function goXMLSave(){
+        var frm = document.xmlForm;
+        //imageView('loading');
+        console.log("xmlForm 들어감? ");
+        frm.action = '/admin/util/dart/corp';
+        frm.submit();
+    }
+</script>
+</html>

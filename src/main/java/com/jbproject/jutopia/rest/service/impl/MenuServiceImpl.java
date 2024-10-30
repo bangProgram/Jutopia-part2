@@ -10,12 +10,14 @@ import com.jbproject.jutopia.rest.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class MenuServiceImpl implements MenuService {
 
     private final MenuRepository menuRepository;
@@ -49,11 +51,13 @@ public class MenuServiceImpl implements MenuService {
 
         curMenu.modMenu(payload);
 
-        if(!payload.getParentId().equals(curMenu.getParentMenu().getId())){
+        if(payload.getParentId() != 0){
             MenuEntity parentMenu = menuRepository.findById(payload.getParentId()).orElseThrow(
                     () -> new ExceptionProvider(CommonErrorCode.MENU_404_01)
             );
             curMenu.setParentMenu(parentMenu);
+        }else{
+            curMenu.setParentMenu(null);
         }
 
         menuRepository.save(curMenu);
