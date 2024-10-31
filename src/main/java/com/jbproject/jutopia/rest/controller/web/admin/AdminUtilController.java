@@ -1,9 +1,15 @@
 package com.jbproject.jutopia.rest.controller.web.admin;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.jbproject.jutopia.rest.entity.CorpEntity;
 import com.jbproject.jutopia.rest.model.CorpDetailModel;
+import com.jbproject.jutopia.rest.model.CorpModel;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
+import com.jbproject.jutopia.rest.model.payload.MergeCorpDetailPayload;
+import com.jbproject.jutopia.rest.repository.CorpRepository;
+import com.jbproject.jutopia.rest.service.AdminUtilService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -23,9 +31,11 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,114 +44,79 @@ import java.util.Map;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/admin/util")
+@RequestMapping(value = "/admin/util")
 public class AdminUtilController {
     @Value("${opendart.secret}")
     private String dartSecret;
 
-    @GetMapping("/main")
-    public String goMain(Model model) {
+    private final AdminUtilService adminUtilService;
 
+    @GetMapping("/main")
+    public String goMain(
+            HttpServletRequest request, HttpServletResponse response, Model model
+            , MergeCorpDetailPayload mergeCorpDetailPayload
+    ) {
+
+        model.addAttribute("mergeCorpDetailPayload",mergeCorpDetailPayload);
         return "/admin/util/mainPage";
     }
 
 
     @PostMapping("/dart/corp")
-    public String mergeCorpFromDart(
+    public RedirectView mergeCorpFromDart(
             HttpServletRequest request, HttpServletResponse response, Model model
-            , @RequestParam("file") MultipartFile file
+            , @RequestParam("file") MultipartFile multipartFile
+            , RedirectAttributes redirectAttributes
     ){
-
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            System.out.println("JB test 0");
-            XmlMapper xmlMapper = new XmlMapper();
-            System.out.println("JB test 00");
-            XmlCorpModel xmlCorpModel = objectMapper.readValue(file.getInputStream(), XmlCorpModel.class);
-            System.out.println("XmlCorpModel : "+xmlCorpModel);
 
-            // XML 파일 로드
-            System.out.println("JB test 1");
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            System.out.println("JB test 2");
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            System.out.println("JB test 3");
-            Document document = builder.parse(file.getInputStream());
-            System.out.println("JB test 4");
+            XmlMapper objectMapper = new XmlMapper();
 
-            System.out.println("JB test 5");
-//            Map<String,Object> data = objectMapper.readValue(file.getInputStream(), Map.class);
-//            System.out.println("data : "+data);
+            XmlCorpModel xmlCorpModel = objectMapper.readValue(multipartFile.getInputStream(), XmlCorpModel.class);
 
-            Element root = document.getDocumentElement();
-            System.out.println("JB test 6");
+            System.out.println("test 1");
+            adminUtilService.saveCorp(xmlCorpModel);
 
-            // "list" 요소 가져오기
-            NodeList list = root.getElementsByTagName("list");
-            System.out.println("JB test 7");
-            for (int i = 0; i < list.getLength(); i++) {
-                System.out.println("JB test 8");
-                Node node = list.item(i);
-                System.out.println("JB test 9");
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Map<String,Object> param = new HashMap<>();
-                    Element element = (Element) node;
-                    String corpCode = element.getElementsByTagName("corp_code").item(0).getTextContent();
-                    String corpName = element.getElementsByTagName("corp_name").item(0).getTextContent();
-                    String stockCode = element.getElementsByTagName("stock_code").item(0).getTextContent();
-                    String modifyDate = element.getElementsByTagName("modify_date").item(0).getTextContent();
+            redirectAttributes.addFlashAttribute("serverMessage","기업 데이터 수정을 완료했습니다.");
+            return new RedirectView("/admin/util/main") ;
 
-                    // 파싱한 데이터 활용 또는 출력
-                    System.out.print("Corp Code: " + corpCode);
-                    System.out.print(" Corp Name: " + corpName);
-                    System.out.print(" Stock Code: " + stockCode);
-                    System.out.print(" Modify Date: " + modifyDate + "\n");
-
-                    param.put("CORP_CODE", corpCode);
-                    param.put("CORP_NAME", corpName);
-                    param.put("STOCK_CODE", stockCode);
-                    param.put("MODIFY_DATE", modifyDate);
-
-                }
-            }
-
-            model.addAttribute("serverMessage","기업 데이터 수정을 완료했습니다.");
         }catch (Exception e){
             System.out.println("error : "+e);
-            model.addAttribute("serverMessage","기업 데이터 수정에 실패했습니다.");
+            redirectAttributes.addFlashAttribute("serverMessage","기업 데이터 수정에 실패했습니다.");
+            return new RedirectView("/admin/util/main") ;
         }
 
-        return "/admin/util/mainPage";
     }
 
-    @GetMapping("/dart/corp/detail")
-    public String mergeCorpDetailFromDart(
+    @PostMapping("/dart/corp/detail")
+    public RedirectView mergeCorpDetailFromDart(
             HttpServletRequest request, HttpServletResponse response, Model model
-            ,@RequestParam("corpCode") String corpCode
+            ,MergeCorpDetailPayload mergeCorpDetailPayload
+            ,RedirectAttributes redirectAttributes
     ){
-        String gubn = "" ;      //commandMap.get("GUBN").toString();
-        String stLimit = "" ;   //commandMap.get("stLimit").toString();
-        String edLimit = "" ;   //commandMap.get("edLimit").toString();
-
-        List<Map<String,Object>> getCorpList = new ArrayList<>() ; // adminService.getCorpListForMerge(commandMap);
-
-        String apiUrl = "https://opendart.fss.or.kr/api/company.json";
         // 파라미터 설정
 
-        if(corpCode != null) {
+//        if(true) {
             try {
-                String parameters = "?crtfc_key="+dartSecret+"&corp_code="+corpCode;
+
+                String gubn = mergeCorpDetailPayload.getGubn() ;      //commandMap.get("GUBN").toString();
+                String stLimit = mergeCorpDetailPayload.getStLimit() ;   //commandMap.get("stLimit").toString();
+                String edLimit = mergeCorpDetailPayload.getEdLimit() ;   //commandMap.get("edLimit").toString();
+
+                List<CorpEntity> getCo = new ArrayList<>() ; // adminService.getCorpListForMerge(commandMap);
+
+                String apiUrl = "https://opendart.fss.or.kr/api/company.json";
+
+                String parameters = "?crtfc_key="+dartSecret+"&corp_code="+"00126380";
 
                 // URL과 파라미터 조합
                 String uri = apiUrl + parameters;
-                System.out.println("uri : "+uri);
 
                 URL url = new URL(uri);
                 InputStreamReader isr = new InputStreamReader(url.openConnection().getInputStream(), "UTF-8");
                 ObjectMapper objectMapper = new ObjectMapper();
-
-                CorpDetailModel corpDetail = objectMapper.convertValue(isr, CorpDetailModel.class);
-                System.out.println("corpDetail : "+corpDetail);
+                CorpDetailModel corpDetail = objectMapper.readValue(isr, CorpDetailModel.class);
+                corpDetail.setCorpCode("00126380");
 
                 /*
                 for(int i=0; i<getCorpList.size(); i++) {
@@ -160,6 +135,24 @@ public class AdminUtilController {
                     System.out.println("corpDetail : "+corpDetail);
 
                     *//*
+                    corp_code
+                    corp_name
+                    stock_name
+                    stock_code
+                    ceo_name
+                    corp_cls
+                    jurir_no
+                    bizr_no
+                    address
+                    hm_url
+                    ir_url
+                    phn_no
+                    fax_no
+                    induty_code
+                    est_date
+                    acc_mt
+
+
                     String CORP_CODE = object.get("corp_code").toString();
                     String CORP_NAME = object.get("corp_name").toString();
                     String STOCK_NAME = object.get("stock_name").toString();
@@ -197,15 +190,16 @@ public class AdminUtilController {
 
                 }
                 */
-                model.addAttribute("serverMessage","기업개황을 성공적으로 Merge 했습니다.");
+                redirectAttributes.addFlashAttribute("serverMessage","기업개황을 성공적으로 Merge 했습니다.");
+                return new RedirectView("/admin/util/main") ;
             }catch (Exception e){
-
-                model.addAttribute("serverMessage","기업개황을 Merge 를 실패했습니다.");
+                System.out.println("error : "+e);
+                redirectAttributes.addFlashAttribute("serverMessage","기업개황 Merge 에 실패했습니다.");
+                return new RedirectView("/admin/util/main") ;
             }
 
-        }
+//        }
 
-        return "/admin/util/mainPage";
     }
 
 }

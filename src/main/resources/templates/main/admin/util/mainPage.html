@@ -52,7 +52,7 @@
         </form>
 
         기업정보(xml) 업로드
-        <form action="/admin/util/dart/corp" method="post" name="userForm" enctype="multipart/form-data">
+        <form action="/admin/util/dart/corp" method="post" name="corpForm" enctype="multipart/form-data">
             <table>
                 <tr>
                     <td colspan="2"><input type="file" name="file" /></td>
@@ -65,11 +65,11 @@
         </form>
 
         기업 상세정보 현행화
-        <form name="corpForm" id="corpForm" method="GET" style="margin: 30px;">
+        <form action="/admin/util/dart/corp/detail" method="post" name="corpDetailForm" th:object="${mergeCorpDetailPayload}" >
             <table>
                 <tr>
                     <td>
-                        <select name="GUBN" id="GUBN" class="" title="최신화사업장 대상 구분선택" style="width: 200px;" >
+                        <select th:field="*{gubn}" class="" title="최신화사업장 대상 구분선택" >
                             <option value = "">선택</option>
                             <option value = "01">재무제표 기준</option>
                             <option value = "02">상장기업 기준</option>
@@ -78,6 +78,7 @@
                 </tr>
                 <tr>
                     <td>
+                        <input type="hidden" th:field="*{corpCls}" >
                         <input type="checkbox" name="CORP_CLS1" value="Y">코스피
                         <input type="checkbox" name="CORP_CLS2" value="K">코스닥
                         <input type="checkbox" name="CORP_CLS3" value="N">코넥스
@@ -86,12 +87,12 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <input type="text" name="stLimit" id="stLimit" value="" class="" title="시작 번호"> -
-                        <input type="text" name="edLimit" id="edLimit" value="" class="" title="종료 번호">
+                        <input type="text" th:field="*{stLimit}" value="" class="" title="시작 번호"> -
+                        <input type="text" th:field="*{edLimit}" value="" class="" title="종료 번호">
                     </td>
                 </tr>
                 <tr>
-                    <td><a href="" onclick="goMerge();return false;" >사업장 최신화</a></td>
+                    <td><button onclick="submit()" >사업장 최신화</button></td>
                 </tr>
             </table>
 
@@ -102,58 +103,6 @@
     </div>
 </body>
 <script>
-    function imageView(imageName) {
-        if(imageName == 'loading'){
-            LoadingWithMask('/images/loading.jpg');
-        }
-    }
-
-    function LoadingWithMask(gif) {
-        //화면의 높이와 너비를 구합니다.
-        var maskHeight = $(document).height();
-        var maskWidth  = window.document.body.clientWidth;
-
-        //화면에 출력할 마스크를 설정해줍니다.
-        var mask       = "<div id='mask' style='position:absolute; z-index:9000; background-color:#000000; display:none; left:0; top:0;'></div>";
-        var loadingImg = '';
-
-        loadingImg += "<div id='imgDiv' style='position:absolute;'>";
-        loadingImg += "<img src='"+ gif + "' id='loadingImg'/>";
-        loadingImg += "</div>";
-
-        //화면에 레이어 추가
-        $('body')
-            .append(mask).append(loadingImg);
-
-        //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채웁니다.
-        $('#mask').css({
-                'width' : maskWidth,
-                'height': maskHeight,
-                'opacity' : '0.3'
-        });
-
-        $('#imgDiv').css({
-            'left':maskWidth/2,
-            'top':maskHeight/2,
-        });
-
-        $('#loadingImg').css({
-            'width': '100px',
-            'height': '100px',
-        });
-
-        //마스크 표시
-        $('#mask').show();
-
-        //로딩중 이미지 표시
-        $('#loadingImg').show();
-    }
-
-    function closeLoadingWithMask() {
-        $('#mask, #loadingImg').hide();
-        $('#mask, #loadingImg').empty();
-    }
-
     function requiredChk(){
         for(var i=0; i<$('.requiredChk').length; i++){
             var valChk = $('.requiredChk').eq(i).val();
@@ -171,21 +120,18 @@
         if(!requiredChk()){
             return;
         };
-        //imageView('loading');
         frm.action = '/cms/admin/exUp/cud';
         frm.submit();
     }
 
-    function goMerge(){
+    function goCorpDetailMerge(){
         var frm = document.corpForm;
-        //imageView('loading');
         frm.action = '/cms/admin/mergeCorp';
         frm.submit();
     }
 
     function goXMLSave(){
         var frm = document.xmlForm;
-        //imageView('loading');
         console.log("xmlForm 들어감? ");
         frm.action = '/admin/util/dart/corp';
         frm.submit();

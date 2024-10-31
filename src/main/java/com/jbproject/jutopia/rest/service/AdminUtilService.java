@@ -1,8 +1,9 @@
 package com.jbproject.jutopia.rest.service;
 
-import com.jbproject.jutopia.rest.model.result.AuthResult;
+import com.jbproject.jutopia.rest.model.XmlCorpModel;
 
-import java.util.List;
 
 public interface AdminUtilService {
+
+    void saveCorp(XmlCorpModel xmlCorpModel);
 }

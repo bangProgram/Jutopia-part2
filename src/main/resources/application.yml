@@ -25,8 +25,8 @@ spring:
       enabled: true
   servlet:
     multipart:
-      maxFileSize: 10MB # 파일 하나의 최대 크기
-      maxRequestSize: 30MB  # 한 번에 최대 업로드 가능 용량
+      maxFileSize: 30MB # 파일 하나의 최대 크기
+      maxRequestSize: 40MB  # 한 번에 최대 업로드 가능 용량
 
 management:
   endpoints:
