@@ -4,7 +4,9 @@ import com.jbproject.jutopia.rest.entity.CorpEntity;
 import com.jbproject.jutopia.rest.entity.RoleMenuRelation;
 import com.jbproject.jutopia.rest.model.CorpModel;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
+import com.jbproject.jutopia.rest.model.payload.MergeCorpDetailPayload;
 import com.jbproject.jutopia.rest.model.result.AuthResult;
+import com.jbproject.jutopia.rest.model.result.CorpResult;
 import com.jbproject.jutopia.rest.repository.CorpRepository;
 import com.jbproject.jutopia.rest.service.AdminUtilService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,10 @@ public class AdminUtilServiceImpl implements AdminUtilService {
 
     private final CorpRepository corpRepository;
 
+    public List<CorpResult> getCorpListByMergeCorpDetailPayload(MergeCorpDetailPayload payload){
+        System.out.println("test3");
+        return corpRepository.getCorpListByMergeCorpDetailPayload(payload);
+    }
     public void saveCorp(XmlCorpModel xmlCorpModel){
 
         System.out.println("test 2 : "+xmlCorpModel.getCorpModels().getFirst());
@@ -41,4 +47,6 @@ public class AdminUtilServiceImpl implements AdminUtilService {
             corpRepository.save(newCorp);
         }
     }
+
+
 }

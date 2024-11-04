@@ -70,25 +70,14 @@
                 <tr>
                     <td>
                         <select th:field="*{gubn}" class="" title="최신화사업장 대상 구분선택" >
-                            <option value = "">선택</option>
-                            <option value = "01">재무제표 기준</option>
-                            <option value = "02">상장기업 기준</option>
+                            <option value = "">전체</option>
+                            <option value = "01">상장기업 기준</option>
                         </select>
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        <input type="hidden" th:field="*{corpCls}" >
-                        <input type="checkbox" name="CORP_CLS1" value="Y">코스피
-                        <input type="checkbox" name="CORP_CLS2" value="K">코스닥
-                        <input type="checkbox" name="CORP_CLS3" value="N">코넥스
-                        <input type="checkbox" name="CORP_CLS4" value="E">기타
-                    </td>
-                </tr>
-                <tr>
                     <td colspan="2">
-                        <input type="text" th:field="*{stLimit}" value="" class="" title="시작 번호"> -
-                        <input type="text" th:field="*{edLimit}" value="" class="" title="종료 번호">
+                        <input type="text" th:field="*{page}" value="" class="" title="Page 번호">
                     </td>
                 </tr>
                 <tr>

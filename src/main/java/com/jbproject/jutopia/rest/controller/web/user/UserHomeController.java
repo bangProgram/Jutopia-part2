@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -28,10 +29,20 @@ public class UserHomeController {
     @GetMapping("/test")
     public String test() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String[] textList = new String[100];
+        int input = Integer.parseInt(br.readLine());
+        int cnt = 2 * input - 1;
 
-        Scanner scan = new Scanner(System.in);
-        scan.hasNext();
+        StringBuilder sb = new StringBuilder("    ");
+        for(int i=1; i<=cnt; i++){
+            if(i>=input){
+                System.out.println(sb);
+                if(i<cnt) sb.delete(sb.length()-2, sb.length());
+            }else{
+                System.out.println(sb);
+                sb.append(" ");
+                sb.append("**");
+            }
+        }
 
         return "/user/home/mainPage";
     }

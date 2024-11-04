@@ -8,6 +8,7 @@ import com.jbproject.jutopia.rest.model.CorpDetailModel;
 import com.jbproject.jutopia.rest.model.CorpModel;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpDetailPayload;
+import com.jbproject.jutopia.rest.model.result.CorpResult;
 import com.jbproject.jutopia.rest.repository.CorpRepository;
 import com.jbproject.jutopia.rest.service.AdminUtilService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -91,20 +92,16 @@ public class AdminUtilController {
     @PostMapping("/dart/corp/detail")
     public RedirectView mergeCorpDetailFromDart(
             HttpServletRequest request, HttpServletResponse response, Model model
-            ,MergeCorpDetailPayload mergeCorpDetailPayload
+            ,MergeCorpDetailPayload payload
             ,RedirectAttributes redirectAttributes
     ){
         // 파라미터 설정
 
 //        if(true) {
             try {
-
-                String gubn = mergeCorpDetailPayload.getGubn() ;      //commandMap.get("GUBN").toString();
-                String stLimit = mergeCorpDetailPayload.getStLimit() ;   //commandMap.get("stLimit").toString();
-                String edLimit = mergeCorpDetailPayload.getEdLimit() ;   //commandMap.get("edLimit").toString();
-
-                List<CorpEntity> getCo = new ArrayList<>() ; // adminService.getCorpListForMerge(commandMap);
-
+                System.out.println("test1");
+                List<CorpResult> getCorpList = adminUtilService.getCorpListByMergeCorpDetailPayload(payload); // adminService.getCorpListForMerge(commandMap);
+                System.out.println("test2");
                 String apiUrl = "https://opendart.fss.or.kr/api/company.json";
 
                 String parameters = "?crtfc_key="+dartSecret+"&corp_code="+"00126380";
@@ -118,6 +115,7 @@ public class AdminUtilController {
                 CorpDetailModel corpDetail = objectMapper.readValue(isr, CorpDetailModel.class);
                 corpDetail.setCorpCode("00126380");
 
+                System.out.println("getCorpList : "+getCorpList);
                 /*
                 for(int i=0; i<getCorpList.size(); i++) {
                     //String corpCode = getCorpList.get(i).get("CORP_CODE").toString();

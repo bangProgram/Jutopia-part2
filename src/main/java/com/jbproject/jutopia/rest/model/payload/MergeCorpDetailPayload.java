@@ -5,7 +5,5 @@ import lombok.Data;
 @Data
 public class MergeCorpDetailPayload {
     private String gubn;
-    private String corpCls;
-    private String stLimit;
-    private String edLimit;
+    private String page;
 }
