@@ -24,23 +24,26 @@ public class CorpCustomImpl implements CorpCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     public List<CorpResult> getCorpListByMergeCorpDetailPayload(MergeCorpDetailPayload payload) {
-        System.out.println("test4");
+        System.out.println("test4" + (payload.getGubn() != null));
         BooleanBuilder whereCondition = new BooleanBuilder();
         System.out.println("test5");
-        if(payload.getGubn() != null && payload.getGubn().isEmpty()){
+        if(payload.getGubn() != null && !payload.getGubn().isEmpty()){
             whereCondition.and(corpEntity.stockCode.ne(""));
         }
         System.out.println("test6");
         return jpaQueryFactory.select(
                 Projections.fields(
                         CorpResult.class,
-                        corpEntity
+                        corpEntity.corpCode
+                        ,corpEntity.corpName
+                        ,corpEntity.stockCode
+                        ,corpEntity.modifyDate
                 )
         ).from(corpEntity)
         .where(whereCondition)
         .orderBy(corpEntity.corpCode.asc())
-        .offset(Integer.parseInt(payload.getPage()))
-        .limit(Integer.parseInt(ServerUtilConstant.CORP_MERGE_LIMIT.getValue()))
+        //.offset((long) Integer.parseInt(payload.getPage()) * Integer.parseInt(ServerUtilConstant.CORP_MERGE_LIMIT.getValue()))
+        //.limit(Integer.parseInt(ServerUtilConstant.CORP_MERGE_LIMIT.getValue()))
         .fetch();
 
     }

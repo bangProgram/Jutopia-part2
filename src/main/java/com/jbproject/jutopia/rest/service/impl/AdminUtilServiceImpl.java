@@ -1,12 +1,15 @@
 package com.jbproject.jutopia.rest.service.impl;
 
+import com.jbproject.jutopia.rest.entity.CorpDetailEntity;
 import com.jbproject.jutopia.rest.entity.CorpEntity;
 import com.jbproject.jutopia.rest.entity.RoleMenuRelation;
+import com.jbproject.jutopia.rest.model.CorpDetailModel;
 import com.jbproject.jutopia.rest.model.CorpModel;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpDetailPayload;
 import com.jbproject.jutopia.rest.model.result.AuthResult;
 import com.jbproject.jutopia.rest.model.result.CorpResult;
+import com.jbproject.jutopia.rest.repository.CorpDetailRepository;
 import com.jbproject.jutopia.rest.repository.CorpRepository;
 import com.jbproject.jutopia.rest.service.AdminUtilService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,8 @@ import java.util.List;
 public class AdminUtilServiceImpl implements AdminUtilService {
 
     private final CorpRepository corpRepository;
+
+    private final CorpDetailRepository corpDetailRepository;
 
     public List<CorpResult> getCorpListByMergeCorpDetailPayload(MergeCorpDetailPayload payload){
         System.out.println("test3");
@@ -46,6 +51,30 @@ public class AdminUtilServiceImpl implements AdminUtilService {
             System.out.println("test 3 : "+ corpModel);
             corpRepository.save(newCorp);
         }
+    }
+
+    public void saveCorpDetail(CorpDetailModel corpDetailModel){
+
+        CorpDetailEntity newCorpDetail = CorpDetailEntity.builder()
+                .corpCode(corpDetailModel.getCorpCode())
+                .corpName(corpDetailModel.getCorpName())
+                .stockName(corpDetailModel.getStockName())
+                .stockCode(corpDetailModel.getStockCode())
+                .ceoName(corpDetailModel.getCeoNm())
+                .corpCls(corpDetailModel.getCorpCls())
+                .jurirNo(corpDetailModel.getJurirNo())
+                .bizrNo(corpDetailModel.getBizrNo())
+                .address(corpDetailModel.getAdres())
+                .hmUrl(corpDetailModel.getHmUrl())
+                .irUrl(corpDetailModel.getIrUrl())
+                .phnNo(corpDetailModel.getPhnNo())
+                .faxNo(corpDetailModel.getFaxNo())
+                .indutyCode(corpDetailModel.getIndutyCode())
+                .estDate(corpDetailModel.getEstDt())
+                .accMt(corpDetailModel.getAccMt())
+                .build();
+
+        corpDetailRepository.save(newCorpDetail);
     }
 
 

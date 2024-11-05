@@ -3,12 +3,14 @@ package com.jbproject.jutopia.rest.entity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDate;
 
 @Entity
 @Data
+@NoArgsConstructor
 @Table(name = "tb_corp")
 public class CorpEntity extends BaseEntity implements Persistable<String> {
 
@@ -23,7 +25,7 @@ public class CorpEntity extends BaseEntity implements Persistable<String> {
     @Column(name = "modify_date")
     private LocalDate modifyDate;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "corp_code", insertable = false, updatable = false)
     private CorpDetailEntity corpDetailEntity;
 

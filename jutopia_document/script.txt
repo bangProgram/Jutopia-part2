@@ -35,3 +35,85 @@ insert into tb_role(role,create_dttm,create_id,update_dttm,update_id,role_name)
 values ('ADMIN', sysdate(), 'SYSTEM' , sysdate(), 'SYSTEM', '관리자' );
 insert into tb_role(role,create_dttm,create_id,update_dttm,update_id,role_name)
 values ('SYSTEM', sysdate(), 'SYSTEM' , sysdate(), 'SYSTEM', '시스템관리자' );
+
+
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_Revenue',trim('수익(매출액)'),'INCOME_STATEMENT','1','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_CostOfSales',trim('매출원가'),'INCOME_STATEMENT','2','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_GrossProfit',trim('매출총이익'),'INCOME_STATEMENT','3','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('dart_TotalSellingGeneralAdministrativeExpenses',trim('판매비와관리비'),'INCOME_STATEMENT','4','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('dart_OperatingIncomeLoss',trim('영업이익(손실)'),'INCOME_STATEMENT','5','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('dart_OtherGains',trim('기타이익'),'INCOME_STATEMENT','6','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('dart_OtherLosses',trim('기타손실'),'INCOME_STATEMENT','7','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_FinanceIncome',trim('금융수익'),'INCOME_STATEMENT','8','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_FinanceCosts',trim('금융원가'),'INCOME_STATEMENT','9','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_ProfitLossBeforeTax',trim('법인세비용차감전순이익(손실)'),'INCOME_STATEMENT','10','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_IncomeTaxExpenseContinuingOperations',trim('법인세비용'),'INCOME_STATEMENT','11','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_ProfitLossFromContinuingOperations',trim('계속영업이익(손실)'),'INCOME_STATEMENT','12','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_ProfitLossFromDiscontinuedOperations',trim('중단영업이익(손실)'),'INCOME_STATEMENT','13','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_ProfitLoss',trim('당기순이익(손실)'),'INCOME_STATEMENT','14','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_ProfitLossAttributableToAbstract',trim('당기순이익(손실)의 귀속 [abstract]'),'INCOME_STATEMENT','15','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_ProfitLossAttributableToOwnersOfParent',trim('   지배기업의 소유주에게 귀속되는 당기순이익(손실)'),'INCOME_STATEMENT','16','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_ProfitLossAttributableToNoncontrollingInterests',trim('   비지배지분에 귀속되는 당기순이익(손실)'),'INCOME_STATEMENT','17','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_EarningsPerShareAbstract',trim('주당이익 [abstract]'),'INCOME_STATEMENT','18','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_BasicEarningsLossPerShare',trim('   기본주당이익(손실)'),'INCOME_STATEMENT','19','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_DilutedEarningsLossPerShare',trim('   희석주당이익(손실)'),'INCOME_STATEMENT','20','Y');
+
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_AssetsAbstract',trim('자산 [abstract]'),'BALANCE_SHEET','1','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_CurrentAssets',trim('   유동자산'),'BALANCE_SHEET','2','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_NoncurrentAssets',trim('   비유동자산'),'BALANCE_SHEET','3','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_Assets',trim('   자산총계'),'BALANCE_SHEET','4','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_LiabilitiesAbstract',trim('부채  [abstract]'),'BALANCE_SHEET','5','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_CurrentLiabilities',trim('   유동부채'),'BALANCE_SHEET','6','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_NoncurrentLiabilities',trim('   비유동부채'),'BALANCE_SHEET','7','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_Liabilities',trim('   부채총계'),'BALANCE_SHEET','8','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_EquityAbstract',trim('자본 [abstract]'),'BALANCE_SHEET','9','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_IssuedCapital',trim('   자본금'),'BALANCE_SHEET','10','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_RetainedEarnings',trim('   이익잉여금(결손금)'),'BALANCE_SHEET','11','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_EquityAttributableToOwnersOfParent',trim('   지배기업의 소유주에게 귀속되는 자본'),'BALANCE_SHEET','12','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_NoncontrollingInterests',trim('   비지배지분'),'BALANCE_SHEET','13','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_Equity',trim('   자본총계'),'BALANCE_SHEET','14','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('ifrs-full_EquityAndLiabilities',trim('자본과부채총계'),'BALANCE_SHEET','15','Y');
+
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('Q1',trim('1분기'),'QUARTERLY_REPORT','1','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('Q2',trim('2분기'),'QUARTERLY_REPORT','2','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('Q3',trim('3분기'),'QUARTERLY_REPORT','3','Y');
+insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
+values('Q4',trim('사업보고서'),'QUARTERLY_REPORT','4','Y');

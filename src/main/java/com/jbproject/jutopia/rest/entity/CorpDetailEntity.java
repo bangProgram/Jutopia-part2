@@ -3,9 +3,11 @@ package com.jbproject.jutopia.rest.entity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
 @Table(name = "tb_corp_detail")
 public class CorpDetailEntity {
 
@@ -43,7 +45,10 @@ public class CorpDetailEntity {
     @Column(name = "acc_mt")
     private String accMt;
 
-    @OneToOne(mappedBy = "corpDetailEntity")
+    @OneToOne(
+            fetch = FetchType.LAZY
+            ,mappedBy = "corpDetailEntity"
+    )
     private CorpEntity corpEntity;
 
     @Builder

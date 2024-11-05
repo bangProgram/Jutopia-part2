@@ -10,7 +10,8 @@ import lombok.ToString;
 public enum ServerUtilConstant {
 
     CORP_GUBN("01","상장기업 기준")
-    ,CORP_MERGE_LIMIT("10","merge limit 기준")
+    ,CORP_MERGE_LIMIT("900","merge limit 기준")
+    ,CORP_MERGE_DELAY(String.valueOf(30*1000),"merge limit 기준")
     ;
 
     private String value;
