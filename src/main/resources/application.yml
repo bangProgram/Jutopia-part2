@@ -28,6 +28,16 @@ spring:
       maxFileSize: 30MB # 파일 하나의 최대 크기
       maxRequestSize: 40MB  # 한 번에 최대 업로드 가능 용량
 
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    doc-expansion: none
+    tags-sorter: alpha
+    operations-sorter: method
+  api-docs:
+    groups:
+      enabled: true
+
 management:
   endpoints:
     web:

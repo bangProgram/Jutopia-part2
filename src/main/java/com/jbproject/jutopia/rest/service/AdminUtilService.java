@@ -1,5 +1,6 @@
 package com.jbproject.jutopia.rest.service;
 
+import com.jbproject.jutopia.rest.model.CorpCisModel;
 import com.jbproject.jutopia.rest.model.CorpDetailModel;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpDetailPayload;
@@ -13,4 +14,5 @@ public interface AdminUtilService {
     List<CorpResult> getCorpListByMergeCorpDetailPayload(MergeCorpDetailPayload payload);
     void saveCorp(XmlCorpModel xmlCorpModel);
     void saveCorpDetail(CorpDetailModel corpDetailModel);
+    void saveCorpCis(CorpCisModel corpCisModel);
 }

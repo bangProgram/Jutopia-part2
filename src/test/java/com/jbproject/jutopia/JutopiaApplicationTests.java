@@ -3,7 +3,6 @@ package com.jbproject.jutopia;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +15,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @SpringBootTest
-@Slf4j
 @Transactional
 class JutopiaApplicationTests {
 
@@ -40,10 +38,6 @@ class JutopiaApplicationTests {
 		System.out.println("xmlCorpModel : "+xmlCorpModel);
 
 		String fileType = file.getContentType();
-
-		log.info("fileType = {}", fileType);
-		log.info("getName = {}", file.getName());
-		log.info("getSize = {}", file.getSize());
 
 	}
 }

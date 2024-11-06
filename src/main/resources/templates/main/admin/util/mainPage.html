@@ -14,79 +14,76 @@
       어드민 기업데이터 관리 화면.
     </h6>
 
-    <div class="container-fluid">
-        재무정보 업로드
-        <form name="exform" id="exform" method="POST" enctype="multipart/form-data" style="margin: 30px;">
-            <input type="hidden" name="REPRT_NM" value=""/>
-            <input type="hidden" name="SJ_NM" value=""/>
-            <table>
-                <tr>
-                    <td colspan="2"><input type="text" name="BSNS_YEAR" id="BSNS_YEAR" class="requiredChk" value="" title="보고서 년도"></td>
-                </tr>
-                <tr>
-                    <td>
-                        <select name="REPRT_CODE" id="REPRT_CODE" class="requiredChk" title="보고서 구분 선택" style="width: 200px;" >
-                            <option value = "">선택</option>
-                            <option value = "0304">사업보고서</option>
-                            <option value = "0303">3분기보고서</option>
-                            <option value = "0302">반기보고서</option>
-                            <option value = "0301">1분기보고서</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="SJ_DIV" id="SJ_DIV" class="requiredChk" title="보고서 계정 선택" style="width: 200px;" >
-                            <option value = "">선택</option>
-                            <option value = "0401">손익계산서</option>
-                            <option value = "0402">재무보고서</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2"><input type="file" name="file" /></td>
-                </tr>
-                <tr>
-                    <td><a href="" onclick="goSave();return false;" >엑셀 업로드</a></td>
-                </tr>
-            </table>
+    <div class="a">
+        <div style="border: 2px solid;">
+            재무정보 업로드
+            <form action="/admin/util/dart/corp/report" name="exform" method="post" enctype="multipart/form-data"  th:object="${mergeCorpReportPayload}" >
+                <input type="hidden" th:field="*{quarterlyReportName}" value=""/>
+                <table>
+                    <tr>
+                        <td colspan="2"><input type="text" th:field="*{bsnsYear}" class="requiredChk" value="" title="보고서 년도"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select th:field="*{quarterlyReportCode}" class="requiredChk" title="보고서 분기 선택">
+                                <option th:each="quarterlyReportType : ${quarterlyReportTypeList}" th:value = "${quarterlyReportType.code}" th:utext="${quarterlyReportType.codeName}" ></option>
+                            </select>
+                        </td>
+                        <td>
+                            <select th:field="*{reportType}" class="requiredChk" title="보고서 타입 선택">
+                                <option th:each="reportType : ${reportTypeList}" th:value = "${reportType.code}" th:utext="${reportType.codeName}" ></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><input type="file" name="file" /></td>
+                    </tr>
+                    <tr>
+                        <td><button onclick="submit()" >엑셀 업로드</button></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
 
-        </form>
 
-        기업정보(xml) 업로드
-        <form action="/admin/util/dart/corp" method="post" name="corpForm" enctype="multipart/form-data">
-            <table>
-                <tr>
-                    <td colspan="2"><input type="file" name="file" /></td>
-                </tr>
-                <tr>
-                    <td><button onclick="submit()" >XML 업로드</button></td>
-                </tr>
-            </table>
+        <div style="border: 2px solid;">
+            기업정보(xml) 업로드
+            <form action="/admin/util/dart/corp" method="post" name="corpForm" enctype="multipart/form-data">
+                <table>
+                    <tr>
+                        <td colspan="2"><input type="file" name="file" /></td>
+                    </tr>
+                    <tr>
+                        <td><button onclick="submit()" >XML 업로드</button></td>
+                    </tr>
+                </table>
 
-        </form>
+            </form>
+        </div>
 
-        기업 상세정보 현행화
-        <form action="/admin/util/dart/corp/detail" method="post" name="corpDetailForm" th:object="${mergeCorpDetailPayload}" >
-            <table>
-                <tr>
-                    <td>
-                        <select th:field="*{gubn}" class="" title="최신화사업장 대상 구분선택" >
-                            <option value = "">전체</option>
-                            <option value = "01">상장기업 기준</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="text" th:field="*{page}" value="" class="" title="Page 번호">
-                    </td>
-                </tr>
-                <tr>
-                    <td><button onclick="submit()" >사업장 최신화</button></td>
-                </tr>
-            </table>
-
-        </form>
-
+        <div style="border: 2px solid;">
+            기업 상세정보 현행화
+            <form action="/admin/util/dart/corp/detail" method="post" name="corpDetailForm" th:object="${mergeCorpDetailPayload}" >
+                <table>
+                    <tr>
+                        <td>
+                            <select th:field="*{gubn}" class="" title="최신화사업장 대상 구분선택" >
+                                <option value = "">전체</option>
+                                <option value = "01">상장기업 기준</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="text" th:field="*{page}" value="" class="" title="Page 번호">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><button onclick="submit()" >사업장 최신화</button></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
 
 
     </div>

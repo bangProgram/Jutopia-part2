@@ -1,5 +1,8 @@
 package com.jbproject.jutopia.rest.entity;
 
+import com.jbproject.jutopia.rest.entity.key.CommCodeKey;
+import com.jbproject.jutopia.rest.entity.key.CorpCisKey;
+import com.jbproject.jutopia.rest.model.CorpCisModel;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -12,46 +15,63 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @Table(name = "tb_corp_cis")
-public class CorpCisEntity extends BaseEntity implements Persistable<String> {
-
+public class CorpCisEntity extends BaseEntity implements Persistable<CorpCisKey> {
+    /*
     @Id
-    @Column(name = "corp_code")
+    @Column(name = "corp_code",columnDefinition="varchar(10)")
     private String corpCode;
-
-    @Column(name = "bsns_year")
+    @Id
+    @Column(name = "bsns_year",columnDefinition="varchar(10)")
     private String bsnsYear;
-    @Column(name = "report_code")
-    private String reportCode;
-    @Column(name = "report_name")
-    private String reportName;
-    @Column(name = "closing_date")
-    private LocalDate closingDate;
-    @Column(name = "sj_div")
-    private String sjDiv;
-    @Column(name = "sj_nm")
-    private String sjNm;
+    @Id
+    @Column(name = "quarterly_report_code",columnDefinition="varchar(10)")
+    private String quarterlyReportCode;
+    @Id
     @Column(name = "account_id")
     private String accountId;
+    */
+    @EmbeddedId
+    private CorpCisKey id;
+
+
+    @Column(name = "quarterly_report_name")
+    private String quarterlyReportName;
+    @Column(name = "closing_date")
+    private LocalDate closingDate;
     @Column(name = "account_name")
     private String accountName;
     @Column(name = "net_amount")
-    private String netAmount;
+    private Long netAmount;
     @Column(name = "accumulated_net_amount")
-    private String accumulatedNetAmount;
+    private Long accumulatedNetAmount;
     @Column(name = "bef_net_amount")
-    private String befNetAmount;
+    private Long befNetAmount;
     @Column(name = "bef_accumulated_net_amount")
-    private String befAccumulatedNetAmount;
+    private Long befAccumulatedNetAmount;
     @Column(name = "currency")
     private String currency;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "corp_code", insertable = false, updatable = false)
-    private CorpDetailEntity corpDetailEntity;
+    @Builder
+    public CorpCisEntity(
+            String corpCode,String bsnsYear,String quarterlyReportCode,
+            String accountId,String quarterlyReportName,LocalDate closingDate,
+            String accountName,Long netAmount,Long accumulatedNetAmount,
+            Long befNetAmount,Long befAccumulatedNetAmount,String currency
+    ){
+            this.id = new CorpCisKey(corpCode,bsnsYear,quarterlyReportCode,accountId);
+            this.quarterlyReportName = quarterlyReportName;
+            this.closingDate = closingDate;
+            this.accountName = accountName;
+            this.netAmount = netAmount;
+            this.accumulatedNetAmount = accumulatedNetAmount;
+            this.befNetAmount = befNetAmount;
+            this.befAccumulatedNetAmount = befAccumulatedNetAmount;
+            this.currency = currency;
+    }
 
     @Override
-    public String getId() {
-        return corpCode;
+    public CorpCisKey getId() {
+        return id;
     }
 
     @Override

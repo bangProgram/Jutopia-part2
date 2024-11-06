@@ -3,19 +3,31 @@ package com.jbproject.jutopia.rest.controller.web.admin;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.jbproject.jutopia.constant.CommonConstatns;
 import com.jbproject.jutopia.constant.ServerUtilConstant;
+import com.jbproject.jutopia.rest.entity.CommCodeEntity;
 import com.jbproject.jutopia.rest.entity.CorpEntity;
+import com.jbproject.jutopia.rest.model.CorpCisModel;
 import com.jbproject.jutopia.rest.model.CorpDetailModel;
 import com.jbproject.jutopia.rest.model.CorpModel;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpDetailPayload;
+import com.jbproject.jutopia.rest.model.payload.MergeCorpReportPayload;
+import com.jbproject.jutopia.rest.model.result.CommCodeResult;
 import com.jbproject.jutopia.rest.model.result.CorpResult;
 import com.jbproject.jutopia.rest.repository.CorpRepository;
 import com.jbproject.jutopia.rest.service.AdminUtilService;
+import com.jbproject.jutopia.rest.service.CommCodeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,15 +45,14 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.math.BigDecimal;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -52,13 +63,21 @@ public class AdminUtilController {
     private String dartSecret;
 
     private final AdminUtilService adminUtilService;
+    private final CommCodeService commCodeService;
 
     @GetMapping("/main")
     public String goMain(
             HttpServletRequest request, HttpServletResponse response, Model model
             , MergeCorpDetailPayload mergeCorpDetailPayload
+            , MergeCorpReportPayload mergeCorpReportPayload
     ) {
 
+        List<CommCodeResult> quarterlyReportTypeList = commCodeService.getCommCodeListByGroupCode(CommonConstatns.QUARTERLY_REPORT_TYPE);
+        List<CommCodeResult> reportTypeList =  commCodeService.getCommCodeListByGroupCode(CommonConstatns.REPORT_TYPE);
+
+        model.addAttribute("quarterlyReportTypeList",quarterlyReportTypeList);
+        model.addAttribute("reportTypeList",reportTypeList);
+        model.addAttribute("mergeCorpReportPayload",mergeCorpReportPayload);
         model.addAttribute("mergeCorpDetailPayload",mergeCorpDetailPayload);
         return "/admin/util/mainPage";
     }
@@ -139,51 +158,64 @@ public class AdminUtilController {
     @PostMapping("/dart/corp/report")
     public RedirectView mergeCorpReportFromDart(
             HttpServletRequest request, HttpServletResponse response, Model model
-            , @RequestParam("file") MultipartFile multipartFile
-            ,RedirectAttributes redirectAttributes
+            , @RequestParam("file") MultipartFile file
+            , MergeCorpReportPayload mergeCorpReportPayload
+            , RedirectAttributes redirectAttributes
     ){
         try {
-            DataFormatter dataFormatter = new DataFormatter();
-            commandMap = init(request, commandMap);
+            List<CommCodeResult> accountType;
+            List<String> accounIdList;
+
+            if(mergeCorpReportPayload.getReportType().equals("CIS")){
+                accountType = commCodeService.getCommCodeListByGroupCode(CommonConstatns.INCOME_STATEMENT);
+                accounIdList = accountType.stream().map(CommCodeResult::getCode).toList();
+            } else if (mergeCorpReportPayload.getReportType().equals("BS")){
+                accountType = commCodeService.getCommCodeListByGroupCode(CommonConstatns.BALANCE_SHEET);
+                accounIdList = accountType.stream().map(CommCodeResult::getCode).toList();
+            } else {
+                accountType = new ArrayList<>();
+                accounIdList = new ArrayList<>();
+            }
+
             InputStream inputStream = file.getInputStream();
-            //Workbook workbook = WorkbookFactory.create(inputStream);
+
             // 엑셀 파일 읽기 로직을 구현합니다.
             int insertCnt = 0;
-
-            //손익보고서 insert parameter
-            Map<String, Object> paramMap = new HashMap<String, Object>();
-
-            //필수값 5코드
-            String BSNS_YEAR = commandMap.get("BSNS_YEAR").toString();
-            String REPRT_CODE = commandMap.get("REPRT_CODE").toString();
-            String REPRT_NM = commandMap.get("REPRT_NM").toString();
-            String SJ_DIV = commandMap.get("SJ_DIV").toString();
-            String SJ_NM = commandMap.get("SJ_NM").toString();
-            paramMap.put("BSNS_YEAR", BSNS_YEAR);
-            paramMap.put("REPRT_CODE", REPRT_CODE);
-            paramMap.put("REPRT_NM", REPRT_NM);
-            paramMap.put("SJ_DIV", SJ_DIV);
-            paramMap.put("SJ_NM", SJ_NM);
 
             XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
             XSSFSheet sheet = workbook.getSheetAt(0); // 해당 엑셀파일의 시트(Sheet) 수
             int rows = sheet.getPhysicalNumberOfRows(); // 해당 시트의 행의 개수
             for (int rowIndex = 1; rowIndex < rows; rowIndex++) {
+
                 XSSFRow row = sheet.getRow(rowIndex); // 각 행을 읽어온다
                 if (row != null) {
-                    String accountNm = row.getCell(10).getStringCellValue().replace("ifrs_", "ifrs-full_");
-                    if(	//20230705 EPS 넣으려고 임시로 주석처리
-                            accountNm.equals("ifrs-full_Revenue") || accountNm.equals("dart_OperatingIncomeLoss") || accountNm.equals("ifrs-full_ProfitLoss") ||
-                                    accountNm.equals("ifrs-full_BasicEarningsLossPerShare")
-                    ) {
+                    String accountId = row.getCell(10).getStringCellValue().replace("ifrs_", "ifrs-full_");
+
+                    if(	accounIdList.contains(accountId) ) {
                         int cells = row.getPhysicalNumberOfCells();
+                        
+                        //손익보고서 Insert Model 구성
+                        CorpCisModel corpCisModel = new CorpCisModel();
+
+                        // 회계년도, 분기정보 입력
+                        corpCisModel.setBsnsYear(mergeCorpReportPayload.getBsnsYear());
+                        corpCisModel.setQuarterlyReportCode(mergeCorpReportPayload.getQuarterlyReportCode());
+                        corpCisModel.setQuarterlyReportName(mergeCorpReportPayload.getQuarterlyReportName());
+                        corpCisModel.setAccountId(accountId);
+                        
                         for (int columnIndex = 0; columnIndex <= cells; columnIndex++) {
                             XSSFCell cell = row.getCell(columnIndex); // 셀에 담겨있는 값을 읽는다.
                             String value = "";
                             if(cell != null) {
                                 switch (cell.getCellType()) {
                                     case NUMERIC:
-                                        value = cell.getNumericCellValue() + "";
+                                        if( DateUtil.isCellDateFormatted(cell)) {
+                                            Date date = cell.getDateCellValue();
+                                            value = new SimpleDateFormat("yyyy-MM-dd").format(date);
+                                        }else{
+                                            BigDecimal bigDecimal = new BigDecimal(cell.getNumericCellValue());
+                                            value = bigDecimal + "";
+                                        }
                                         break;
                                     case STRING:
                                         value = cell.getStringCellValue() + "";
@@ -213,34 +245,50 @@ public class AdminUtilController {
                                  * COL_14 전기 1분기 3개월
                                  * COL_15 전기 1분기 누적
                                  */
-                                if(columnIndex == 1) {
-                                    value = value.replace("[", "").replace("]", "");
-                                }else if(columnIndex == 7) {
-                                    String[] strList = cell.toString().split("-");
-                                    String month = strList[1].replace("월", "");
-                                    if( Integer.parseInt(strList[1].replace("월", "")) < 10) {
-                                        month = "0"+month;
-                                    }
-                                    String clsDate = strList[2]+"-"+month+"-"+strList[0];
-                                    System.out.println("test2 : "+ clsDate);
-                                    value = clsDate + "";
-                                }else if(columnIndex == 10) {
-                                    value = value.replace("ifrs_", "ifrs-full_");
+                                switch (columnIndex){
+                                    case 1:
+                                        corpCisModel.setCorpCode(value.replace("[", "").replace("]", ""));
+                                        break;
+                                    case 7:
+                                        corpCisModel.setClosingDate(LocalDate.parse(value));
+                                        break;
+                                    case 8:
+                                        corpCisModel.setQuarterlyReportName(value);
+                                        break;
+                                    case 9:
+                                        corpCisModel.setCurrency(value);
+                                        break;
+                                    case 11:
+                                        corpCisModel.setAccountName(value);
+                                        break;
+                                    case 12:
+                                        corpCisModel.setNetAmount(Long.valueOf(value));
+                                        break;
+                                    case 13:
+                                        corpCisModel.setAccumulatedNetAmount(Long.valueOf(value));
+                                        break;
+                                    case 14:
+                                        corpCisModel.setBefNetAmount(Long.valueOf(value));
+                                        break;
+                                    case 15:
+                                        corpCisModel.setBefAccumulatedNetAmount(Long.valueOf(value));
+                                        break;
+
                                 }
-                                paramMap.put("COL_"+columnIndex, value);
                             }
                         }
-                        System.out.println(paramMap.toString());
-                        Integer resultInt = adminService.mergeReport(paramMap);
+                        adminUtilService.saveCorpCis(corpCisModel);
                         insertCnt++;
                     }
                 }
             }
             System.out.println("총 "+insertCnt+" 건 입력");
-            return getMessageModel("msgAndRedirect", "엑셀업로드가 완료되었습니다.", "/cms/admin/exUp");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return getMessageModel("msgAndRedirect", e.toString(), "/cms/admin/exUp");
+            redirectAttributes.addFlashAttribute("serverMessage", "엑셀업로드가 완료되었습니다.");
+            return new RedirectView("/admin/util/main") ;
+        } catch (Exception e) {
+            System.out.println("error : "+e);
+            redirectAttributes.addFlashAttribute("serverMessage", "엑셀업로드에 실패했습니다..");
+            return new RedirectView("/admin/util/main") ;
         }
     }
 
