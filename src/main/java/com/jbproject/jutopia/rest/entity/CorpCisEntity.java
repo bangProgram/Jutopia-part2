@@ -51,6 +51,20 @@ public class CorpCisEntity extends BaseEntity implements Persistable<CorpCisKey>
     @Column(name = "currency")
     private String currency;
 
+    public CorpCisEntity(
+            CorpCisModel model
+    ){
+        this.id = new CorpCisKey(model.getCorpCode(),model.getBsnsYear(),model.getQuarterlyReportCode(),model.getAccountId());
+        this.quarterlyReportName = model.getQuarterlyReportName();
+        this.closingDate = model.getClosingDate();
+        this.accountName = model.getAccountName();
+        this.netAmount = model.getNetAmount();
+        this.accumulatedNetAmount = model.getAccumulatedNetAmount();
+        this.befNetAmount = model.getBefNetAmount();
+        this.befAccumulatedNetAmount = model.getBefAccumulatedNetAmount();
+        this.currency = model.getCurrency();
+    }
+
     @Builder
     public CorpCisEntity(
             String corpCode,String bsnsYear,String quarterlyReportCode,
@@ -67,6 +81,17 @@ public class CorpCisEntity extends BaseEntity implements Persistable<CorpCisKey>
             this.befNetAmount = befNetAmount;
             this.befAccumulatedNetAmount = befAccumulatedNetAmount;
             this.currency = currency;
+    }
+
+    public void updateCorpCis(CorpCisModel model){
+        this.quarterlyReportName = model.getQuarterlyReportName();
+        this.closingDate = model.getClosingDate();
+        this.accountName = model.getAccountName();
+        this.netAmount = model.getNetAmount();
+        this.accumulatedNetAmount = model.getAccumulatedNetAmount();
+        this.befNetAmount = model.getBefNetAmount();
+        this.befAccumulatedNetAmount = model.getBefAccumulatedNetAmount();
+        this.currency = model.getCurrency();
     }
 
     @Override

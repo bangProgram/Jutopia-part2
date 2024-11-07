@@ -6,7 +6,9 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.jbproject.jutopia.constant.CommonConstatns;
 import com.jbproject.jutopia.constant.ServerUtilConstant;
 import com.jbproject.jutopia.rest.entity.CommCodeEntity;
+import com.jbproject.jutopia.rest.entity.CorpCisEntity;
 import com.jbproject.jutopia.rest.entity.CorpEntity;
+import com.jbproject.jutopia.rest.entity.key.CorpCisKey;
 import com.jbproject.jutopia.rest.model.CorpCisModel;
 import com.jbproject.jutopia.rest.model.CorpDetailModel;
 import com.jbproject.jutopia.rest.model.CorpModel;
@@ -15,6 +17,7 @@ import com.jbproject.jutopia.rest.model.payload.MergeCorpDetailPayload;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpReportPayload;
 import com.jbproject.jutopia.rest.model.result.CommCodeResult;
 import com.jbproject.jutopia.rest.model.result.CorpResult;
+import com.jbproject.jutopia.rest.model.result.MergeResult;
 import com.jbproject.jutopia.rest.repository.CorpRepository;
 import com.jbproject.jutopia.rest.service.AdminUtilService;
 import com.jbproject.jutopia.rest.service.CommCodeService;
@@ -159,131 +162,26 @@ public class AdminUtilController {
     public RedirectView mergeCorpReportFromDart(
             HttpServletRequest request, HttpServletResponse response, Model model
             , @RequestParam("file") MultipartFile file
-            , MergeCorpReportPayload mergeCorpReportPayload
+            , MergeCorpReportPayload payload
             , RedirectAttributes redirectAttributes
     ){
         try {
-            List<CommCodeResult> accountType;
-            List<String> accounIdList;
+            int createCnt = 0;
+            int updateCnt = 0;
 
-            if(mergeCorpReportPayload.getReportType().equals("CIS")){
-                accountType = commCodeService.getCommCodeListByGroupCode(CommonConstatns.INCOME_STATEMENT);
-                accounIdList = accountType.stream().map(CommCodeResult::getCode).toList();
-            } else if (mergeCorpReportPayload.getReportType().equals("BS")){
-                accountType = commCodeService.getCommCodeListByGroupCode(CommonConstatns.BALANCE_SHEET);
-                accounIdList = accountType.stream().map(CommCodeResult::getCode).toList();
-            } else {
-                accountType = new ArrayList<>();
-                accounIdList = new ArrayList<>();
+            if(payload.getReportType().equals("CIS")){
+                MergeResult mergeResult = adminUtilService.mergeCorpCis(payload, file);
+                createCnt = mergeResult.getCreateCnt();
+                updateCnt = mergeResult.getUpdateCnt();
+            } else if (payload.getReportType().equals("BS")){
+                MergeResult mergeResult = adminUtilService.mergeCorpCis(payload, file);
+                createCnt = mergeResult.getCreateCnt();
+                updateCnt = mergeResult.getUpdateCnt();
             }
 
-            InputStream inputStream = file.getInputStream();
-
-            // 엑셀 파일 읽기 로직을 구현합니다.
-            int insertCnt = 0;
-
-            XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
-            XSSFSheet sheet = workbook.getSheetAt(0); // 해당 엑셀파일의 시트(Sheet) 수
-            int rows = sheet.getPhysicalNumberOfRows(); // 해당 시트의 행의 개수
-            for (int rowIndex = 1; rowIndex < rows; rowIndex++) {
-
-                XSSFRow row = sheet.getRow(rowIndex); // 각 행을 읽어온다
-                if (row != null) {
-                    String accountId = row.getCell(10).getStringCellValue().replace("ifrs_", "ifrs-full_");
-
-                    if(	accounIdList.contains(accountId) ) {
-                        int cells = row.getPhysicalNumberOfCells();
-                        
-                        //손익보고서 Insert Model 구성
-                        CorpCisModel corpCisModel = new CorpCisModel();
-
-                        // 회계년도, 분기정보 입력
-                        corpCisModel.setBsnsYear(mergeCorpReportPayload.getBsnsYear());
-                        corpCisModel.setQuarterlyReportCode(mergeCorpReportPayload.getQuarterlyReportCode());
-                        corpCisModel.setQuarterlyReportName(mergeCorpReportPayload.getQuarterlyReportName());
-                        corpCisModel.setAccountId(accountId);
-                        
-                        for (int columnIndex = 0; columnIndex <= cells; columnIndex++) {
-                            XSSFCell cell = row.getCell(columnIndex); // 셀에 담겨있는 값을 읽는다.
-                            String value = "";
-                            if(cell != null) {
-                                switch (cell.getCellType()) {
-                                    case NUMERIC:
-                                        if( DateUtil.isCellDateFormatted(cell)) {
-                                            Date date = cell.getDateCellValue();
-                                            value = new SimpleDateFormat("yyyy-MM-dd").format(date);
-                                        }else{
-                                            BigDecimal bigDecimal = new BigDecimal(cell.getNumericCellValue());
-                                            value = bigDecimal + "";
-                                        }
-                                        break;
-                                    case STRING:
-                                        value = cell.getStringCellValue() + "";
-                                        break;
-                                    case BLANK:
-                                        value = ""; // 빈 값을 빈 문자열로 처리하거나 필요에 따라 다른 처리를 수행하세요.
-                                        break;
-                                    case ERROR:
-                                        value = cell.getErrorCellValue() + "";
-                                        break;
-                                }
-                                /*
-                                 * COL_0 재무제표종류
-                                 * COL_1 종목코드 = [회사코드]
-                                 * COL_2 회사명
-                                 * COL_3 시장구분
-                                 * COL_4 업종
-                                 * COL_5 업종명
-                                 * COL_6 결산월
-                                 * COL_7 결산기준일
-                                 * COL_8 보고서종류
-                                 * COL_9 통화
-                                 * COL_10 항목코드
-                                 * COL_11 항목명
-                                 * COL_12 당기 1분기 3개월
-                                 * COL_13 당기 1분기 누적
-                                 * COL_14 전기 1분기 3개월
-                                 * COL_15 전기 1분기 누적
-                                 */
-                                switch (columnIndex){
-                                    case 1:
-                                        corpCisModel.setCorpCode(value.replace("[", "").replace("]", ""));
-                                        break;
-                                    case 7:
-                                        corpCisModel.setClosingDate(LocalDate.parse(value));
-                                        break;
-                                    case 8:
-                                        corpCisModel.setQuarterlyReportName(value);
-                                        break;
-                                    case 9:
-                                        corpCisModel.setCurrency(value);
-                                        break;
-                                    case 11:
-                                        corpCisModel.setAccountName(value);
-                                        break;
-                                    case 12:
-                                        corpCisModel.setNetAmount(Long.valueOf(value));
-                                        break;
-                                    case 13:
-                                        corpCisModel.setAccumulatedNetAmount(Long.valueOf(value));
-                                        break;
-                                    case 14:
-                                        corpCisModel.setBefNetAmount(Long.valueOf(value));
-                                        break;
-                                    case 15:
-                                        corpCisModel.setBefAccumulatedNetAmount(Long.valueOf(value));
-                                        break;
-
-                                }
-                            }
-                        }
-                        adminUtilService.saveCorpCis(corpCisModel);
-                        insertCnt++;
-                    }
-                }
-            }
-            System.out.println("총 "+insertCnt+" 건 입력");
-            redirectAttributes.addFlashAttribute("serverMessage", "엑셀업로드가 완료되었습니다.");
+            String msg = createCnt+" 건 입력 / " +updateCnt+"건 수정 : 엑셀업로드가 완료되었습니다.";
+            System.out.println("JB msg : "+msg);
+            redirectAttributes.addFlashAttribute("serverMessage", msg);
             return new RedirectView("/admin/util/main") ;
         } catch (Exception e) {
             System.out.println("error : "+e);
