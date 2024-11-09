@@ -65,6 +65,8 @@ public class AdminUtilServiceImpl implements AdminUtilService {
         List<CommCodeResult> accountType;
         List<String> accounIdList;
 
+        // 엑셀 타이틀 받아서 년도, 보고서타입 추출하는 로직 추가하기
+
         accountType = commCodeRepository.getCommCodeListByGroupCode(CommonConstatns.INCOME_STATEMENT);
         accounIdList = accountType.stream().map(CommCodeResult::getCode).toList();
 
