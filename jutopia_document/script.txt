@@ -110,11 +110,11 @@ insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
 values('ifrs-full_EquityAndLiabilities',trim('자본과부채총계'),'BALANCE_SHEET','15','Y');
 
 insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
-values('Q1',trim('1분기'),'QUARTERLY_REPORT_TYPE','1','Y');
+values('Q1',trim('1분기보고서'),'QUARTERLY_REPORT_TYPE','1','Y');
 insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
-values('Q2',trim('2분기'),'QUARTERLY_REPORT_TYPE','2','Y');
+values('Q2',trim('반기보고서'),'QUARTERLY_REPORT_TYPE','2','Y');
 insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
-values('Q3',trim('3분기'),'QUARTERLY_REPORT_TYPE','3','Y');
+values('Q3',trim('3분기보고서'),'QUARTERLY_REPORT_TYPE','3','Y');
 insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
 values('Q4',trim('사업보고서'),'QUARTERLY_REPORT_TYPE','4','Y');
 

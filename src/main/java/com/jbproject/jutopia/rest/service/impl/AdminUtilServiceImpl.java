@@ -37,10 +37,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -62,21 +59,36 @@ public class AdminUtilServiceImpl implements AdminUtilService {
     public MergeResult mergeCorpCis(MergeCorpReportPayload payload, MultipartFile file) throws Exception{
         MergeResult mergeResult = new MergeResult();
 
-        List<CommCodeResult> accountType;
-        List<String> accounIdList;
-
         // 엑셀 타이틀 받아서 년도, 보고서타입 추출하는 로직 추가하기
 
-        accountType = commCodeRepository.getCommCodeListByGroupCode(CommonConstatns.INCOME_STATEMENT);
-        accounIdList = accountType.stream().map(CommCodeResult::getCode).toList();
+        List<CommCodeResult> accountType = commCodeRepository.getCommCodeListByGroupCode(CommonConstatns.INCOME_STATEMENT);
+        List<CommCodeResult> quarterlyReportType = commCodeRepository.getCommCodeListByGroupCode(CommonConstatns.QUARTERLY_REPORT_TYPE);
+        List<String> accounIdList = accountType.stream().map(CommCodeResult::getCode).toList();
 
         InputStream inputStream = file.getInputStream();
+        String[] fileName = Objects.requireNonNull(file.getOriginalFilename()).split("_");
+
 
         // 엑셀 파일 읽기 로직을 구현합니다.
         int updateCnt = 0;
         int createCnt = 0;
 
         XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
+
+
+        // 회계년도, 분기정보 입력
+        String bsnsYear = fileName[0];
+        String quarterlyReportName = "";
+        String quarterlyReportCode = "";
+
+        for(CommCodeResult quarterly : quarterlyReportType){
+            if(quarterly.getCodeName().equals(fileName[1])){
+                quarterlyReportName = quarterly.getCodeName();
+                quarterlyReportCode = quarterly.getCode();
+            }
+        }
+
+        System.out.println(" JB quarterlyReportCode : "+quarterlyReportCode);
         XSSFSheet sheet = workbook.getSheetAt(0); // 해당 엑셀파일의 시트(Sheet) 수
         int rows = sheet.getPhysicalNumberOfRows(); // 해당 시트의 행의 개수
         for (int rowIndex = 1; rowIndex < rows; rowIndex++) {
@@ -92,14 +104,11 @@ public class AdminUtilServiceImpl implements AdminUtilService {
                     //손익보고서 Insert Model 구성
                     CorpCisModel corpCisModel = new CorpCisModel();
 
-                    // 회계년도, 분기정보 입력
-                    String bsnsYear = payload.getBsnsYear();
-                    String quarterlyReportCode = payload.getQuarterlyReportCode();
 
                     corpCisModel.setCorpCode(corpCode);
                     corpCisModel.setBsnsYear(bsnsYear);
                     corpCisModel.setQuarterlyReportCode(quarterlyReportCode);
-                    corpCisModel.setQuarterlyReportName(payload.getQuarterlyReportName());
+                    corpCisModel.setQuarterlyReportName(quarterlyReportName);
                     corpCisModel.setAccountId(accountId);
 
                     Optional<CorpCisEntity> corpCisEntity = corpCisRepository.findById(new CorpCisKey(corpCode,bsnsYear,quarterlyReportCode,accountId));
@@ -128,7 +137,7 @@ public class AdminUtilServiceImpl implements AdminUtilService {
                                     value = cell.getErrorCellValue() + "";
                                     break;
                             }
-                            /*
+                           /*
                              * COL_0 재무제표종류
                              * COL_1 종목코드 = [회사코드]
                              * COL_2 회사명
@@ -145,7 +154,7 @@ public class AdminUtilServiceImpl implements AdminUtilService {
                              * COL_13 당기 1분기 누적
                              * COL_14 전기 1분기 3개월
                              * COL_15 전기 1분기 누적
-                             */
+                            */
                             switch (columnIndex){
                                 case 7:
                                     corpCisModel.setClosingDate(LocalDate.parse(value));

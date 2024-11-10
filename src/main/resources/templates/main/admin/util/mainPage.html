@@ -18,17 +18,8 @@
         <div style="border: 2px solid;">
             재무정보 업로드
             <form action="/admin/util/dart/corp/report" name="exform" method="post" enctype="multipart/form-data"  th:object="${mergeCorpReportPayload}" >
-                <input type="hidden" th:field="*{quarterlyReportName}" value=""/>
                 <table>
                     <tr>
-                        <td colspan="2"><input type="text" th:field="*{bsnsYear}" class="requiredChk" value="" title="보고서 년도"></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <select th:field="*{quarterlyReportCode}" class="requiredChk" title="보고서 분기 선택">
-                                <option th:each="quarterlyReportType : ${quarterlyReportTypeList}" th:value = "${quarterlyReportType.code}" th:utext="${quarterlyReportType.codeName}" ></option>
-                            </select>
-                        </td>
                         <td>
                             <select th:field="*{reportType}" class="requiredChk" title="보고서 타입 선택">
                                 <option th:each="reportType : ${reportTypeList}" th:value = "${reportType.code}" th:utext="${reportType.codeName}" ></option>
