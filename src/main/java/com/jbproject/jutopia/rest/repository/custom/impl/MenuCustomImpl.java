@@ -62,7 +62,46 @@ public class MenuCustomImpl implements MenuCustom {
             result.setSeq(menu.getSeq());
             result.setParentId(menu.getParentId());
             result.setMenuType(menu.getMenuType());
-            result.setIsShowBar(menu.getIsShowBar());
+            result.setShowYn(menu.getShowYn());
+            result.setChildMenu(menu.getChildMenu().stream().map(child -> {
+                MenuResult childResult = new MenuResult();
+                childResult.setMenuId(child.getId());
+                childResult.setMenuName(child.getMenuName());
+                childResult.setMenuUrl(child.getMenuUrl());
+                childResult.setUseYn(child.getUseYn());
+                childResult.setSeq(child.getSeq());
+                childResult.setParentId(child.getParentId());
+                childResult.setMenuType(child.getMenuType());
+                childResult.setShowYn(child.getShowYn());
+                return childResult;
+            }).collect(Collectors.toList()));
+            return result;
+        }).collect(Collectors.toList());
+
+    }
+
+    public List<MenuResult> getMenuList(String menuType, String showYn){
+
+        List<MenuEntity> menuEntities = queryFactory.selectFrom(menuEntity)
+                .leftJoin(menuEntity.childMenu).fetchJoin() // 자식 메뉴를 LEFT JOIN FETCH
+                .where(
+                        menuEntity.menuType.eq(menuType)
+                                .and(menuEntity.parentId.isNull())
+                                .and(menuEntity.showYn.eq(showYn))
+                )
+                .orderBy(menuEntity.seq.asc())
+                .fetch();
+
+        return menuEntities.stream().map(menu -> {
+            MenuResult result = new MenuResult();
+            result.setMenuId(menu.getId());
+            result.setMenuName(menu.getMenuName());
+            result.setMenuUrl(menu.getMenuUrl());
+            result.setUseYn(menu.getUseYn());
+            result.setSeq(menu.getSeq());
+            result.setParentId(menu.getParentId());
+            result.setMenuType(menu.getMenuType());
+            result.setShowYn(menu.getShowYn());
             result.setChildMenu(menu.getChildMenu().stream().map(child -> {
                 MenuResult childResult = new MenuResult();
                 childResult.setMenuId(child.getId());
@@ -72,7 +111,7 @@ public class MenuCustomImpl implements MenuCustom {
                 childResult.setSeq(child.getSeq());
                 childResult.setParentId(child.getParentId());
                 child.setMenuType(child.getMenuType());
-                childResult.setIsShowBar(child.getIsShowBar());
+                childResult.setShowYn(child.getShowYn());
                 return childResult;
             }).collect(Collectors.toList()));
             return result;
@@ -94,7 +133,7 @@ public class MenuCustomImpl implements MenuCustom {
                             menuEntity.seq.as("seq"),
                             menuEntity.parentId.as("parentId"),
                             menuEntity.menuType,
-                            menuEntity.isShowBar,
+                            menuEntity.showYn,
                             Projections.fields(
                                     RoleMenuResult.class,
                                     roleMenuRelation.roleId,

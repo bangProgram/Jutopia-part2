@@ -2,12 +2,12 @@
     <nav th:fragment="menuBarFragment" th:if="${curPage == 'USER'}">
         <div id="menuBarDiv">
             <div id="menuBarDiv-button">
-                <button type="button" th:onclick="|location.href='@{/admin/menu/main/USER}'|">
-                    관리자 메뉴 화면 이동
-                </button>
-                <button type="button" th:onclick="|location.href='@{/admin/auth/main/VISITOR}'|">
-                    관리자 권한 화면 이동
-                </button>
+                <button th:each="topMenu : ${topMenuList}" th:onclick="|location.href='@{${topMenu.menuUrl}}'|" th:utext="${topMenu.menuName}" ></button>
+            </div>
+        </div>
+        <div id="childMenuBarDiv">
+            <div id="childMenuBarDiv-button">
+                <button th:each="topMenu : ${topMenuList}" th:onclick="|location.href='@{${topMenu.menuUrl}}'|" th:utext="${topMenu.menuName}" ></button>
             </div>
         </div>
     </nav>

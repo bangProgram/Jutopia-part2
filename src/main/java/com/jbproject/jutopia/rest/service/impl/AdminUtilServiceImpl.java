@@ -1,6 +1,8 @@
 package com.jbproject.jutopia.rest.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.constant.CommonConstatns;
+import com.jbproject.jutopia.constant.ServerUtilConstant;
 import com.jbproject.jutopia.rest.entity.CorpCisEntity;
 import com.jbproject.jutopia.rest.entity.CorpDetailEntity;
 import com.jbproject.jutopia.rest.entity.CorpEntity;
@@ -28,12 +30,15 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -45,15 +50,44 @@ import java.util.*;
 @Transactional
 public class AdminUtilServiceImpl implements AdminUtilService {
 
+    @Value("${opendart.secret}")
+    private String dartSecret;
+
     private final CorpRepository corpRepository;
 
     private final CorpDetailRepository corpDetailRepository;
     private final CorpCisRepository corpCisRepository;
     private final CommCodeRepository commCodeRepository;
 
-    public List<CorpResult> getCorpListByMergeCorpDetailPayload(MergeCorpDetailPayload payload){
-        System.out.println("test3");
-        return corpRepository.getCorpListByMergeCorpDetailPayload(payload);
+    public void mergeCorpDetail(MergeCorpDetailPayload payload) throws Exception{
+        List<CorpResult> getCorpList = corpRepository.getCorpListByMergeCorpDetailPayload(payload); // adminService.getCorpListForMerge(commandMap);
+        String apiUrl = "https://opendart.fss.or.kr/api/company.json";
+        System.out.println("getCorpList : "+getCorpList);
+
+        int cnt = 0;
+        for(CorpResult corpResult : getCorpList){
+            String corpCode = corpResult.getCorpCode();
+            String parameters = "?crtfc_key="+dartSecret+"&corp_code="+corpCode;
+
+            // URL과 파라미터 조합
+            String uri = apiUrl + parameters;
+
+            URL url = new URL(uri);
+            InputStreamReader isr = new InputStreamReader(url.openConnection().getInputStream(), "UTF-8");
+            ObjectMapper objectMapper = new ObjectMapper();
+            CorpDetailModel corpDetail = objectMapper.readValue(isr, CorpDetailModel.class);
+            corpDetail.setCorpCode(corpCode);
+
+            CorpDetailEntity newCorpDetail = new CorpDetailEntity(corpDetail);
+
+            corpDetailRepository.save(newCorpDetail);
+            cnt++;
+
+            if(cnt == Integer.parseInt(ServerUtilConstant.CORP_MERGE_LIMIT.getValue())){
+                cnt = 0;
+                Thread.sleep(Integer.parseInt(ServerUtilConstant.CORP_MERGE_DELAY.getValue()));
+            }
+        }
     }
 
     public MergeResult mergeCorpCis(MergeCorpReportPayload payload, MultipartFile file) throws Exception{
@@ -213,7 +247,6 @@ public class AdminUtilServiceImpl implements AdminUtilService {
         System.out.println("test 2 : "+xmlCorpModel.getCorpModels().getFirst());
 
         for(CorpModel corpModel : xmlCorpModel.getCorpModels()){
-            System.out.println("test 3 : "+ corpModel);
             CorpEntity newCorp = CorpEntity.builder()
                     .corpCode(corpModel.getCorpCode())
                     .corpName(corpModel.getCorpName())
@@ -221,33 +254,8 @@ public class AdminUtilServiceImpl implements AdminUtilService {
                     .modifyDate(LocalDate.parse(corpModel.getModifyDate(), DateTimeFormatter.ofPattern("yyyyMMdd")))
                     .build();
 
-            System.out.println("test 3 : "+ corpModel);
             corpRepository.save(newCorp);
         }
-    }
-
-    public void saveCorpDetail(CorpDetailModel corpDetailModel){
-
-        CorpDetailEntity newCorpDetail = CorpDetailEntity.builder()
-                .corpCode(corpDetailModel.getCorpCode())
-                .corpName(corpDetailModel.getCorpName())
-                .stockName(corpDetailModel.getStockName())
-                .stockCode(corpDetailModel.getStockCode())
-                .ceoName(corpDetailModel.getCeoNm())
-                .corpCls(corpDetailModel.getCorpCls())
-                .jurirNo(corpDetailModel.getJurirNo())
-                .bizrNo(corpDetailModel.getBizrNo())
-                .address(corpDetailModel.getAdres())
-                .hmUrl(corpDetailModel.getHmUrl())
-                .irUrl(corpDetailModel.getIrUrl())
-                .phnNo(corpDetailModel.getPhnNo())
-                .faxNo(corpDetailModel.getFaxNo())
-                .indutyCode(corpDetailModel.getIndutyCode())
-                .estDate(corpDetailModel.getEstDt())
-                .accMt(corpDetailModel.getAccMt())
-                .build();
-
-        corpDetailRepository.save(newCorpDetail);
     }
 
     public void updateCorpCis(CorpCisEntity entity){

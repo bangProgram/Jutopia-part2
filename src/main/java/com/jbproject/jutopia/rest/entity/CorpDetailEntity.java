@@ -1,5 +1,6 @@
 package com.jbproject.jutopia.rest.entity;
 
+import com.jbproject.jutopia.rest.model.CorpDetailModel;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -50,6 +51,25 @@ public class CorpDetailEntity {
             ,mappedBy = "corpDetailEntity"
     )
     private CorpEntity corpEntity;
+
+    public CorpDetailEntity(CorpDetailModel corpDetailModel){
+        this.corpCode = corpDetailModel.getCorpCode();
+        this.corpName = corpDetailModel.getCorpName();
+        this.stockName =  corpDetailModel.getStockName();
+        this.stockCode =  corpDetailModel.getStockCode();
+        this.ceoName =  corpDetailModel.getCeoNm();
+        this.corpCls =  corpDetailModel.getCorpCls();
+        this.jurirNo =  corpDetailModel.getJurirNo();
+        this.bizrNo =  corpDetailModel.getBizrNo();
+        this.address =  corpDetailModel.getAdres();
+        this.hmUrl =  corpDetailModel.getHmUrl();
+        this.irUrl =  corpDetailModel.getIrUrl();
+        this.phnNo =  corpDetailModel.getPhnNo();
+        this.faxNo =  corpDetailModel.getFaxNo();
+        this.indutyCode =  corpDetailModel.getIndutyCode();
+        this.estDate =  corpDetailModel.getEstDt();
+        this.accMt =  corpDetailModel.getAccMt();
+    }
 
     @Builder
     public CorpDetailEntity(

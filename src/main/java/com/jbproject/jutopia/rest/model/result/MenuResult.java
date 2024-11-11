@@ -17,7 +17,7 @@ public class MenuResult {
     private int seq;
     private Long parentId;
     private String menuType;
-    private String isShowBar;
+    private String showYn;
 
     private List<MenuResult> childMenu;
 

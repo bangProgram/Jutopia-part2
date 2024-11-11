@@ -53,16 +53,13 @@ public class GlobalControllerAdvice {
         return requestUrl.contains("/admin") ? "ADMIN" : "USER";
     }
 
-    @ModelAttribute("sideBarMenus")
-    public List<MenuResult> sideBarMenu(HttpServletRequest request) {
+    @ModelAttribute("topMenuList")
+    public List<MenuResult> getTopMenuList(HttpServletRequest request) {
         String requestUrl = request.getRequestURI();
         if(!requestUrl.contains("/admin")){
-            return menuService.getMenuList(CommonConstatns.MENU_ROLE_USER);
+            return menuService.getShowMenuList(CommonConstatns.MENU_ROLE_USER);
         }else{
             return new ArrayList<>();
         }
-
-
-
     }
 }

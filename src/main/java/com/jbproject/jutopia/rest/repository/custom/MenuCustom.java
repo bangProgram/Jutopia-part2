@@ -8,6 +8,7 @@ import java.util.List;
 public interface MenuCustom {
 
     List<MenuResult> getMenuList(String menuType);
+    List<MenuResult> getMenuList(String menuType, String showYn);
 
     AuthResult getMenuRoleList(String roleType);
 }

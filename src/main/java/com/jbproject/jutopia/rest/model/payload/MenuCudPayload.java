@@ -12,5 +12,5 @@ public class MenuCudPayload {
     private int seq = 1;
     private Long parentId;
     private String menuType;
-    private String isShowBar = "N";
+    private String showYn = "N";
 }

@@ -17,9 +17,8 @@ import java.util.Optional;
 
 public interface AdminUtilService {
 
-    List<CorpResult> getCorpListByMergeCorpDetailPayload(MergeCorpDetailPayload payload);
     Optional<CorpCisEntity> findById(CorpCisKey key);
     void saveCorp(XmlCorpModel xmlCorpModel);
-    void saveCorpDetail(CorpDetailModel corpDetailModel);
+    void mergeCorpDetail(MergeCorpDetailPayload payload) throws Exception;
     MergeResult mergeCorpCis(MergeCorpReportPayload payload, MultipartFile file) throws Exception;
 }

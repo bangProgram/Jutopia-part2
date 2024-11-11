@@ -10,4 +10,5 @@ public interface MenuService {
     void addMenu(MenuCudPayload payload);
     void modMenu(MenuCudPayload payload);
     List<MenuResult> getMenuList(String menuType);
+    List<MenuResult> getShowMenuList(String menuType);
 }

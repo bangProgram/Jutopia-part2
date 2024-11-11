@@ -55,7 +55,7 @@
                 <label><input type="text" th:field="*{useYn}"></label>
             </td>
             <td>
-                <label><input type="text" th:field="*{isShowBar}"></label>
+                <label><input type="text" th:field="*{showYn}"></label>
             </td>
             <td>
                 <button type="submit">
@@ -89,7 +89,7 @@
         <li><span th:text="${menuResult.parentId}">parentId</span></li>
         <li><span th:text="${menuResult.seq}">seq</span></li>
         <li><span th:text="${menuResult.useYn}">useYn</span></li>
-        <li><span th:text="${menuResult.isShowBar}">useYn</span></li>
+        <li><span th:text="${menuResult.showYn}">useYn</span></li>
         <li>
             <button type="button"  th:onclick="fillInput(
                 [[${menuResult.menuId}]]
@@ -98,7 +98,7 @@
                 ,[[${menuResult.parentId}]]
                 ,[[${menuResult.seq}]]
                 ,[[${menuResult.useYn}]]
-                ,[[${menuResult.isShowBar}]]
+                ,[[${menuResult.showYn}]]
             )">
                 <span>수정</span>
             </button>
@@ -111,7 +111,7 @@
                 <li><span th:text="${childMenu.parentId}">parentId</span></li>
                 <li><span th:text="${childMenu.seq}">seq</span></li>
                 <li><span th:text="${childMenu.useYn}">useYn</span></li>
-                <li><span th:text="${childMenu.isShowBar}">useYn</span></li>
+                <li><span th:text="${childMenu.showYn}">useYn</span></li>
                 <li>
                     <button type="button"  th:onclick="fillInput(
                         [[${childMenu.menuId}]]
@@ -120,7 +120,7 @@
                         ,[[${childMenu.parentId}]]
                         ,[[${childMenu.seq}]]
                         ,[[${childMenu.useYn}]]
-                        ,[[${childMenu.isShowBar}]]
+                        ,[[${childMenu.showYn}]]
                     )">
                         <span>수정</span>
                     </button>
@@ -165,7 +165,7 @@
     }
 
     function fillInput(
-        menuId ,menuName ,menuUrl ,parentId ,seq ,useYn ,isShowBar
+        menuId ,menuName ,menuUrl ,parentId ,seq ,useYn ,showYn
     ) {
         const input1 = document.getElementById("menuId");
         const input2 = document.getElementById("menuName");
@@ -173,7 +173,7 @@
         const input4 = document.getElementById("parentId");
         const input5 = document.getElementById("seq");
         const input6 = document.getElementById("useYn");
-        const input7 = document.getElementById("isShowBar");
+        const input7 = document.getElementById("showYn");
 
         input1.value = menuId;
         input2.value = menuName;
@@ -181,7 +181,7 @@
         input4.value = parentId;
         input5.value = seq;
         input6.value = useYn;
-        input7.value = isShowBar;
+        input7.value = showYn;
     }
 </script>
 </body>

@@ -35,7 +35,7 @@ public class MenuEntity extends BaseEntity {
     @Column(name = "menu_type")
     private String menuType;
     @Column(name = "is_show_bar")
-    private String isShowBar;
+    private String showYn;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
@@ -48,14 +48,14 @@ public class MenuEntity extends BaseEntity {
     private List<RoleMenuRelation> roleMenuRelations;
 
     @Builder
-    public MenuEntity(String menuName,String menuUrl,String useYn,int seq, String menuType, String menuDetail, String isShowBar){
+    public MenuEntity(String menuName,String menuUrl,String useYn,int seq, String menuType, String menuDetail, String showYn){
         this.menuName = menuName;
         this.menuUrl = menuUrl;
         this.useYn = useYn;
         this.seq = seq;
         this.menuType = menuType;
         this.menuDetail = menuDetail;
-        this.isShowBar = isShowBar;
+        this.showYn = showYn;
     }
 
 
@@ -66,6 +66,6 @@ public class MenuEntity extends BaseEntity {
         this.seq = payload.getSeq();
         this.menuType = payload.getMenuType();
         this.menuDetail = payload.getMenuDetail();
-        this.isShowBar = payload.getIsShowBar();
+        this.showYn = payload.getShowYn();
     }
 }

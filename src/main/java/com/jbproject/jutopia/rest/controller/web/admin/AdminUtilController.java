@@ -98,7 +98,6 @@ public class AdminUtilController {
 
             XmlCorpModel xmlCorpModel = objectMapper.readValue(multipartFile.getInputStream(), XmlCorpModel.class);
 
-            System.out.println("test 1");
             adminUtilService.saveCorp(xmlCorpModel);
 
             redirectAttributes.addFlashAttribute("serverMessage","기업 데이터 수정을 완료했습니다.");
@@ -120,33 +119,7 @@ public class AdminUtilController {
     ){
         // 파라미터 설정
         try {
-            List<CorpResult> getCorpList = adminUtilService.getCorpListByMergeCorpDetailPayload(payload); // adminService.getCorpListForMerge(commandMap);
-            String apiUrl = "https://opendart.fss.or.kr/api/company.json";
-            System.out.println("getCorpList : "+getCorpList);
-
-            int cnt = 0;
-            for(CorpResult corpResult : getCorpList){
-                String corpCode = corpResult.getCorpCode();
-                String parameters = "?crtfc_key="+dartSecret+"&corp_code="+corpCode;
-
-                // URL과 파라미터 조합
-                String uri = apiUrl + parameters;
-
-                URL url = new URL(uri);
-                InputStreamReader isr = new InputStreamReader(url.openConnection().getInputStream(), "UTF-8");
-                ObjectMapper objectMapper = new ObjectMapper();
-                CorpDetailModel corpDetail = objectMapper.readValue(isr, CorpDetailModel.class);
-                corpDetail.setCorpCode(corpCode);
-
-                adminUtilService.saveCorpDetail(corpDetail);
-                cnt++;
-
-                if(cnt == Integer.parseInt(ServerUtilConstant.CORP_MERGE_LIMIT.getValue())){
-                    cnt = 0;
-                    Thread.sleep(Integer.parseInt(ServerUtilConstant.CORP_MERGE_DELAY.getValue()));
-                }
-            }
-
+            adminUtilService.mergeCorpDetail(payload);
             redirectAttributes.addFlashAttribute("serverMessage","기업개황을 성공적으로 Merge 했습니다.");
             return new RedirectView("/admin/util/main") ;
         }catch (Exception e){

@@ -1,6 +1,8 @@
 package com.jbproject.jutopia.rest.service.impl;
 
+import com.jbproject.jutopia.constant.CommonConstatns;
 import com.jbproject.jutopia.constant.CommonErrorCode;
+import com.jbproject.jutopia.constant.ServerUtilConstant;
 import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.rest.entity.MenuEntity;
 import com.jbproject.jutopia.rest.model.payload.MenuCudPayload;
@@ -31,7 +33,7 @@ public class MenuServiceImpl implements MenuService {
                 .seq(payload.getSeq())
                 .menuType(payload.getMenuType())
                 .menuDetail(payload.getMenuDetail())
-                .isShowBar(payload.getIsShowBar())
+                .showYn(payload.getShowYn())
                 .build();
 
         if(payload.getParentId() != null){
@@ -51,7 +53,7 @@ public class MenuServiceImpl implements MenuService {
 
         curMenu.modMenu(payload);
 
-        if(payload.getParentId() != 0){
+        if(payload.getParentId() != null){
             MenuEntity parentMenu = menuRepository.findById(payload.getParentId()).orElseThrow(
                     () -> new ExceptionProvider(CommonErrorCode.MENU_404_01)
             );
@@ -65,5 +67,10 @@ public class MenuServiceImpl implements MenuService {
 
     public List<MenuResult> getMenuList(String menuType){
         return menuRepository.getMenuList(menuType);
+    }
+
+
+    public List<MenuResult> getShowMenuList(String menuType){
+        return menuRepository.getMenuList(menuType, CommonConstatns.IS_YES);
     }
 }

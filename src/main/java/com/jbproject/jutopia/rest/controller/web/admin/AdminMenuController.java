@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
@@ -68,15 +69,25 @@ public class AdminMenuController {
     }
 
     @PostMapping("/main/cud")
-    public RedirectView cudProc(HttpServletRequest request, Model model, MenuCudPayload payload){
+    public RedirectView cudProc(
+            HttpServletRequest request, Model model, MenuCudPayload payload
+            , RedirectAttributes redirectAttributes
+            ){
         Long menuId = payload.getMenuId();
-        System.out.println("payload : "+payload.getParentId());
-        if(menuId == 0L){
-            menuService.addMenu(payload);
-        }else{
-            menuService.modMenu(payload);
+        try {
+            if(menuId == 0L){
+                menuService.addMenu(payload);
+                redirectAttributes.addFlashAttribute("serverMessage",payload.getMenuName() + " 메뉴 등록 완료.");
+            }else{
+                menuService.modMenu(payload);
+                redirectAttributes.addFlashAttribute("serverMessage",payload.getMenuName() + " 메뉴 수정 완료.");
+            }
+            return new RedirectView("/admin/menu/main/"+payload.getMenuType());
+        }catch (Exception e){
+            log.error("error : {}",e.getLocalizedMessage());
+            redirectAttributes.addFlashAttribute("serverMessage",e.getLocalizedMessage());
+            return new RedirectView("/admin/menu/main/"+payload.getMenuType());
         }
-        return new RedirectView("/admin/menu/main/"+payload.getMenuType());
     }
 
 

@@ -10,4 +10,6 @@ public class CommonConstatns {
     public final static String BALANCE_SHEET = "BALANCE_SHEET";
     public final static String QUARTERLY_REPORT_TYPE = "QUARTERLY_REPORT_TYPE";
     public final static String REPORT_TYPE = "REPORT_TYPE";
+    public final static String IS_YES = "Y";
+    public final static String IS_NO = "N";
 }
