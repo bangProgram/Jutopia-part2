@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/board")
-public class UserBoardController {
+@RequestMapping("/post")
+public class UserPostController {
 
     @GetMapping("/main")
     public String goBoard(HttpServletRequest request, Model model) {
-        return "/user/board/mainPage";
+        return "/user/post/mainPage";
     }
 }
