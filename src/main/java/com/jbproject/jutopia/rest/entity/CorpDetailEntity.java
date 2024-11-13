@@ -45,10 +45,7 @@ public class CorpDetailEntity {
     @Column(name = "acc_mt")
     private String accMt;
 
-    @OneToOne(
-            fetch = FetchType.LAZY
-            ,mappedBy = "corpDetailEntity"
-    )
+    @OneToOne(fetch = FetchType.LAZY)
     private CorpEntity corpEntity;
 
     public CorpDetailEntity(CorpDetailModel corpDetailModel){

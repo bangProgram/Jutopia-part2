@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="content"
+>
+    <head>
+        <meta charset="UTF-8">
+        <title>게시판 홈 화면 입니다.</title>
+    </head>
+    <body>
+        <h6>
+          게시글 작성 화면
+        </h6>
+        <div style="border: 2px solid;">
+            검색
+            <form name="postDetailForm" action="/post/detail/cud"  method="post" th:object="${postDetailPayload}">
+                <table>
+                    <tr>
+                        <td>
+                            구분 :
+                        </td>
+                        <td>
+                            <select th:field="*{postType}">
+                                <option value="">-전체-</option>
+                                <option value="01">자유</option>
+                                <option value="02">기업</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" id="searchStockName" placeholder="기업명 검색" th:onchange="getStockCode()">
+                            <input type="hidden" th:field="*{stockCode}">
+                            <select id="corpDetailSelect" th:onchange="setStockCode()">
+                                <option value="">-전체-</option>
+                                <option th:each="corpDetail : ${corpDetailList}" th:utext="${corpDetail.stockName}" th:value="${corpDetail.stockCode}" ></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            제목 :
+                        </td>
+                        <td rowspan="3">
+                            <input type="text" placeholder="게시글 제목" th:field="*{postTitle}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            내용 :
+                        </td>
+                        <td rowspan="3">
+                            <label>
+                                <textarea  th:field="*{postDetail}">
+                                </textarea>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+
+            </form>
+        </div>
+    </body>
+
+    <script >
+        function getStockCode(){
+
+            const searchStockName = $('#searchStockName').val();
+            const postSearchPayload = {
+                searchStockName : searchStockName
+            }
+
+            $.ajax({
+                url: "/ajax/stock/search",
+                data: postSearchPayload,
+                type: 'POST',
+                success:function(data){
+					$("#corpDetailSelect").replaceWith(data);
+				}
+            })
+        }
+
+        function setStockCode(){
+            const selectedValue = $("#corpDetailSelect").val();
+            $("#stockCode").val(selectedValue)
+        }
+    </script>
+</html>

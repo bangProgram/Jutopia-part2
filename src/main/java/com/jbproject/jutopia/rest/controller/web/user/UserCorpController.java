@@ -16,6 +16,6 @@ public class UserCorpController {
 
     @GetMapping("/main")
     public String goBoard(HttpServletRequest request, Model model) {
-        return "/user/board/mainPage";
+        return "/user/corp/mainPage";
     }
 }

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -22,8 +23,12 @@ import java.util.List;
 @ControllerAdvice
 @RequiredArgsConstructor
 public class GlobalControllerAdvice {
+
+    private final RequestMatcher defaultPermitAllPath;
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final MenuService menuService;
+
+    private List<MenuResult> curMenuList = new ArrayList<>();
 
     @ModelAttribute("isAdmin")
     public boolean isAdmin() {
@@ -55,9 +60,15 @@ public class GlobalControllerAdvice {
 
     @ModelAttribute("topMenuList")
     public List<MenuResult> getTopMenuList(HttpServletRequest request) {
+
+        if(defaultPermitAllPath.matches(request)){
+            return curMenuList;
+        }
+
         String requestUrl = request.getRequestURI();
         if(!requestUrl.contains("/admin")){
-            return menuService.getShowMenuList(CommonConstatns.MENU_ROLE_USER);
+            curMenuList = menuService.getShowMenuList(CommonConstatns.MENU_ROLE_USER);
+            return curMenuList;
         }else{
             return new ArrayList<>();
         }

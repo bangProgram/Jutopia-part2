@@ -24,8 +24,7 @@ public class CorpEntity extends BaseEntity implements Persistable<String> {
     @Column(name = "modify_date")
     private LocalDate modifyDate;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "corp_code", insertable = false, updatable = false)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "corpEntity")
     private CorpDetailEntity corpDetailEntity;
 
     @Builder

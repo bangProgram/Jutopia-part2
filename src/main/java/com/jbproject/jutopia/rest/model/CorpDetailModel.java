@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.jbproject.jutopia.rest.entity.CorpDetailEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -67,4 +68,27 @@ public class CorpDetailModel {
         @JsonProperty("acc_mt")
         @Schema(title = "acc_mt", description = "결산월(MM)")
         private String accMt;
+
+        public static CorpDetailModel create(CorpDetailEntity entity) {
+                CorpDetailModel model = new CorpDetailModel();
+
+                model.corpCode = entity.getCorpCode();
+                model.corpName = entity.getCorpName();
+                model.corpNameEng = entity.getCorpName();
+                model.stockName = entity.getStockName();
+                model.stockCode = entity.getStockCode();
+                model.ceoNm = entity.getCeoName();
+                model.corpCls = entity.getCorpCls();
+                model.jurirNo = entity.getJurirNo();
+                model.bizrNo = entity.getBizrNo();
+                model.adres = entity.getAddress();
+                model.hmUrl = entity.getHmUrl();
+                model.irUrl = entity.getIrUrl();
+                model.phnNo = entity.getPhnNo();
+                model.faxNo = entity.getFaxNo();
+                model.indutyCode = entity.getIndutyCode();
+                model.estDt = entity.getEstDate();
+                model.accMt = entity.getAccMt();
+                return model;
+        }
 }

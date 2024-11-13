@@ -11,7 +11,59 @@
     </head>
     <body>
         <h6>
-          게시판 홈 화면 이라네요
+          게시판 홈 화면
         </h6>
+        <div>
+            <button type="button" th:onclick="goPostDetail()">
+                게시글 작성
+            </button>
+        </div>
+        <div style="border: 2px solid;">
+            검색
+            <form name="searchForm" action="/post/main/search"  method="post" th:object="${postSearchPayload}">
+                <select th:field="*{searchType}">
+                    <option value="">-전체-</option>
+                    <option value="01">자유</option>
+                    <option value="02">기업</option>
+                </select>
+                <input type="text" id="searchStockName" placeholder="기업명 검색" th:onchange="getStockCode()">
+                <input type="hidden" th:field="*{searchStockCode}">
+                <select id="corpDetailSelect" th:onchange="setStockCode()">
+                    <option value="">-전체-</option>
+                    <option th:each="corpDetail : ${corpDetailList}" th:utext="${corpDetail.stockName}" th:value="${corpDetail.stockCode}" ></option>
+                </select>
+                <input type="text" th:field="*{searchText}" placeholder="검색어를 입력하세요."/>
+            </form>
+        </div>
     </body>
+
+    <script >
+        function getStockCode(){
+
+            const searchStockName = $('#searchStockName').val();
+            const postSearchPayload = {
+                searchStockName : searchStockName
+            }
+            console.log("searchStockName : " + searchStockName);
+            console.log("postSearchPayload : "+postSearchPayload);
+
+            $.ajax({
+                url: "/ajax/stock/search",
+                data: postSearchPayload,
+                type: 'POST',
+                success:function(data){
+					$("#corpDetailSelect").replaceWith(data);
+				}
+            })
+        }
+
+        function setStockCode(){
+            const selectedValue = $("#corpDetailSelect").val();
+            $("#searchStockCode").val(selectedValue)
+        }
+
+        function goPostDetail(){
+            location.href = "/post/detail";
+        }
+    </script>
 </html>
