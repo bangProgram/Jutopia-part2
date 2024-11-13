@@ -1,15 +1,14 @@
 package com.jbproject.jutopia.rest.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDate;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "tb_corp")
 public class CorpEntity extends BaseEntity implements Persistable<String> {

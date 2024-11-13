@@ -4,15 +4,14 @@ import com.jbproject.jutopia.rest.entity.key.CommCodeKey;
 import com.jbproject.jutopia.rest.entity.key.CorpCisKey;
 import com.jbproject.jutopia.rest.model.CorpCisModel;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDate;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "tb_corp_cis")
 public class CorpCisEntity extends BaseEntity implements Persistable<CorpCisKey> {

@@ -2,12 +2,11 @@ package com.jbproject.jutopia.rest.entity;
 
 import com.jbproject.jutopia.rest.model.CorpDetailModel;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "tb_corp_detail")
 public class CorpDetailEntity {
