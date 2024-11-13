@@ -2,10 +2,18 @@ package com.jbproject.jutopia;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.jbproject.jutopia.config.security.model.Role;
+import com.jbproject.jutopia.model.MenuTestModel;
+import com.jbproject.jutopia.model.RoleMenuRTestModel;
+import com.jbproject.jutopia.model.RoleTestModel;
+import com.jbproject.jutopia.rest.entity.MenuEntity;
 import com.jbproject.jutopia.rest.entity.RoleEntity;
+import com.jbproject.jutopia.rest.entity.RoleMenuRelation;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
+import com.jbproject.jutopia.rest.repository.MenuRepository;
 import com.jbproject.jutopia.rest.repository.RoleMenuRepository;
 import com.jbproject.jutopia.rest.repository.RoleRepository;
+import io.swagger.v3.core.util.Json;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -29,6 +38,8 @@ public class JutopiaApplicationTests {
 	private RoleMenuRepository roleMenuRepository;
 	@Autowired
 	private RoleRepository roleRepository;
+	@Autowired
+	private MenuRepository menuRepository;
 
 
 
@@ -37,13 +48,55 @@ public class JutopiaApplicationTests {
 	}
 
 	@Test
-	void test1() {
+	void roleTest() throws IOException{
 		System.out.println("test 돌아가나");
-		Optional<RoleEntity> result = roleRepository.findById("SYSTEM");
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		Optional<RoleEntity> result = roleRepository.findById(Role.ADMIN.name());
 
 		if(result.isPresent()){
 			RoleEntity newRole = result.get();
-			System.out.println("role 있음" + newRole);
+			RoleTestModel roleTestModel = new RoleTestModel(newRole);
+			System.out.println("role 있음 : " + Json.pretty(roleTestModel));
+
+			List<RoleMenuRelation> roleMenuList = newRole.getRoleMenuRelations();
+
+			for(RoleMenuRelation roleMenu : roleMenuList){
+				RoleMenuRTestModel roleMenuRTestModel = new RoleMenuRTestModel(roleMenu);
+				System.out.println("roleMenuList 있나? : " + Json.pretty(roleMenuRTestModel));
+
+				MenuEntity menu = roleMenu.getMenuEntity();
+				MenuTestModel menuTestModel = new MenuTestModel(menu);
+				System.out.println("menu 있나? : "+Json.pretty(menuTestModel) );
+			}
+
+		}else{
+			System.out.println("role 없음");
+		}
+	}
+
+
+	@Test
+	void menuTest() {
+		System.out.println("test 돌아가나");
+		Optional<MenuEntity> result = menuRepository.findById(1L);
+
+		if(result.isPresent()){
+			MenuEntity newMenu = result.get();
+			MenuTestModel menuTestModel = new MenuTestModel(newMenu);
+			System.out.println("menu 있나? : "+Json.pretty(menuTestModel) );
+
+			List<RoleMenuRelation> roleMenuList = newMenu.getRoleMenuRelations();
+
+			for(RoleMenuRelation roleMenu : roleMenuList){
+				RoleMenuRTestModel roleMenuRTestModel = new RoleMenuRTestModel(roleMenu);
+				System.out.println("roleMenuList 있나? : " + Json.pretty(roleMenuRTestModel));
+
+				RoleEntity role = roleMenu.getRoleEntity();
+				RoleTestModel roleTestModel = new RoleTestModel(role);
+				System.out.println("role 있음 : " + Json.pretty(roleTestModel));
+			}
+
 		}else{
 			System.out.println("role 없음");
 		}
