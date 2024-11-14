@@ -5,10 +5,12 @@
                 <button th:each="topMenu : ${topMenuList}" th:onclick="|location.href='@{${topMenu.menuUrl}}'|" th:utext="${topMenu.menuName}" ></button>
             </div>
         </div>
+        <!--
         <div id="childMenuBarDiv">
             <div id="childMenuBarDiv-button">
                 <button th:each="topMenu : ${topMenuList}" th:onclick="|location.href='@{${topMenu.menuUrl}}'|" th:utext="${topMenu.menuName}" ></button>
             </div>
         </div>
+        -->
     </nav>
 </html>

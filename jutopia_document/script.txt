@@ -126,3 +126,15 @@ insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
 values('CF',trim('Cash Flow Statement'),'REPORT_TYPE','3','Y');
 insert into tb_comm_code (code, code_name, group_code, seq, use_yn)
 values('CE',trim('Statement of Changes in Equity'),'REPORT_TYPE','4','Y');
+
+
+insert into tb_comm_code (
+code,group_code,create_dttm,create_id,code_name,seq,use_yn
+) values (
+'01','POST_TYPE',sysdate(), 'SYSTEM','자유게시판',1,'Y'
+);
+insert into tb_comm_code (
+code,group_code,create_dttm,create_id,code_name,seq,use_yn
+) values (
+'02','POST_TYPE',sysdate(), 'SYSTEM','기업게시판',2,'Y'
+);

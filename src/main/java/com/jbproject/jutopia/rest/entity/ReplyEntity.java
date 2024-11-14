@@ -1,16 +1,14 @@
 package com.jbproject.jutopia.rest.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @Table(name = "tb_reply")
 public class ReplyEntity extends BaseEntity{
 

@@ -3,11 +3,13 @@ package com.jbproject.jutopia.rest.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @Table(name = "post_reply_rl")
 public class PostReplyRelation {
 

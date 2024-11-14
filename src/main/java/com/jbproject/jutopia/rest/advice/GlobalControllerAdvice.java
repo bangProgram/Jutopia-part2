@@ -60,12 +60,13 @@ public class GlobalControllerAdvice {
 
     @ModelAttribute("topMenuList")
     public List<MenuResult> getTopMenuList(HttpServletRequest request) {
+        String requestUrl = request.getRequestURI();
 
         if(defaultPermitAllPath.matches(request)){
             return curMenuList;
         }
 
-        String requestUrl = request.getRequestURI();
+
         if(!requestUrl.contains("/admin")){
             curMenuList = menuService.getShowMenuList(CommonConstatns.MENU_ROLE_USER);
             return curMenuList;

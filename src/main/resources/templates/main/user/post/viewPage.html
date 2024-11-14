@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="content"
+>
+    <head>
+        <meta charset="UTF-8">
+        <title>게시판 홈 화면 입니다.</title>
+    </head>
+    <body>
+        <h6>
+          게시글 작성 화면
+        </h6>
+        <div style="border: 2px solid;">
+                <input type="hidden" th:field="${postResult.postId}">
+                <table>
+                    <tr>
+                        <td>
+                            구분 :
+                        </td>
+                        <td>
+                            <label th:if="${postResult.postType == '01'}">자유</label>
+                            <label th:if="${postResult.postType == '02'}">기업</label>
+                        </td>
+                        <td>
+                            <label th:if="${postResult.postType == '02'}">기업명 : </label>
+                        </td>
+                        <td>
+                            <label th:if="${postResult.postType == '02'}">[[${postResult.stockName}]]</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            제목 :
+                        </td>
+                        <td colspan="3">
+                            <label th:text="${postResult.postTitle}"></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            내용 :
+                        </td>
+                        <td colspan="3">
+                            <label id="detailArea">
+                                [[${postResult.postDetail}]]
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+        </div>
+    </body>
+
+    <style>
+        #detailArea {
+            width : 90%;
+            height : 200px;
+        }
+
+    </style>
+</html>

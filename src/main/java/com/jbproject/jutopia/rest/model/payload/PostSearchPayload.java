@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class PostSearchPayload {
 
+    private String postType;
     private String searchType;
     private String searchText;
     private String searchStockCode;

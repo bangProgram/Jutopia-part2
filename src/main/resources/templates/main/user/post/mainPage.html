@@ -14,30 +14,70 @@
           게시판 홈 화면
         </h6>
         <div>
-            <button type="button" th:onclick="goPostDetail()">
+            <button type="button" th:onclick="goPostCreate()">
                 게시글 작성
             </button>
         </div>
-        <div style="border: 2px solid;">
-            검색
-            <form name="searchForm" action="/post/main/search"  method="post" th:object="${postSearchPayload}">
-                <select th:field="*{searchType}">
-                    <option value="">-전체-</option>
-                    <option value="01">자유</option>
-                    <option value="02">기업</option>
-                </select>
-                <input type="text" id="searchStockName" placeholder="기업명 검색" th:onchange="getStockCode()">
-                <input type="hidden" th:field="*{searchStockCode}">
-                <select id="corpDetailSelect" th:onchange="setStockCode()">
-                    <option value="">-전체-</option>
-                    <option th:each="corpDetail : ${corpDetailList}" th:utext="${corpDetail.stockName}" th:value="${corpDetail.stockCode}" ></option>
-                </select>
-                <input type="text" th:field="*{searchText}" placeholder="검색어를 입력하세요."/>
+        <div style="border: 2px solid; ">
+            <form name="searchForm" action="/post/main"  method="get" th:object="${postSearchPayload}"
+                style="display: flex; justify-content: right;"
+            >
+                <div id="postTypeDiv">
+                    <select th:field="*{postType}">
+                        <option value="">-전체-</option>
+                        <option value="01">자유</option>
+                        <option value="02">기업</option>
+                    </select>
+                </div>
+                <div id="corpDiv">
+                    <input type="text" id="searchStockName" placeholder="기업명 검색" th:onchange="getStockCode()">
+                    <input type="hidden" th:field="*{searchStockCode}">
+                    <select id="corpDetailSelect" th:onchange="setStockCode()">
+                        <option value="">-전체-</option>
+                        <option th:each="corpDetail : ${corpDetailList}" th:utext="${corpDetail.stockName}" th:value="${corpDetail.stockCode}" ></option>
+                    </select>
+                </div>
+                <div id="textDiv">
+                    <select th:field="*{searchType}">
+                        <option value="01">제목</option>
+                        <option value="02">제목 + 내용</option>
+                        <option value="03">작성자</option>
+                    </select>
+                    <input type="text" th:field="*{searchText}" placeholder="검색어를 입력하세요."/>
+                </div>
+                <button type="button" th:onclick="searchPost()">검색</button>
             </form>
+        </div>
+
+        <div>
+            <table id="postListTable">
+                <tr>
+                    <td>번호</td>
+                    <td>구분</td>
+                    <td>기업명</td>
+                    <td>제목</td>
+                    <td>작성자</td>
+                    <td>작성일</td>
+                    <td>조회수</td>
+                </tr>
+                <tr th:each="post : ${postList}">
+                    <td th:text="${post.postId}"/>
+                    <td th:text="${post.postType}"/></td>
+                    <td th:text="${post.stockName}"/>
+                    <td><a th:href="|/post/view/${post.postId}|" th:text="${post.postTitle}"></a></td>
+                    <td th:text="${post.postWriter}"/>
+                    <td th:text="${post.createDttm}"/>
+                    <td th:text="${post.postViewrs}"/>
+                </tr>
+            </table>
         </div>
     </body>
 
     <script >
+        document.addEventListener('DOMContentLoaded', function() {
+            searchPost();
+        });
+
         function getStockCode(){
 
             const searchStockName = $('#searchStockName').val();
@@ -62,8 +102,23 @@
             $("#searchStockCode").val(selectedValue)
         }
 
-        function goPostDetail(){
-            location.href = "/post/detail";
+        function goPostCreate(){
+            location.href = "/post/write";
+        }
+
+        function searchPost(){
+            var postSearchPayload = $("form[name=searchForm]").serialize() ;
+
+            console.log("queryString : "+postSearchPayload);
+
+            $.ajax({
+                url: "/ajax/post/search",
+                data: postSearchPayload,
+                type: 'POST',
+                success:function(data){
+					$("#postListTable").replaceWith(data);
+				}
+            })
         }
     </script>
 </html>

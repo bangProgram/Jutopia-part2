@@ -14,8 +14,8 @@
           게시글 작성 화면
         </h6>
         <div style="border: 2px solid;">
-            검색
-            <form name="postDetailForm" action="/post/detail/cud"  method="post" th:object="${postDetailPayload}">
+            <form name="postViewForm" action="/post/create/cud"  method="post" th:object="${postViewPayload}">
+                <input type="hidden" th:field="*{postId}">
                 <table>
                     <tr>
                         <td>
@@ -30,10 +30,11 @@
                         </td>
                         <td>
                             <input type="text" id="searchStockName" placeholder="기업명 검색" th:onchange="getStockCode()">
+                            <input type="hidden" th:field="*{stockName}">
                             <input type="hidden" th:field="*{stockCode}">
-                            <select id="corpDetailSelect" th:onchange="setStockCode()">
+                            <select id="corpDetailSelect" th:onchange="setStockCode()" th:value="${postViewPayload.stockCode}">
                                 <option value="">-전체-</option>
-                                <option th:each="corpDetail : ${corpDetailList}" th:utext="${corpDetail.stockName}" th:value="${corpDetail.stockCode}" ></option>
+                                <option th:each="corpDetail : ${corpDetailList}" th:text="${corpDetail.stockName}" th:value="${corpDetail.stockCode}" ></option>
                             </select>
                         </td>
                     </tr>
@@ -41,7 +42,7 @@
                         <td>
                             제목 :
                         </td>
-                        <td rowspan="3">
+                        <td colspan="3">
                             <input type="text" placeholder="게시글 제목" th:field="*{postTitle}">
                         </td>
                     </tr>
@@ -49,15 +50,16 @@
                         <td>
                             내용 :
                         </td>
-                        <td rowspan="3">
+                        <td colspan="3">
                             <label>
-                                <textarea  th:field="*{postDetail}">
+                                <textarea th:field="*{postDetail}">
                                 </textarea>
                             </label>
                         </td>
                     </tr>
                 </table>
-
+                <button type="submit" th:if="${postViewPayload.postId == null}">작성</button>
+                <button type="submit" th:if="${postViewPayload.postId != null}">수정</button>
             </form>
         </div>
     </body>
@@ -81,8 +83,18 @@
         }
 
         function setStockCode(){
-            const selectedValue = $("#corpDetailSelect").val();
-            $("#stockCode").val(selectedValue)
+            const text = $("#corpDetailSelect option:selected").text();
+            const value = $("#corpDetailSelect").val();
+            $("#stockName").val(text);
+            $("#stockCode").val(value);
         }
     </script>
+
+    <style>
+        #detailArea {
+            width : 90%;
+            height : 200px;
+        }
+
+    </style>
 </html>

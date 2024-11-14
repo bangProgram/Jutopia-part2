@@ -1,16 +1,17 @@
 package com.jbproject.jutopia.rest.model.payload;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 
 @Data
-public class PostDetailPayload {
+public class PostViewPayload {
 
-    private String postId;
+    private Long postId;
 
     private String postType;
     private String postTitle;
     private String postDetail;
     private String stockCode;
-
+    private String stockName;
+    private String postWriter;
+    private String postWriterId;
 }
