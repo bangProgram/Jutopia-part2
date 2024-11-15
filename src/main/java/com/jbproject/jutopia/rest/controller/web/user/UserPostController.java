@@ -1,9 +1,13 @@
 package com.jbproject.jutopia.rest.controller.web.user;
 
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
+import com.jbproject.jutopia.constant.CommonConstatns;
 import com.jbproject.jutopia.rest.model.payload.PostViewPayload;
 import com.jbproject.jutopia.rest.model.payload.PostSearchPayload;
+import com.jbproject.jutopia.rest.model.payload.ReplyPayload;
+import com.jbproject.jutopia.rest.model.result.CommCodeResult;
 import com.jbproject.jutopia.rest.model.result.PostResult;
+import com.jbproject.jutopia.rest.service.CommCodeService;
 import com.jbproject.jutopia.rest.service.UserPostService;
 import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,12 +31,16 @@ import java.util.List;
 public class UserPostController {
 
     private final UserPostService userPostService;
+    private final CommCodeService commCodeService;
 
     @GetMapping("/main")
     public String goPostMain(
             HttpServletRequest request, Model model
             , PostSearchPayload postSearchPayload
     ) {
+        List<CommCodeResult> postTypeList = commCodeService.getCommCodeListByGroupCode(CommonConstatns.POST_TYPE);
+
+        model.addAttribute("postTypeList", postTypeList);
         model.addAttribute("postSearchPayload",postSearchPayload);
         return "/user/post/mainPage";
     }
@@ -51,10 +59,12 @@ public class UserPostController {
     @GetMapping("/view/{postId}")
     public String goPostView(
             HttpServletRequest request, Model model
-            ,@PathVariable(value = "postId") Long postId
+            , @PathVariable(value = "postId") Long postId
+            , ReplyPayload replyPayload
     ){
         PostResult postResult = userPostService.getPostDetail(postId);
 
+        model.addAttribute("replyPayload",replyPayload);
         model.addAttribute("postResult",postResult);
         return "/user/post/viewPage";
     }

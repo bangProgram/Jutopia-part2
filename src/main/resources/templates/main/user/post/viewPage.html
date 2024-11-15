@@ -51,10 +51,51 @@
                     </tr>
                 </table>
         </div>
+        <div style="border: 2px solid;">
+            <form th:object="${replyPayload}" id="replyForm" name="replyForm">
+                <textarea th:field="*{replyDetail}">
+
+                </textarea>
+                <button type="submit">작성</button>
+            </form>
+        </div>
+        <div style="border: 2px solid;">
+            <table id="replyListTable">
+                <tr th:each="reply : %{replyList}">
+                    <td th:text="${reply.replyId}"></td>
+                    <td th:text="${reply.replyDetail}"></td>
+                    <td th:text="${reply.replyWriter}"></td>
+                </tr>
+            </table>
+        </div>
     </body>
 
+    <script>
+
+        function searchReply(){
+            const replyPayload = {
+                postId : $("#postId").val()
+            }
+
+
+            $.ajax({
+                url: "/ajax/reply/search",
+                data: replyPayload,
+                type: 'POST',
+                success:function(data){
+					$("#replyListTable").replaceWith(data);
+				}
+            })
+        }
+
+    </script>
+
     <style>
-        #detailArea {
+        #replyForm{
+            display: inline-flex;
+        }
+
+        #replyDetail {
             width : 90%;
             height : 200px;
         }

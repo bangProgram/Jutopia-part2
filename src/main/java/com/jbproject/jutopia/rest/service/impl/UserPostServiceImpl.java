@@ -5,18 +5,25 @@ import com.jbproject.jutopia.constant.ServerErrorCode;
 import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.rest.entity.PostEntity;
 import com.jbproject.jutopia.rest.entity.PostReplyRelation;
+import com.jbproject.jutopia.rest.entity.ReplyEntity;
 import com.jbproject.jutopia.rest.model.payload.PostSearchPayload;
 import com.jbproject.jutopia.rest.model.payload.PostViewPayload;
+import com.jbproject.jutopia.rest.model.payload.ReplySearchPayload;
 import com.jbproject.jutopia.rest.model.result.PostResult;
 import com.jbproject.jutopia.rest.model.result.ReplyResult;
 import com.jbproject.jutopia.rest.repository.PostRepository;
+import com.jbproject.jutopia.rest.repository.ReplyRepository;
 import com.jbproject.jutopia.rest.service.UserPostService;
 import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -26,6 +33,7 @@ import java.util.List;
 public class UserPostServiceImpl implements UserPostService {
 
     private final PostRepository postRepository;
+    private final ReplyRepository replyRepository;
 
     public List<PostResult> searchPostList(PostSearchPayload payload){
         return postRepository.searchPostList(payload);
@@ -79,5 +87,18 @@ public class UserPostServiceImpl implements UserPostService {
             PostEntity curPost = postRepository.save(newPost);
             return curPost.getId();
         }
+    }
+
+    public ReplyResult searchReplyList(ReplySearchPayload payload){
+        List<ReplyResult> replyResultList = replyRepository.getReplyListBySupperId(payload.getPostId());
+        int maxDepth = Collections.max(replyResultList.stream().map(ReplyResult::getReplyDepth).distinct().toList());
+
+        Map<Integer,List<ReplyResult>> replyGroup = replyResultList.stream().collect(Collectors.groupingBy(ReplyResult::getReplyDepth));
+
+        ReplyResult result = replyResultList.getFirst();
+//        for(int i=1; i<=maxDepth; i++){
+//            result.setChildReplyList());
+//        }
+        return null;
     }
 }

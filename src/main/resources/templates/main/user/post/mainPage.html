@@ -25,8 +25,7 @@
                 <div id="postTypeDiv">
                     <select th:field="*{postType}">
                         <option value="">-전체-</option>
-                        <option value="01">자유</option>
-                        <option value="02">기업</option>
+                        <option th:each="postType : ${postTypeList}" th:text="${postType.codeName}" th:value="${postType.code}"></option>
                     </select>
                 </div>
                 <div id="corpDiv">

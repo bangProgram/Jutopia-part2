@@ -21,6 +21,18 @@ public class ReplyEntity extends BaseEntity{
     private String replyDetail;
     @Column(name = "reply_writer")
     private String replyWriter;
+    @Column(name = "supper_id")
+    private Long supperId;
+    @Column(name = "reply_depth")
+    private int replyDepth;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private ReplyEntity parentReply;
+
+    @OneToMany(mappedBy = "parentReply")
+    private List<ReplyEntity> childReplyList;
 
     @OneToMany(mappedBy = "replyEntity")
     private List<PostReplyRelation> postReplyRelation;

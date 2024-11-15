@@ -2,7 +2,9 @@ package com.jbproject.jutopia.rest.controller.web;
 
 import com.jbproject.jutopia.rest.model.CorpDetailModel;
 import com.jbproject.jutopia.rest.model.payload.PostSearchPayload;
+import com.jbproject.jutopia.rest.model.payload.ReplySearchPayload;
 import com.jbproject.jutopia.rest.model.result.PostResult;
+import com.jbproject.jutopia.rest.model.result.ReplyResult;
 import com.jbproject.jutopia.rest.service.UserPostService;
 import com.jbproject.jutopia.rest.service.UtilService;
 import groovy.util.logging.Slf4j;
@@ -12,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -37,5 +40,13 @@ public class UtilController {
 
         model.addAttribute("postList",postList);
         return "/user/post/mainPage::#postListTable";
+    }
+
+    @PostMapping("/ajax/reply/search")
+    public String searchReply(Model model, ReplySearchPayload replySearchPayload){
+        List<ReplyResult> replyList = new ArrayList<>();
+
+        model.addAttribute("replyList",replyList);
+        return "/user/post/viewPage::#replyListTable";
     }
 }
