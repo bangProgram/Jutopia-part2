@@ -1,9 +1,8 @@
 logging:
   level:
-    com.lgtvod.contents: DEBUG
     org.hibernate.type: trace
+    org.hibernate.show-sql: DEBUG
     org.hibernate.transaction: DEBUG
-    org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql: TRACE
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.pretty: TRACE
