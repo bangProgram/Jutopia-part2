@@ -3,6 +3,8 @@ package com.jbproject.jutopia;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.jbproject.jutopia.config.security.model.Role;
+import com.jbproject.jutopia.constant.ServerErrorCode;
+import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.model.MenuTestModel;
 import com.jbproject.jutopia.model.RoleMenuRTestModel;
 import com.jbproject.jutopia.model.RoleTestModel;
@@ -10,6 +12,7 @@ import com.jbproject.jutopia.rest.entity.MenuEntity;
 import com.jbproject.jutopia.rest.entity.RoleEntity;
 import com.jbproject.jutopia.rest.entity.RoleMenuRelation;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
+import com.jbproject.jutopia.rest.model.result.MenuResult;
 import com.jbproject.jutopia.rest.repository.MenuRepository;
 import com.jbproject.jutopia.rest.repository.RoleMenuRepository;
 import com.jbproject.jutopia.rest.repository.RoleRepository;
@@ -27,8 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @SpringBootTest
 @Transactional
@@ -119,5 +121,18 @@ public class JutopiaApplicationTests {
 
 		String fileType = file.getContentType();
 
+	}
+
+	@Test
+	void menuTest1() {
+		// 메뉴 호출
+		System.out.println("menuTest Start !!!");
+		MenuEntity menu = menuRepository.findById(1L).orElseThrow(
+				() -> new ExceptionProvider(ServerErrorCode.POST_404_01)
+		);
+
+		MenuResult result = new MenuResult(menu);
+
+		System.out.println("result : "+result);
 	}
 }
