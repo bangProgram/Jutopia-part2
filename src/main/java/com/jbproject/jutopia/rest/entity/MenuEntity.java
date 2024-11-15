@@ -2,10 +2,7 @@ package com.jbproject.jutopia.rest.entity;
 
 import com.jbproject.jutopia.rest.model.payload.MenuCudPayload;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
