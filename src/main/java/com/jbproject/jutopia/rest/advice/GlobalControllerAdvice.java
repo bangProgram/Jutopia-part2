@@ -11,6 +11,7 @@ import com.jbproject.jutopia.rest.service.MenuService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -56,6 +57,13 @@ public class GlobalControllerAdvice {
     public String curPage(HttpServletRequest request) {
         String requestUrl = request.getRequestURI();
         return requestUrl.contains("/admin") ? "ADMIN" : "USER";
+    }
+
+    @ModelAttribute("userInfo")
+    public AccessJwtToken.AccessJwtPrincipal userInfo(
+            @AuthenticationPrincipal AccessJwtToken.AccessJwtPrincipal principal
+    ) {
+        return principal;
     }
 
     @ModelAttribute("topMenuList")

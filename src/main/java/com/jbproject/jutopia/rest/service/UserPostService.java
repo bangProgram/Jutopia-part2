@@ -13,5 +13,5 @@ public interface UserPostService {
     List<PostResult> searchPostList(PostSearchPayload payload);
     PostResult getPostDetail(Long postId);
     Long savePost(PostViewPayload payload, AccessJwtToken.AccessJwtPrincipal principal);
-    ReplyResult searchReplyList(ReplySearchPayload payload);
+    List<ReplyResult> searchReplyList(ReplySearchPayload payload);
 }

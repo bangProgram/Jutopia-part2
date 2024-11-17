@@ -135,4 +135,13 @@ public class JutopiaApplicationTests {
 
 		System.out.println("result : "+result);
 	}
+
+	@Test
+	void roleMenuRelateionTest() {
+		System.out.println("roleMenuRelation Test Start !!!");
+
+		List<RoleMenuRelation> roleMenuRelations = roleMenuRepository.findByRoleId("SYSTEM");
+
+
+	}
 }

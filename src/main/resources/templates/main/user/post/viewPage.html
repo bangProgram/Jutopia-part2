@@ -52,22 +52,47 @@
                 </table>
         </div>
         <div style="border: 2px solid;">
-            <form th:object="${replyPayload}" id="replyForm" name="replyForm">
-                <textarea th:field="*{replyDetail}">
-
-                </textarea>
-                <button type="submit">작성</button>
-            </form>
-        </div>
-        <div style="border: 2px solid;">
             <table id="replyListTable">
-                <tr th:each="reply : %{replyList}">
+                <tr th:each="reply : ${replyList}">
                     <td th:text="${reply.replyId}"></td>
                     <td th:text="${reply.replyDetail}"></td>
                     <td th:text="${reply.replyWriter}"></td>
                 </tr>
             </table>
         </div>
+
+        <div class="myBorderDiv">
+            <form class="myBorderDiv" th:object="${replyPayload}" id="replyForm" name="replyForm">
+<!--                <table style="width: 100%;">-->
+<!--                    <tr style="width: 100%;" >-->
+<!--                        <td style="width: 10%;" >[[${userInfo.userName}]]</td>-->
+<!--                        <td style="width: 80%; height : 100px;">-->
+<!--                            <textarea style="width: 100%; height : 100%;" th:field="*{replyDetail}">-->
+
+<!--                            </textarea>-->
+<!--                        </td>-->
+<!--                        <td style="width: 10%; height : 100px;">-->
+<!--                            <button style="width: 100%; height : 100%;" type="submit">작성</button>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+                <article>
+                    <div>
+                        [[${userInfo.userName}]]
+                    </div>
+                    <div>
+                        <textarea th:field="*{replyDetail}">
+
+                        </textarea>
+                    </div>
+                    <div>
+                        <button type="submit">작성</button>
+                    </div>
+                </article>
+            </form>
+        </div>
+
+
     </body>
 
     <script>
@@ -91,14 +116,6 @@
     </script>
 
     <style>
-        #replyForm{
-            display: inline-flex;
-        }
-
-        #replyDetail {
-            width : 90%;
-            height : 200px;
-        }
 
     </style>
 </html>

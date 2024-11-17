@@ -11,6 +11,7 @@ import com.jbproject.jutopia.rest.model.payload.PostViewPayload;
 import com.jbproject.jutopia.rest.model.payload.ReplySearchPayload;
 import com.jbproject.jutopia.rest.model.result.PostResult;
 import com.jbproject.jutopia.rest.model.result.ReplyResult;
+import com.jbproject.jutopia.rest.repository.PostReplyRepository;
 import com.jbproject.jutopia.rest.repository.PostRepository;
 import com.jbproject.jutopia.rest.repository.ReplyRepository;
 import com.jbproject.jutopia.rest.service.UserPostService;
@@ -34,6 +35,7 @@ public class UserPostServiceImpl implements UserPostService {
 
     private final PostRepository postRepository;
     private final ReplyRepository replyRepository;
+    private final PostReplyRepository postReplyRepository;
 
     public List<PostResult> searchPostList(PostSearchPayload payload){
         return postRepository.searchPostList(payload);
@@ -89,8 +91,15 @@ public class UserPostServiceImpl implements UserPostService {
         }
     }
 
-    public ReplyResult searchReplyList(ReplySearchPayload payload){
-        List<ReplyResult> replyResultList = replyRepository.getReplyListBySupperId(payload.getPostId());
+    public List<ReplyResult> searchReplyList(ReplySearchPayload payload){
+        List<PostReplyRelation> postReplyRelationList = postReplyRepository.findByPostId(payload.getPostId());
+
+
+        List<ReplyResult> replyResultList =
+                postReplyRelationList
+                        .stream().map(PostReplyRelation::getReplyEntity).toList()
+                        .stream().map(ReplyResult::create).toList();
+        /*
         int maxDepth = Collections.max(replyResultList.stream().map(ReplyResult::getReplyDepth).distinct().toList());
 
         Map<Integer,List<ReplyResult>> replyGroup = replyResultList.stream().collect(Collectors.groupingBy(ReplyResult::getReplyDepth));
@@ -100,7 +109,7 @@ public class UserPostServiceImpl implements UserPostService {
         ReplyResult result = replyResultList.getFirst();
 //        for(int i=1; i<=maxDepth; i++){
 //            result.setChildReplyList());
-//        }
-        return null;
+//        }*/
+        return replyResultList;
     }
 }

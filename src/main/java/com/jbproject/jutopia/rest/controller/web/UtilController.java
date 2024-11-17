@@ -44,7 +44,7 @@ public class UtilController {
 
     @PostMapping("/ajax/reply/search")
     public String searchReply(Model model, ReplySearchPayload replySearchPayload){
-        List<ReplyResult> replyList = new ArrayList<>();
+        List<ReplyResult> replyList = userPostService.searchReplyList(replySearchPayload);
 
         model.addAttribute("replyList",replyList);
         return "/user/post/viewPage::#replyListTable";
