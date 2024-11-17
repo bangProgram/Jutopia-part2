@@ -95,6 +95,8 @@ public class UserPostServiceImpl implements UserPostService {
 
         Map<Integer,List<ReplyResult>> replyGroup = replyResultList.stream().collect(Collectors.groupingBy(ReplyResult::getReplyDepth));
 
+        // 댓글 작업 해야함
+
         ReplyResult result = replyResultList.getFirst();
 //        for(int i=1; i<=maxDepth; i++){
 //            result.setChildReplyList());
