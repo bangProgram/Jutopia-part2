@@ -1,5 +1,6 @@
 package com.jbproject.jutopia.rest.entity;
 
+import com.jbproject.jutopia.rest.model.payload.ReplyPayload;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,8 @@ public class ReplyEntity extends BaseEntity{
     private String replyDetail;
     @Column(name = "reply_writer")
     private String replyWriter;
+    @Column(name = "parent_id")
+    private Long parentId;
     @Column(name = "supper_id")
     private Long supperId;
     @Column(name = "reply_depth")
@@ -28,7 +31,7 @@ public class ReplyEntity extends BaseEntity{
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false)
     private ReplyEntity parentReply;
 
     @OneToMany(mappedBy = "parentReply")
@@ -40,11 +43,22 @@ public class ReplyEntity extends BaseEntity{
     @Builder
     public ReplyEntity(
             String replyDetail, String replyWriter
+            , Long parentId, Long supperId, int replyDepth
+            ,String createId, String updateId
     ){
         this.replyDetail = replyDetail;
         this.replyWriter = replyWriter;
+        this.parentId = parentId;
+        this.supperId = supperId;
+        this.replyDepth = replyDepth;
+        this.setCreateId(createId);
+        this.setUpdateId(updateId);
     }
 
-    public void updateReply(){}
+    public void updateReply(ReplyPayload payload){
+        this.replyDetail = payload.getReplyDetail();
+        this.replyWriter = payload.getReplyWriter();
+        this.setUpdateId(payload.getReplyWriterId());
+    }
 
 }

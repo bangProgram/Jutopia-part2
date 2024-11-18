@@ -8,6 +8,7 @@ import com.jbproject.jutopia.rest.entity.PostReplyRelation;
 import com.jbproject.jutopia.rest.entity.ReplyEntity;
 import com.jbproject.jutopia.rest.model.payload.PostSearchPayload;
 import com.jbproject.jutopia.rest.model.payload.PostViewPayload;
+import com.jbproject.jutopia.rest.model.payload.ReplyPayload;
 import com.jbproject.jutopia.rest.model.payload.ReplySearchPayload;
 import com.jbproject.jutopia.rest.model.result.PostResult;
 import com.jbproject.jutopia.rest.model.result.ReplyResult;
@@ -58,16 +59,16 @@ public class UserPostServiceImpl implements UserPostService {
                 .build();
 
         List<PostReplyRelation> postReplyRelationList = curPost.getPostReplyRelation();
-        List<ReplyResult> replyResults = postReplyRelationList.stream().map(PostReplyRelation::getReplyEntity).map(ReplyResult::create).toList();
+        List<ReplyResult> replyResultList = postReplyRelationList.stream().map(PostReplyRelation::getReplyEntity).map(ReplyResult::create).toList();
 
-        result.setReplyResults(replyResults);
+        result.setReplyResultList(replyResultList);
 
         return result;
     }
 
     public Long savePost(PostViewPayload payload, AccessJwtToken.AccessJwtPrincipal principal){
         if(payload.getPostId() != null){
-            payload.setPostWriterId(principal.getUserId());
+            payload.setPostWriterId(principal.getUserName());
             PostEntity curPost = postRepository.findById(payload.getPostId()).orElseThrow(
                     () -> new ExceptionProvider(ServerErrorCode.POST_404_01)
             );
@@ -111,5 +112,44 @@ public class UserPostServiceImpl implements UserPostService {
 //            result.setChildReplyList());
 //        }*/
         return replyResultList;
+    }
+
+    public void savePostReply(ReplyPayload payload, AccessJwtToken.AccessJwtPrincipal principal){
+
+        Long postId = payload.getPostId();
+        Long replyId;
+
+        if(payload.getReplyId() != null){
+
+            payload.setReplyWriter(principal.getUserName());
+            ReplyEntity curReply = replyRepository.findById(payload.getReplyId()).orElseThrow(
+                    () -> new ExceptionProvider(ServerErrorCode.POST_404_01)
+            );
+
+            curReply.updateReply(payload);
+            ReplyEntity reply = replyRepository.save(curReply);
+            replyId = reply.getId();
+        }else{
+
+            ReplyEntity newReply = ReplyEntity.builder()
+                    .replyDetail(payload.getReplyDetail())
+                    .replyWriter(principal.getUserName())
+                    .parentId(payload.getParentId())
+                    .supperId(payload.getSupperId())
+                    .replyDepth(payload.getReplyDepth())
+                    .createId(principal.getUserId())
+                    .updateId(principal.getUserId())
+                    .build();
+
+            ReplyEntity reply = replyRepository.save(newReply);
+            replyId = reply.getId();
+        }
+
+        PostReplyRelation postReply = PostReplyRelation.builder()
+                .postId(postId)
+                .ReplyId(replyId)
+                .build();
+
+        postReplyRepository.save(postReply);
     }
 }

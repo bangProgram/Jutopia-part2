@@ -46,6 +46,7 @@ public class UtilController {
     public String searchReply(Model model, ReplySearchPayload replySearchPayload){
         List<ReplyResult> replyList = userPostService.searchReplyList(replySearchPayload);
 
+        System.out.println("replyList : "+replyList);
         model.addAttribute("replyList",replyList);
         return "/user/post/viewPage::#replyListTable";
     }

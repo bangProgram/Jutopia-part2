@@ -17,11 +17,12 @@ import java.util.Scanner;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/home")
 public class UserHomeController {
 
     @GetMapping({
-            "/"
-            ,"/home/main"
+            ""
+            ,"/main"
     })
     public String goMain(HttpServletRequest request,Model model) {
 

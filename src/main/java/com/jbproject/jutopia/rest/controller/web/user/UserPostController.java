@@ -7,6 +7,7 @@ import com.jbproject.jutopia.rest.model.payload.PostSearchPayload;
 import com.jbproject.jutopia.rest.model.payload.ReplyPayload;
 import com.jbproject.jutopia.rest.model.result.CommCodeResult;
 import com.jbproject.jutopia.rest.model.result.PostResult;
+import com.jbproject.jutopia.rest.model.result.ReplyResult;
 import com.jbproject.jutopia.rest.service.CommCodeService;
 import com.jbproject.jutopia.rest.service.UserPostService;
 import groovy.util.logging.Slf4j;
@@ -82,6 +83,26 @@ public class UserPostController {
             redirectAttributes.addFlashAttribute("serverMessage","게시글이 수정 되었습니다.");
         }else{
             redirectAttributes.addFlashAttribute("serverMessage","게시글이 작성 되었습니다.");
+        }
+
+        return new RedirectView("/post/view/"+postId);
+    }
+
+
+    @PostMapping("/reply/cud")
+    public RedirectView postReplyCud(
+            ReplyPayload replyPayload
+            , RedirectAttributes redirectAttributes
+            , @AuthenticationPrincipal AccessJwtToken.AccessJwtPrincipal principal
+    ){
+
+        Long postId = replyPayload.getPostId();
+        userPostService.savePostReply(replyPayload, principal);
+
+        if(replyPayload.getReplyId() != null) {
+            redirectAttributes.addFlashAttribute("serverMessage","댓글이 수정 되었습니다.");
+        }else{
+            redirectAttributes.addFlashAttribute("serverMessage","댓글이 작성 되었습니다.");
         }
 
         return new RedirectView("/post/view/"+postId);

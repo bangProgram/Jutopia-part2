@@ -19,6 +19,7 @@ public class ReplyResult {
     private Long replyId;
     private String replyDetail;
     private String replyWriter;
+    private Long parentId;
     private Long supperId;
     private int replyDepth;
 
@@ -31,6 +32,7 @@ public class ReplyResult {
         result.setReplyId(entity.getId());
         result.setReplyDetail(entity.getReplyDetail());
         result.setReplyWriter(entity.getReplyWriter());
+        result.setParentId(entity.getParentId());
         result.setSupperId(entity.getSupperId());
         result.setReplyDepth(entity.getReplyDepth());
 

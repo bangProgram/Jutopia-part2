@@ -1,10 +1,7 @@
 package com.jbproject.jutopia.rest.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
@@ -28,4 +25,10 @@ public class PostReplyRelation {
     @ManyToOne
     @JoinColumn(name = "reply_id", updatable = false, insertable = false)
     private ReplyEntity replyEntity;
+
+    @Builder
+    public PostReplyRelation(Long postId, Long ReplyId){
+        this.postId = postId;
+        this.ReplyId = ReplyId;
+    }
 }

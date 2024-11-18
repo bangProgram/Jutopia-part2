@@ -25,7 +25,8 @@ public class PostResult {
     private String postWriter;
     private Long postViewrs;
     private LocalDateTime createDttm;
-    private List<ReplyResult> replyResults;
+
+    private List<ReplyResult> replyResultList;
 
     public static PostResult create(PostEntity entity){
         PostResult result = new PostResult();

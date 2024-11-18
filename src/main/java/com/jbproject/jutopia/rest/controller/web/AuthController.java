@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.stereotype.Controller;
@@ -35,6 +36,9 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
+
+    @Value("${jutopia.jwt.reset.duration}")
+    private int jwtResetDuration;
 
     private final UserService userService;
     private final AuthService authService;
@@ -124,11 +128,13 @@ public class AuthController {
 
         Cookie accessCookie = new Cookie("X-Access-Token", jwtTokenInfo.getAccessToken());
         accessCookie.setHttpOnly(true);  // XSS 방지
+        accessCookie.setMaxAge(jwtResetDuration); // 쿠키 삭제 시간 - 브라우저가 켜져있는 상태에도 토큰 초기화 하도록 설정
         accessCookie.setPath("/");  // 모든 경로에서 쿠키를 사용할 수 있도록 설정
         response.addCookie(accessCookie);
 
         Cookie refreshCookie = new Cookie("X-Refresh-Token", jwtTokenInfo.getRefreshToken());
         refreshCookie.setHttpOnly(true);  // XSS 방지
+        accessCookie.setMaxAge(jwtResetDuration); // 쿠키 삭제 시간 - 브라우저가 켜져있는 상태에도 토큰 초기화 하도록 설정
         refreshCookie.setPath("/");  // 모든 경로에서 쿠키를 사용할 수 있도록 설정
         response.addCookie(refreshCookie);
     }

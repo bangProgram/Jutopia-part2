@@ -14,7 +14,6 @@
           게시글 작성 화면
         </h6>
         <div style="border: 2px solid;">
-                <input type="hidden" th:field="${postResult.postId}">
                 <table>
                     <tr>
                         <td>
@@ -52,17 +51,26 @@
                 </table>
         </div>
         <div style="border: 2px solid;">
-            <table id="replyListTable">
-                <tr th:each="reply : ${replyList}">
+            <table>
+                <tr th:each="reply : ${postResult.replyResultList}">
                     <td th:text="${reply.replyId}"></td>
                     <td th:text="${reply.replyDetail}"></td>
                     <td th:text="${reply.replyWriter}"></td>
+                    <td><a th:onclick="replySelect([[${reply.replyId}]],[[${reply.supperId}]],[[${reply.replyDepth}]])">답글</a></td>
                 </tr>
             </table>
         </div>
 
         <div class="myBorderDiv">
-            <form class="myBorderDiv" th:object="${replyPayload}" id="replyForm" name="replyForm">
+            <div id="replyTitle">
+                댓글
+            </div>
+            <form th:object="${replyPayload}" name="replyForm" action="/post/reply/cud" method="post">
+                <input type="text" th:field="*{postId}" th:value="${postResult.postId}" placeholder="postId">
+                <input type="text" th:field="*{replyId}" placeholder="replyId">
+                <input type="text" th:field="*{parentId}" placeholder="parentId">
+                <input type="text" th:field="*{supperId}" placeholder="supperId">
+                <input type="text" th:field="*{replyDepth}" placeholder="replyDepth">
 <!--                <table style="width: 100%;">-->
 <!--                    <tr style="width: 100%;" >-->
 <!--                        <td style="width: 10%;" >[[${userInfo.userName}]]</td>-->
@@ -76,17 +84,18 @@
 <!--                        </td>-->
 <!--                    </tr>-->
 <!--                </table>-->
-                <article>
+                <article id="replyArticle">
                     <div>
                         [[${userInfo.userName}]]
                     </div>
-                    <div>
+                    <div style="flex : 8;">
                         <textarea th:field="*{replyDetail}">
 
                         </textarea>
                     </div>
                     <div>
                         <button type="submit">작성</button>
+                        <button type="button" th:onclick="valueChk()">확인</button>
                     </div>
                 </article>
             </form>
@@ -97,25 +106,80 @@
 
     <script>
 
+        var selectedReplyId = 0;
+
         function searchReply(){
             const replyPayload = {
                 postId : $("#postId").val()
             }
 
+            console.log("searchReply start !!!");
 
             $.ajax({
                 url: "/ajax/reply/search",
                 data: replyPayload,
                 type: 'POST',
                 success:function(data){
+                    console.log("data : "+data);
 					$("#replyListTable").replaceWith(data);
 				}
             })
         }
 
+        function replySelect(parentId,supperId,replyDepth) {
+            if(selectedReplyId != parentId) {
+                selectedReplyId = parentId;
+                $("#parentId").val(parentId);
+                if(replyDepth > 0 ){
+                    $("#supperId").val(supperId);
+                }else{
+                    $("#supperId").val(parentId);
+                }
+                $("#replyDepth").val(replyDepth+1);
+                $("#replyTitle").text(" -> "+parentId + "번 답글");
+            }else{
+                selectedReplyId = 0;
+                $("#parentId").val('');
+                $("#supperId").val('');
+                $("#replyDepth").val(0);
+                $("#replyTitle").text("댓글");
+            }
+        }
+
+        function valueChk() {
+            const val1 =  $("#postId").val();
+            const val2 =  $("#replyId").val();
+            const val3 =  $("#parentId").val();
+            const val4 =  $("#supperId").val();
+
+            console.log(val1 +" / "+val2 +" / "+val3 +" / "+val4);
+
+            const replyPayload = $("form[name=replyForm]").serialize() ;
+
+            console.log("queryString : "+replyPayload);
+        }
+
     </script>
 
     <style>
+        #replyArticle {
+            display : flex;
+            align-items : center;
+        }
 
+        #replyArticle > div {
+            flex : 1;
+            text-align: -webkit-center;
+        }
+
+        #replyArticle > div > button {
+            padding: 15px 25px;
+        }
+
+        #replyDetail {
+            border : 1px solid;
+            height : 100px;
+            width : 95%;
+        }
     </style>
 </html>
