@@ -8,14 +8,11 @@ import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.model.MenuTestModel;
 import com.jbproject.jutopia.model.RoleMenuRTestModel;
 import com.jbproject.jutopia.model.RoleTestModel;
-import com.jbproject.jutopia.rest.entity.MenuEntity;
-import com.jbproject.jutopia.rest.entity.RoleEntity;
-import com.jbproject.jutopia.rest.entity.RoleMenuRelation;
+import com.jbproject.jutopia.rest.entity.*;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
 import com.jbproject.jutopia.rest.model.result.MenuResult;
-import com.jbproject.jutopia.rest.repository.MenuRepository;
-import com.jbproject.jutopia.rest.repository.RoleMenuRepository;
-import com.jbproject.jutopia.rest.repository.RoleRepository;
+import com.jbproject.jutopia.rest.model.result.ReplyResult;
+import com.jbproject.jutopia.rest.repository.*;
 import io.swagger.v3.core.util.Json;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SpringBootTest
 @Transactional
@@ -42,6 +40,13 @@ public class JutopiaApplicationTests {
 	private RoleRepository roleRepository;
 	@Autowired
 	private MenuRepository menuRepository;
+	@Autowired
+	private PostRepository postRepository;
+	@Autowired
+	private PostReplyRepository postReplyRepository;
+
+	@Autowired
+	private ReplyRepository replyRepository;
 
 
 
@@ -143,5 +148,84 @@ public class JutopiaApplicationTests {
 		List<RoleMenuRelation> roleMenuRelations = roleMenuRepository.findByRoleId("SYSTEM");
 
 
+	}
+
+	@Test
+	void ReplyTest() {
+		List<PostReplyRelation> postReplyRelations = postReplyRepository.findByPostId(5L).stream().toList();
+		List<ReplyEntity> replyEntities = postReplyRelations.stream().map(PostReplyRelation::getReplyEntity).filter(entity -> entity.getParentId() == null).toList();
+
+		List<ReplyResult> result = new ArrayList<>();
+
+		for(ReplyEntity replyEntity : replyEntities) {
+			ReplyResult replyResult = new ReplyResult(replyEntity);
+			result.add(replyResult);
+		}
+
+		System.out.println("result : "+result);
+	}
+
+	@Test
+	void ReplyTest1() {
+		Long startTime = System.currentTimeMillis();
+		List<PostReplyRelation> postReplyRelationList = postReplyRepository.findByPostId(5L).stream().toList();
+
+		List<ReplyResult> allReplyList = postReplyRelationList.stream().map(PostReplyRelation::getReplyEntity).toList().stream().map(ReplyResult::create).toList();
+
+		Map<Long, List<ReplyResult>> replyGroupByParentId = allReplyList
+				.stream().filter(replyResult -> replyResult.getParentId() != null)
+				.collect(Collectors.groupingBy(ReplyResult::getParentId));
+
+		List<ReplyResult> results = allReplyList.stream().filter(replyResult -> replyResult.getParentId() == null).toList();
+
+		for(ReplyResult reply : results){
+			reply.setChildReplyList(setChildList(reply,replyGroupByParentId));
+		}
+		Long endTime = System.currentTimeMillis();
+
+		System.out.println("Process Time : "+(endTime - startTime));
+		System.out.println("results : "+results);
+	}
+
+	private  List<ReplyResult> setChildList(ReplyResult parentReply, Map<Long, List<ReplyResult>> replyGroupByParentId){
+		List<ReplyResult> curChildList = replyGroupByParentId.get(parentReply.getReplyId());
+		if(curChildList == null) return null;
+
+		for(ReplyResult curReply : curChildList){
+			List<ReplyResult> grandSonReply = replyGroupByParentId.get(curReply.getReplyId());
+			if(grandSonReply != null) {
+				curReply.setChildReplyList(setChildList(curReply, replyGroupByParentId));
+			}
+		}
+		return replyGroupByParentId.get(parentReply.getReplyId());
+	}
+
+	@Test
+	void replyTest2(){
+		Long startTime = System.currentTimeMillis();
+
+		PostEntity postEntity = postRepository.findById(5L).orElseThrow();
+
+		List<PostReplyRelation> postReplyRelationList = postEntity.getPostReplyRelation();
+
+		List<ReplyResult> allReplyList = postReplyRelationList.stream().map(PostReplyRelation::getReplyEntity).toList().stream().map(ReplyResult::create).toList();
+
+		List<ReplyResult> resultList = new ArrayList<>();
+		Map<Long, ReplyResult> parent = new HashMap<>();
+
+		for (ReplyResult replyResult : allReplyList) {
+			parent.put(replyResult.getReplyId(), replyResult);
+			if(replyResult.getParentId() == null) resultList.add(replyResult);
+			else {
+				parent.get(replyResult.getParentId())
+						.getChildReplyList()
+						.add(replyResult);
+			}
+		}
+
+		Long endTime = System.currentTimeMillis();
+
+		System.out.println("Process Time : "+(endTime - startTime));
+		System.out.println("resultList : " + resultList);
 	}
 }

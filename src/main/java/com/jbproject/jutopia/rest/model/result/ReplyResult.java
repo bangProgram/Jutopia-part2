@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,8 +23,22 @@ public class ReplyResult {
     private Long parentId;
     private Long supperId;
     private int replyDepth;
+    private String delYn;
 
-    private List<ReplyResult> childReplyList;
+    private List<ReplyResult> childReplyList = new ArrayList<>();
+
+
+    public ReplyResult (ReplyEntity entity) {
+        this.replyId = entity.getId();
+        this.replyDetail = entity.getReplyDetail();
+        this.replyWriter = entity.getReplyWriter();
+        this.parentId = entity.getParentId();
+        this.supperId = entity.getSupperId();
+        this.replyDepth = entity.getReplyDepth();
+        this.delYn = entity.getDelYn();
+
+        this.childReplyList = entity.getChildReplyList().stream().map(ReplyResult::create).toList();
+    }
 
 
     public static ReplyResult create(ReplyEntity entity){
@@ -35,6 +50,7 @@ public class ReplyResult {
         result.setParentId(entity.getParentId());
         result.setSupperId(entity.getSupperId());
         result.setReplyDepth(entity.getReplyDepth());
+        result.setDelYn(entity.getDelYn());
 
         return result;
     }

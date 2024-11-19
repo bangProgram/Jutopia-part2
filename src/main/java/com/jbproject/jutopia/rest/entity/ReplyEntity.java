@@ -20,7 +20,7 @@ public class ReplyEntity extends BaseEntity{
 
     @Column(name = "reply_detail")
     private String replyDetail;
-    @Column(name = "reply_writer")
+    @Column(name = "reply_writer", columnDefinition = "varchar(100)")
     private String replyWriter;
     @Column(name = "parent_id")
     private Long parentId;
@@ -28,6 +28,8 @@ public class ReplyEntity extends BaseEntity{
     private Long supperId;
     @Column(name = "reply_depth")
     private int replyDepth;
+    @Column(name = "del_yn", columnDefinition = "varchar(10)")
+    private String delYn;
 
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -14,4 +14,5 @@ public class ReplyPayload {
     private int replyDepth = 0;
     private String replyWriter;
     private String replyWriterId;
+    private String delYn;
 }

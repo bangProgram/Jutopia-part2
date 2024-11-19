@@ -51,13 +51,7 @@
                 </table>
         </div>
         <div style="border: 2px solid;">
-            <table>
-                <tr th:each="reply : ${postResult.replyResultList}">
-                    <td th:text="${reply.replyId}"></td>
-                    <td th:text="${reply.replyDetail}"></td>
-                    <td th:text="${reply.replyWriter}"></td>
-                    <td><a th:onclick="replySelect([[${reply.replyId}]],[[${reply.supperId}]],[[${reply.replyDepth}]])">답글</a></td>
-                </tr>
+            <table id="replyTable">
             </table>
         </div>
 
@@ -66,24 +60,11 @@
                 댓글
             </div>
             <form th:object="${replyPayload}" name="replyForm" action="/post/reply/cud" method="post">
-                <input type="text" th:field="*{postId}" th:value="${postResult.postId}" placeholder="postId">
-                <input type="text" th:field="*{replyId}" placeholder="replyId">
-                <input type="text" th:field="*{parentId}" placeholder="parentId">
-                <input type="text" th:field="*{supperId}" placeholder="supperId">
-                <input type="text" th:field="*{replyDepth}" placeholder="replyDepth">
-<!--                <table style="width: 100%;">-->
-<!--                    <tr style="width: 100%;" >-->
-<!--                        <td style="width: 10%;" >[[${userInfo.userName}]]</td>-->
-<!--                        <td style="width: 80%; height : 100px;">-->
-<!--                            <textarea style="width: 100%; height : 100%;" th:field="*{replyDetail}">-->
-
-<!--                            </textarea>-->
-<!--                        </td>-->
-<!--                        <td style="width: 10%; height : 100px;">-->
-<!--                            <button style="width: 100%; height : 100%;" type="submit">작성</button>-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                </table>-->
+                <input type="hidden" th:field="*{postId}" th:value="${postResult.postId}" placeholder="postId">
+                <input type="hidden" th:field="*{replyId}" placeholder="replyId">
+                <input type="hidden" th:field="*{parentId}" placeholder="parentId">
+                <input type="hidden" th:field="*{supperId}" placeholder="supperId">
+                <input type="hidden" th:field="*{replyDepth}" placeholder="replyDepth">
                 <article id="replyArticle">
                     <div>
                         [[${userInfo.userName}]]
@@ -104,27 +85,15 @@
 
     </body>
 
-    <script>
+    <script th:inline="javascript">
+
+        var replyResultList = [[${postResult.replyResultList}]];
 
         var selectedReplyId = 0;
 
-        function searchReply(){
-            const replyPayload = {
-                postId : $("#postId").val()
-            }
-
-            console.log("searchReply start !!!");
-
-            $.ajax({
-                url: "/ajax/reply/search",
-                data: replyPayload,
-                type: 'POST',
-                success:function(data){
-                    console.log("data : "+data);
-					$("#replyListTable").replaceWith(data);
-				}
-            })
-        }
+        $(document).ready(function() {
+            replyLoop(replyResultList);
+        });
 
         function replySelect(parentId,supperId,replyDepth) {
             if(selectedReplyId != parentId) {
@@ -146,6 +115,26 @@
             }
         }
 
+        function searchReply(){
+            const replyPayload = {
+                postId : $("#postId").val()
+            }
+
+            console.log("searchReply start !!!");
+
+            $.ajax({
+                url: "/ajax/reply/search",
+                data: replyPayload,
+                type: 'POST',
+                success:function(data){
+                    console.log("data : "+data);
+					$("#replyListTable").replaceWith(data);
+				}
+            })
+        }
+
+
+
         function valueChk() {
             const val1 =  $("#postId").val();
             const val2 =  $("#replyId").val();
@@ -158,6 +147,27 @@
 
             console.log("queryString : "+replyPayload);
         }
+
+        function replyLoop(list) {
+
+            for(var i=0; i<list.length; i++){
+                var space = "";
+                var depth = list[i].replyDepth;
+
+                for(var j=0; j<depth; j++) { space += "\u00a0\u00a0"; }
+                if(depth > 0) { space += "→"}
+
+                var innerHtml = "<tr>";
+                innerHtml += "<td>"+space+list[i].replyWriter+"</td>";
+                innerHtml += "<td>"+list[i].replyDetail+"</td>";
+                innerHtml += "<td><a id=\"replyButton\" onclick=\"replySelect("+list[i].replyId+","+list[i].supperId+","+list[i].replyDepth+")\">답글</a></td>";
+                innerHtml += "</tr>";
+
+                $("#replyTable").append(innerHtml);
+                replyLoop(list[i].childReplyList);
+            }
+        }
+
 
     </script>
 

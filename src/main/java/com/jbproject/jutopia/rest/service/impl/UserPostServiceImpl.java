@@ -21,10 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -59,9 +56,27 @@ public class UserPostServiceImpl implements UserPostService {
                 .build();
 
         List<PostReplyRelation> postReplyRelationList = curPost.getPostReplyRelation();
-        List<ReplyResult> replyResultList = postReplyRelationList.stream().map(PostReplyRelation::getReplyEntity).map(ReplyResult::create).toList();
 
-        result.setReplyResultList(replyResultList);
+        List<ReplyResult> allReplyList = postReplyRelationList.stream().map(PostReplyRelation::getReplyEntity).toList().stream().map(ReplyResult::create).toList();
+
+        List<ReplyResult> resultList = new ArrayList<>();
+        Map<Long, ReplyResult> parent = new HashMap<>();
+
+        for (ReplyResult replyResult : allReplyList) {
+            parent.put(replyResult.getReplyId(), replyResult);
+
+            if(replyResult.getParentId() == null) {
+                resultList.add(replyResult);
+            }else {
+                parent.get(replyResult.getParentId())
+                        .getChildReplyList()
+                        .add(replyResult);
+            }
+        }
+
+        result.setReplyResultList(resultList);
+
+        System.out.println("replyResultList : "+resultList);
 
         return result;
     }
@@ -152,4 +167,5 @@ public class UserPostServiceImpl implements UserPostService {
 
         postReplyRepository.save(postReply);
     }
+
 }
