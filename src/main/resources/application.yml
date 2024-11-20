@@ -58,7 +58,7 @@ spring:
       on-profile: "local"
     import:
       - classpath:config/local/config.yml
-      - classpath:config/local/api-config.yml
+      - classpath:config/local/secret-config.yml
       - classpath:config/local/datasource.yml
 
 logging:

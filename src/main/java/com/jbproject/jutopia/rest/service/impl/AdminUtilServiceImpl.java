@@ -3,25 +3,17 @@ package com.jbproject.jutopia.rest.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.constant.CommonConstatns;
 import com.jbproject.jutopia.constant.ServerUtilConstant;
-import com.jbproject.jutopia.rest.entity.CorpCisEntity;
-import com.jbproject.jutopia.rest.entity.CorpDetailEntity;
-import com.jbproject.jutopia.rest.entity.CorpEntity;
-import com.jbproject.jutopia.rest.entity.RoleMenuRelation;
+import com.jbproject.jutopia.rest.entity.*;
 import com.jbproject.jutopia.rest.entity.key.CorpCisKey;
+import com.jbproject.jutopia.rest.entity.key.CorpCisStatKey;
 import com.jbproject.jutopia.rest.model.CorpCisModel;
 import com.jbproject.jutopia.rest.model.CorpDetailModel;
 import com.jbproject.jutopia.rest.model.CorpModel;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpDetailPayload;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpReportPayload;
-import com.jbproject.jutopia.rest.model.result.AuthResult;
-import com.jbproject.jutopia.rest.model.result.CommCodeResult;
-import com.jbproject.jutopia.rest.model.result.CorpResult;
-import com.jbproject.jutopia.rest.model.result.MergeResult;
-import com.jbproject.jutopia.rest.repository.CommCodeRepository;
-import com.jbproject.jutopia.rest.repository.CorpCisRepository;
-import com.jbproject.jutopia.rest.repository.CorpDetailRepository;
-import com.jbproject.jutopia.rest.repository.CorpRepository;
+import com.jbproject.jutopia.rest.model.result.*;
+import com.jbproject.jutopia.rest.repository.*;
 import com.jbproject.jutopia.rest.service.AdminUtilService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +23,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -57,6 +51,7 @@ public class AdminUtilServiceImpl implements AdminUtilService {
 
     private final CorpDetailRepository corpDetailRepository;
     private final CorpCisRepository corpCisRepository;
+    private final CorpCisStatRepository corpCisStatRepository;
     private final CommCodeRepository commCodeRepository;
 
     public void mergeCorpDetail(MergeCorpDetailPayload payload) throws Exception{
@@ -262,4 +257,46 @@ public class AdminUtilServiceImpl implements AdminUtilService {
         corpCisRepository.save(entity);
     }
 
+    public void mergeCisStat(){
+        List<CorpCisResult> corpCisResults = corpCisRepository.getAll();
+
+        List<String> corpCodes = corpCisResults.stream().map(CorpCisResult::getCorpCode).distinct().toList();
+        List<String> accountIds = corpCisResults.stream().map(CorpCisResult::getAccountId).distinct().toList();
+
+        Map<String, Map<String, List<CorpCisResult>>> corpCisGroup =
+                corpCisResults.stream().collect(
+                        Collectors.groupingBy(CorpCisResult::getCorpCode,
+                                Collectors.groupingBy(CorpCisResult::getAccountId)
+                        )
+                );
+
+        for(String corpCode : corpCodes) {
+            for(String accountId : accountIds){
+                System.out.println(corpCode + " / "+accountId);
+                List<CorpCisResult> corpCisList =corpCisGroup.get(corpCode).get(accountId);
+                if(corpCisList != null){
+                    corpCisList.sort(Comparator.comparing(CorpCisResult::getBsnsYear)
+                            .thenComparing(CorpCisResult::getQuarterlyReportCode));
+
+                    for(CorpCisResult corpCisResult : corpCisList){
+                        CorpCisStatKey key = new CorpCisStatKey();
+                        key.setCorpCode(corpCode);
+                        key.setAccountId(accountId);
+                        key.setBsnsYear(corpCisResult.getBsnsYear());
+                        key.setQuarterlyReportCode(corpCisResult.getQuarterlyReportCode());
+
+                        Optional<CorpCisStatEntity> entity = corpCisStatRepository.findById(key);
+                        if(entity.isPresent()){
+
+                        }else{
+
+                        }
+                    }
+                }
+            }
+            break;
+        }
+
+
+    }
 }

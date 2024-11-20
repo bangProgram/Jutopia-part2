@@ -10,6 +10,7 @@ import com.jbproject.jutopia.model.RoleMenuRTestModel;
 import com.jbproject.jutopia.model.RoleTestModel;
 import com.jbproject.jutopia.rest.entity.*;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
+import com.jbproject.jutopia.rest.model.result.CorpCisResult;
 import com.jbproject.jutopia.rest.model.result.MenuResult;
 import com.jbproject.jutopia.rest.model.result.ReplyResult;
 import com.jbproject.jutopia.rest.repository.*;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,9 +46,10 @@ public class JutopiaApplicationTests {
 	private PostRepository postRepository;
 	@Autowired
 	private PostReplyRepository postReplyRepository;
-
 	@Autowired
 	private ReplyRepository replyRepository;
+	@Autowired
+	private CorpCisRepository corpCisRepository;
 
 
 
@@ -227,5 +230,68 @@ public class JutopiaApplicationTests {
 
 		System.out.println("Process Time : "+(endTime - startTime));
 		System.out.println("resultList : " + resultList);
+	}
+
+	@Test
+	void corpCisTest(){
+		List<String> accountIds = new ArrayList<>();
+		accountIds.add("ifrs-full_Revenue");
+		accountIds.add("dart_OperatingIncomeLoss");
+		accountIds.add("ifrs-full_ProfitLoss");
+		accountIds.add("ifrs-full_EarningsPerShareAbstract");
+		Long start = System.currentTimeMillis();
+
+		corpCisRepository.getByAccountIds1(accountIds);
+		Long end = System.currentTimeMillis();
+		System.out.println("process time 1 : " + (end-start) );
+		start = System.currentTimeMillis();
+
+		corpCisRepository.getByAccountIds2(accountIds);
+
+		end = System.currentTimeMillis();
+		System.out.println("process time 2 : " + (end-start) );
+		start = System.currentTimeMillis();
+
+		corpCisRepository.findAll();
+
+		end = System.currentTimeMillis();
+		System.out.println("process time 3 : " + (end-start) );
+		start = System.currentTimeMillis();
+
+		List<CorpCisResult> result = corpCisRepository.getAll();
+
+		end = System.currentTimeMillis();
+		System.out.println("process time 4 : " + (end-start) );
+		System.out.println("result : "+result.getFirst());
+
+	}
+
+	@Test
+	void mergeCisStat(){
+		List<CorpCisResult> corpCisResults = corpCisRepository.getAll();
+
+		List<String> corpCodes = corpCisResults.stream().map(CorpCisResult::getCorpCode).distinct().toList();
+		List<String> accountIds = corpCisResults.stream().map(CorpCisResult::getAccountId).distinct().toList();
+
+		Map<String, Map<String, List<CorpCisResult>>> corpCisGroup =
+				corpCisResults.stream().collect(
+						Collectors.groupingBy(CorpCisResult::getCorpCode,
+								Collectors.groupingBy(CorpCisResult::getAccountId)
+						)
+				);
+
+		for(String corpCode : corpCodes) {
+			for(String accountId : accountIds){
+				System.out.println(corpCode + " / "+accountId);
+				List<CorpCisResult> corpCisList =corpCisGroup.get(corpCode).get(accountId);
+				if(corpCisList != null){
+					corpCisList.sort(Comparator.comparing(CorpCisResult::getBsnsYear)
+							.thenComparing(CorpCisResult::getQuarterlyReportCode));
+
+					System.out.println("corpCisList : "+ corpCisList);
+				}
+			}
+			break;
+		}
 	}
 }
