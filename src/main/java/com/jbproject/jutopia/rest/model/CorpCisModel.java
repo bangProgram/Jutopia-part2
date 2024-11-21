@@ -17,9 +17,9 @@ import java.time.LocalDate;
 @Schema(description = "기업 연결손익계산서 모델")
 public class CorpCisModel {
 
-    @JsonProperty("corp_code")
+    @JsonProperty("stock_code")
     @Schema(description = "기업 코드")
-    private String corpCode;
+    private String stockCode;
     @JsonProperty("bsns_year")
     @Schema(description = "보고서 년도")
     private String bsnsYear;

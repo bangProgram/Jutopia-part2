@@ -5,6 +5,7 @@ import com.jbproject.jutopia.rest.entity.key.CorpCisKey;
 import com.jbproject.jutopia.rest.model.CorpCisModel;
 import com.jbproject.jutopia.rest.model.CorpDetailModel;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
+import com.jbproject.jutopia.rest.model.payload.MergeCorpCisStatPayload;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpDetailPayload;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpReportPayload;
 import com.jbproject.jutopia.rest.model.result.CorpResult;
@@ -21,4 +22,5 @@ public interface AdminUtilService {
     void saveCorp(XmlCorpModel xmlCorpModel);
     void mergeCorpDetail(MergeCorpDetailPayload payload) throws Exception;
     MergeResult mergeCorpCis(MergeCorpReportPayload payload, MultipartFile file) throws Exception;
+    MergeResult mergeCisStat(MergeCorpCisStatPayload payload);
 }

@@ -14,8 +14,8 @@
       어드민 기업데이터 관리 화면.
     </h6>
 
-    <div class="a">
-        <div style="border: 2px solid;">
+    <div class="utilDiv">
+        <div>
             재무정보 업로드
             <form action="/admin/util/dart/corp/report" name="exform" method="post" enctype="multipart/form-data"  th:object="${mergeCorpReportPayload}" >
                 <table>
@@ -35,9 +35,49 @@
                 </table>
             </form>
         </div>
+        <div>
+            재무정보 통계데이터 업데이트
+            <form action="/admin/util/cis/stat" name="exform" method="post"  th:object="${mergeCorpCisStatPayload}" >
+                <table>
+                    <tr>
+                        <td colspan="2">
+                            <input type="text" th:field="*{stockCode}" placeholder="StockCode">
+                        </td>
+                        <td colspan="2">
+                            <input type="text" th:field="*{bsnsYear}" placeholder="bsnsYear">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="text" th:field="*{accountId}" placeholder="accountId">
+                        </td>
+                        <td colspan="2">
+                            <input type="text" th:field="*{quarterlyReportCode}" placeholder="quarterlyReportCode">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" th:field="*{corpCls}" th:value="Y"><label>유가증권</label>
+                        </td>
+                        <td>
+                            <input type="checkbox" th:field="*{corpCls}" th:value="K"><label>코스닥</label>
+                        </td>
+                        <td>
+                            <input type="checkbox" th:field="*{corpCls}" th:value="N"><label>코스넥</label>
+                        </td>
+                        <td>
+                            <input type="checkbox" th:field="*{corpCls}" th:value="E"><label>기타</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><button onclick="submit()" >재무 통계수정</button></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
 
 
-        <div style="border: 2px solid;">
+        <div >
             기업정보(xml) 업로드
             <form action="/admin/util/dart/corp" method="post" name="corpForm" enctype="multipart/form-data">
                 <table>
@@ -52,7 +92,7 @@
             </form>
         </div>
 
-        <div style="border: 2px solid;">
+        <div>
             기업 상세정보 현행화
             <form action="/admin/util/dart/corp/detail" method="post" name="corpDetailForm" th:object="${mergeCorpDetailPayload}" >
                 <table>
@@ -80,6 +120,16 @@
     </div>
 </body>
 <script>
+    $("#reportType").change(function(){
+        if($(this).val() == 'CIS') {
+            $("#mergeCisStat").css("display","block");
+        }else{
+            $("#mergeCisStat").css("display","none");
+        }
+
+    });
+
+
     function requiredChk(){
         for(var i=0; i<$('.requiredChk').length; i++){
             var valChk = $('.requiredChk').eq(i).val();
@@ -113,5 +163,16 @@
         frm.action = '/admin/util/dart/corp';
         frm.submit();
     }
+
+    function mergeCisStat(){
+        href.location = "/admin/util/cis/stat";
+    }
 </script>
+
+<style>
+    .utilDiv > div {
+        border: 2px solid;
+        margin: 20px;
+    }
+</style>
 </html>

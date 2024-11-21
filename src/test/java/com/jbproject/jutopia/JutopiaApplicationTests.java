@@ -9,6 +9,8 @@ import com.jbproject.jutopia.model.MenuTestModel;
 import com.jbproject.jutopia.model.RoleMenuRTestModel;
 import com.jbproject.jutopia.model.RoleTestModel;
 import com.jbproject.jutopia.rest.entity.*;
+import com.jbproject.jutopia.rest.entity.key.CorpCisStatKey;
+import com.jbproject.jutopia.rest.model.CorpCisStatModel;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
 import com.jbproject.jutopia.rest.model.result.CorpCisResult;
 import com.jbproject.jutopia.rest.model.result.MenuResult;
@@ -50,6 +52,8 @@ public class JutopiaApplicationTests {
 	private ReplyRepository replyRepository;
 	@Autowired
 	private CorpCisRepository corpCisRepository;
+	@Autowired
+	private CorpCisStatRepository corpCisStatRepository;
 
 
 
@@ -258,8 +262,6 @@ public class JutopiaApplicationTests {
 		System.out.println("process time 3 : " + (end-start) );
 		start = System.currentTimeMillis();
 
-		List<CorpCisResult> result = corpCisRepository.getAll();
-
 		end = System.currentTimeMillis();
 		System.out.println("process time 4 : " + (end-start) );
 		System.out.println("result : "+result.getFirst());
@@ -282,15 +284,50 @@ public class JutopiaApplicationTests {
 
 		for(String corpCode : corpCodes) {
 			for(String accountId : accountIds){
-				System.out.println(corpCode + " / "+accountId);
 				List<CorpCisResult> corpCisList =corpCisGroup.get(corpCode).get(accountId);
 				if(corpCisList != null){
 					corpCisList.sort(Comparator.comparing(CorpCisResult::getBsnsYear)
 							.thenComparing(CorpCisResult::getQuarterlyReportCode));
 
-					System.out.println("corpCisList : "+ corpCisList);
+					for(int i=1; i<corpCisList.size(); i++){
+						CorpCisStatKey key = new CorpCisStatKey();
+						key.setCorpCode(corpCode);
+						key.setAccountId(accountId);
+						key.setBsnsYear(corpCisList.get(i).getBsnsYear());
+						key.setQuarterlyReportCode(corpCisList.get(i).getQuarterlyReportCode());
+
+						Optional<CorpCisStatEntity> entity = corpCisStatRepository.findById(key);
+						System.out.println("entity 여부 확인 : "+(entity.isPresent()));
+						if(entity.isPresent()){
+							CorpCisStatEntity curEntity = entity.get();
+							curEntity.update(
+									CorpCisStatModel.builder()
+											.accountName(corpCisList.get(i).getAccountName())
+											.befBsnsYear(corpCisList.get(i-1).getBsnsYear())
+											.befQuarterlyReportCode(corpCisList.get(i-1).getQuarterlyReportCode())
+											.befNetAmount(corpCisList.get(i-1).getBefNetAmount())
+											.netAmount(corpCisList.get(i).getNetAmount())
+											.build()
+							);
+
+							CorpCisStatEntity test = corpCisStatRepository.save(curEntity);
+							System.out.println("entity 저장 확인 1 : "+test.getId().getCorpCode());
+						}else{
+							CorpCisStatEntity newEntity = CorpCisStatEntity.builder()
+									.key(key)
+									.accountName(corpCisList.get(i).getAccountName())
+									.befBsnsYear(corpCisList.get(i-1).getBsnsYear())
+									.befQuarterlyReportCode(corpCisList.get(i-1).getQuarterlyReportCode())
+									.befNetAmount(corpCisList.get(i-1).getBefNetAmount())
+									.netAmount(corpCisList.get(i).getNetAmount())
+									.build();
+							CorpCisStatEntity test = corpCisStatRepository.save(newEntity);
+							System.out.println("entity 저장 확인 2 : "+test.getId().getCorpCode());
+						}
+					}
 				}
 			}
+			System.out.println(corpCode + " > 작업 완료. ");
 			break;
 		}
 	}

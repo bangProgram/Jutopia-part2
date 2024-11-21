@@ -15,8 +15,8 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class CorpCisKey implements Serializable {
 
-    @Column( name = "corp_code",columnDefinition="varchar(10)")
-    private String corpCode;
+    @Column( name = "stock_code",columnDefinition="varchar(10)")
+    private String stockCode;
     @Column(name = "bsns_year",columnDefinition="varchar(10)")
     private String bsnsYear;
     @Column(name = "quarterly_report_code",columnDefinition="varchar(10)")

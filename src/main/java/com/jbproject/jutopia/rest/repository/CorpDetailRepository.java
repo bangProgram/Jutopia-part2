@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface CorpDetailRepository extends JpaRepository<CorpDetailEntity, String> {
     List<CorpDetailEntity> findByStockNameLike(String stockName);
+    List<CorpDetailEntity> findByCorpClsIn(List<String> corpCls);
 }

@@ -2,6 +2,9 @@ package com.jbproject.jutopia.rest.entity;
 
 import com.jbproject.jutopia.rest.entity.key.CorpCisKey;
 import com.jbproject.jutopia.rest.entity.key.CorpCisStatKey;
+import com.jbproject.jutopia.rest.model.CorpCisModel;
+import com.jbproject.jutopia.rest.model.CorpCisStatModel;
+import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -21,35 +24,41 @@ public class CorpCisStatEntity extends BaseEntity implements Persistable<CorpCis
     @EmbeddedId
     private CorpCisStatKey id;
 
-    private String account_name;
-    private String bef_bsns_year;
-    private String bef_quarterly_report_code;
-    private Long bef_net_amount;
-    private Long net_amount;
+    private String stockName;
+    private String accountName;
+    private String befBsnsYear;
+    private String befQuarterlyReportCode;
+    private Long befNetAmount;
+    private Long netAmount;
+    private Long accumulatedNetAmount;
+    private Long befYearAccumulatedNetAmount;
 
     @Builder
     public CorpCisStatEntity(
-        String corpCode, String accountId, String bsnsYear,
-        String quarterlyReportCode, String account_name, String bef_bsns_year,
-        String bef_quarterly_report_code, Long bef_net_amount, Long net_amount
+        CorpCisStatKey key
+        , String stockName, String accountName, String befBsnsYear, String befQuarterlyReportCode, Long befNetAmount
+        , Long netAmount, Long accumulatedNetAmount, Long befYearAccumulatedNetAmount
     ){
-        this.id.setCorpCode(corpCode);
-        this.id.setAccountId(accountId);
-        this.id.setBsnsYear(bsnsYear);
-        this.id.setQuarterlyReportCode(quarterlyReportCode);
-        this.account_name = account_name;
-        this.bef_bsns_year = bef_bsns_year;
-        this.bef_quarterly_report_code = bef_quarterly_report_code;
-        this.bef_net_amount = bef_net_amount;
-        this.net_amount = net_amount;
+        this.id = key;
+        this.stockName = stockName;
+        this.accountName = accountName;
+        this.befBsnsYear = befBsnsYear;
+        this.befQuarterlyReportCode = befQuarterlyReportCode;
+        this.befNetAmount = befNetAmount;
+        this.netAmount = netAmount;
+        this.accumulatedNetAmount = accumulatedNetAmount;
+        this.befYearAccumulatedNetAmount = befYearAccumulatedNetAmount;
     }
 
-    public void update(String account_name,String bef_bsns_year,String bef_quarterly_report_code,Long bef_net_amount,Long net_amount){
-        this.account_name = account_name;
-        this.bef_bsns_year = bef_bsns_year;
-        this.bef_quarterly_report_code = bef_quarterly_report_code;
-        this.bef_net_amount = bef_net_amount;
-        this.net_amount = net_amount;
+    public void update(CorpCisStatModel model){
+        this.stockName = model.getStockName();
+        this.accountName = model.getAccountName();
+        this.befBsnsYear = model.getBefBsnsYear();
+        this.befQuarterlyReportCode = model.getBefQuarterlyReportCode();
+        this.befNetAmount = model.getBefNetAmount();
+        this.netAmount = model.getNetAmount();
+        this.accumulatedNetAmount = model.getAccumulatedNetAmount();
+        this.befYearAccumulatedNetAmount = model.getBefYearAccumulatedNetAmount();
     }
 
     @Override

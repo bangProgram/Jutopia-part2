@@ -13,6 +13,7 @@ import com.jbproject.jutopia.rest.model.CorpCisModel;
 import com.jbproject.jutopia.rest.model.CorpDetailModel;
 import com.jbproject.jutopia.rest.model.CorpModel;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
+import com.jbproject.jutopia.rest.model.payload.MergeCorpCisStatPayload;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpDetailPayload;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpReportPayload;
 import com.jbproject.jutopia.rest.model.result.CommCodeResult;
@@ -73,6 +74,7 @@ public class AdminUtilController {
             HttpServletRequest request, HttpServletResponse response, Model model
             , MergeCorpDetailPayload mergeCorpDetailPayload
             , MergeCorpReportPayload mergeCorpReportPayload
+            , MergeCorpCisStatPayload mergeCorpCisStatPayload
     ) {
 
         List<CommCodeResult> quarterlyReportTypeList = commCodeService.getCommCodeListByGroupCode(CommonConstatns.QUARTERLY_REPORT_TYPE);
@@ -82,6 +84,7 @@ public class AdminUtilController {
         model.addAttribute("reportTypeList",reportTypeList);
         model.addAttribute("mergeCorpReportPayload",mergeCorpReportPayload);
         model.addAttribute("mergeCorpDetailPayload",mergeCorpDetailPayload);
+        model.addAttribute("mergeCorpCisStatPayload",mergeCorpCisStatPayload);
         return "/admin/util/mainPage";
     }
 
@@ -159,6 +162,34 @@ public class AdminUtilController {
         } catch (Exception e) {
             System.out.println("error : "+e);
             redirectAttributes.addFlashAttribute("serverMessage", "엑셀업로드에 실패했습니다..");
+            return new RedirectView("/admin/util/main") ;
+        }
+    }
+
+    @PostMapping("/cis/stat")
+    public RedirectView mergeCorpCisStat(
+            HttpServletRequest request, HttpServletResponse response, Model model
+            , MergeCorpCisStatPayload payload
+            , RedirectAttributes redirectAttributes
+    ){
+        try {
+            int createCnt = 0;
+            int updateCnt = 0;
+
+            Long start = System.currentTimeMillis();
+
+            MergeResult mergeResult = adminUtilService.mergeCisStat(payload);
+            Long end = System.currentTimeMillis();
+            createCnt = mergeResult.getCreateCnt();
+            updateCnt = mergeResult.getUpdateCnt();
+
+            String msg = createCnt+" 건 입력 / " +updateCnt+"건 수정 : 엑셀업로드가 완료되었습니다. / 작업시간 : "+(end-start)+" m초 ";
+            System.out.println("JB msg : "+msg);
+            redirectAttributes.addFlashAttribute("serverMessage", msg);
+            return new RedirectView("/admin/util/main") ;
+        } catch (Exception e) {
+            System.out.println("error : "+e);
+            redirectAttributes.addFlashAttribute("serverMessage", "재무 통계정보 수정에 실패했습니다..");
             return new RedirectView("/admin/util/main") ;
         }
     }

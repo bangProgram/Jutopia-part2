@@ -53,7 +53,7 @@ public class CorpCisEntity extends BaseEntity implements Persistable<CorpCisKey>
     public CorpCisEntity(
             CorpCisModel model
     ){
-        this.id = new CorpCisKey(model.getCorpCode(),model.getBsnsYear(),model.getQuarterlyReportCode(),model.getAccountId());
+        this.id = new CorpCisKey(model.getStockCode(),model.getBsnsYear(),model.getQuarterlyReportCode(),model.getAccountId());
         this.quarterlyReportName = model.getQuarterlyReportName();
         this.closingDate = model.getClosingDate();
         this.accountName = model.getAccountName();
@@ -66,12 +66,12 @@ public class CorpCisEntity extends BaseEntity implements Persistable<CorpCisKey>
 
     @Builder
     public CorpCisEntity(
-            String corpCode,String bsnsYear,String quarterlyReportCode,
+            String stockCode,String bsnsYear,String quarterlyReportCode,
             String accountId,String quarterlyReportName,LocalDate closingDate,
             String accountName,Long netAmount,Long accumulatedNetAmount,
             Long befNetAmount,Long befAccumulatedNetAmount,String currency
     ){
-            this.id = new CorpCisKey(corpCode,bsnsYear,quarterlyReportCode,accountId);
+            this.id = new CorpCisKey(stockCode,bsnsYear,quarterlyReportCode,accountId);
             this.quarterlyReportName = quarterlyReportName;
             this.closingDate = closingDate;
             this.accountName = accountName;

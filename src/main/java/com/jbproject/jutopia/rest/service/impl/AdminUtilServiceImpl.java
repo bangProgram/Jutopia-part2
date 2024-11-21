@@ -6,10 +6,8 @@ import com.jbproject.jutopia.constant.ServerUtilConstant;
 import com.jbproject.jutopia.rest.entity.*;
 import com.jbproject.jutopia.rest.entity.key.CorpCisKey;
 import com.jbproject.jutopia.rest.entity.key.CorpCisStatKey;
-import com.jbproject.jutopia.rest.model.CorpCisModel;
-import com.jbproject.jutopia.rest.model.CorpDetailModel;
-import com.jbproject.jutopia.rest.model.CorpModel;
-import com.jbproject.jutopia.rest.model.XmlCorpModel;
+import com.jbproject.jutopia.rest.model.*;
+import com.jbproject.jutopia.rest.model.payload.MergeCorpCisStatPayload;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpDetailPayload;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpReportPayload;
 import com.jbproject.jutopia.rest.model.result.*;
@@ -117,14 +115,13 @@ public class AdminUtilServiceImpl implements AdminUtilService {
             }
         }
 
-        System.out.println(" JB quarterlyReportCode : "+quarterlyReportCode);
         XSSFSheet sheet = workbook.getSheetAt(0); // 해당 엑셀파일의 시트(Sheet) 수
         int rows = sheet.getPhysicalNumberOfRows(); // 해당 시트의 행의 개수
         for (int rowIndex = 1; rowIndex < rows; rowIndex++) {
 
             XSSFRow row = sheet.getRow(rowIndex); // 각 행을 읽어온다
             if (row != null) {
-                String corpCode = row.getCell(1).getStringCellValue().replace("[", "").replace("]", "");
+                String stockCode = row.getCell(1).getStringCellValue().replace("[", "").replace("]", "");
                 String accountId = row.getCell(10).getStringCellValue().replace("ifrs_", "ifrs-full_");
 
                 if(	accounIdList.contains(accountId) ) {
@@ -134,13 +131,13 @@ public class AdminUtilServiceImpl implements AdminUtilService {
                     CorpCisModel corpCisModel = new CorpCisModel();
 
 
-                    corpCisModel.setCorpCode(corpCode);
+                    corpCisModel.setStockCode(stockCode);
                     corpCisModel.setBsnsYear(bsnsYear);
                     corpCisModel.setQuarterlyReportCode(quarterlyReportCode);
                     corpCisModel.setQuarterlyReportName(quarterlyReportName);
                     corpCisModel.setAccountId(accountId);
 
-                    Optional<CorpCisEntity> corpCisEntity = corpCisRepository.findById(new CorpCisKey(corpCode,bsnsYear,quarterlyReportCode,accountId));
+                    Optional<CorpCisEntity> corpCisEntity = corpCisRepository.findById(new CorpCisKey(stockCode,bsnsYear,quarterlyReportCode,accountId));
 
                     for (int columnIndex = 0; columnIndex <= cells; columnIndex++) {
                         XSSFCell cell = row.getCell(columnIndex); // 셀에 담겨있는 값을 읽는다.
@@ -257,46 +254,105 @@ public class AdminUtilServiceImpl implements AdminUtilService {
         corpCisRepository.save(entity);
     }
 
-    public void mergeCisStat(){
-        List<CorpCisResult> corpCisResults = corpCisRepository.getAll();
+    public MergeResult mergeCisStat(MergeCorpCisStatPayload payload){
+        List<CorpCisStatModel> corpCisResults = corpCisRepository.getCorpCisList(payload);
 
-        List<String> corpCodes = corpCisResults.stream().map(CorpCisResult::getCorpCode).distinct().toList();
-        List<String> accountIds = corpCisResults.stream().map(CorpCisResult::getAccountId).distinct().toList();
+        MergeResult result = new MergeResult();
+        int createCnt = 0;
+        int updateCnt = 0;
 
-        Map<String, Map<String, List<CorpCisResult>>> corpCisGroup =
+        List<String> stockCodes = corpCisResults.stream().map(CorpCisStatModel::getStockCode).distinct().toList();
+        List<String> accountIds = corpCisResults.stream().map(CorpCisStatModel::getAccountId).distinct().toList();
+
+        Map<String, Map<String, List<CorpCisStatModel>>> corpCisGroup =
                 corpCisResults.stream().collect(
-                        Collectors.groupingBy(CorpCisResult::getCorpCode,
-                                Collectors.groupingBy(CorpCisResult::getAccountId)
+                        Collectors.groupingBy(CorpCisStatModel::getStockCode,
+                                Collectors.groupingBy(CorpCisStatModel::getAccountId)
                         )
                 );
 
-        for(String corpCode : corpCodes) {
+        for(String stockCode : stockCodes) {
             for(String accountId : accountIds){
-                System.out.println(corpCode + " / "+accountId);
-                List<CorpCisResult> corpCisList =corpCisGroup.get(corpCode).get(accountId);
-                if(corpCisList != null){
-                    corpCisList.sort(Comparator.comparing(CorpCisResult::getBsnsYear)
-                            .thenComparing(CorpCisResult::getQuarterlyReportCode));
+                List<CorpCisStatModel> corpCisStatModelList =corpCisGroup.get(stockCode).get(accountId);
+                if(corpCisStatModelList != null){
+                    
+                    corpCisStatModelList.sort(Comparator.comparing(CorpCisStatModel::getBsnsYear)
+                            .thenComparing(CorpCisStatModel::getQuarterlyReportCode));
 
-                    for(CorpCisResult corpCisResult : corpCisList){
+                    Map<String, NetStatModel> netStatModelMap = new HashMap<>();
+
+                    for(int i=1; i<corpCisStatModelList.size(); i++){
                         CorpCisStatKey key = new CorpCisStatKey();
-                        key.setCorpCode(corpCode);
+                        key.setStockCode(stockCode);
                         key.setAccountId(accountId);
-                        key.setBsnsYear(corpCisResult.getBsnsYear());
-                        key.setQuarterlyReportCode(corpCisResult.getQuarterlyReportCode());
+                        key.setBsnsYear(corpCisStatModelList.get(i).getBsnsYear());
+                        key.setQuarterlyReportCode(corpCisStatModelList.get(i).getQuarterlyReportCode());
+
 
                         Optional<CorpCisStatEntity> entity = corpCisStatRepository.findById(key);
+
+                        //사업보고서일 경우 netAmount = AccNetAmount(i) - AccNetAmount(i-1)
+                        String curQuarterlyCode = corpCisStatModelList.get(i).getQuarterlyReportCode();
+                        
+                        Long accumulatedNetAmount = corpCisStatModelList.get(i).getAccumulatedNetAmount() != null ? (Long) corpCisStatModelList.get(i).getAccumulatedNetAmount() : 0L;
+                        Long befAccumulatedNetAmount = corpCisStatModelList.get(i-1).getAccumulatedNetAmount() != null ? (Long) corpCisStatModelList.get(i-1).getAccumulatedNetAmount() : 0L;
+                        Long befYearAccumulatedNetAmount = corpCisStatModelList.get(i).getBefYearAccumulatedNetAmount() != null ? (Long) corpCisStatModelList.get(i).getBefYearAccumulatedNetAmount() : 0L;
+
+                        Long netAmount = corpCisStatModelList.get(i).getNetAmount() != null ? (Long) corpCisStatModelList.get(i).getNetAmount() : 0L ;
+                        Long befNetAmount = corpCisStatModelList.get(i-1).getNetAmount() != null ? (Long) corpCisStatModelList.get(i-1).getNetAmount() : 0L ;
+
+
+                        if(curQuarterlyCode.equals("Q1")){
+                            if(netStatModelMap.get("Q4") != null)
+                                befNetAmount = netStatModelMap.get("Q4").getNetAmount();
+                        }else if(curQuarterlyCode.equals("Q4")){
+                            netAmount = accumulatedNetAmount-befAccumulatedNetAmount;
+                        }
+
+                        netStatModelMap.put(
+                                curQuarterlyCode, NetStatModel.builder().netAmount(netAmount).befNetAmount(befNetAmount).build()
+                        );
+
                         if(entity.isPresent()){
-
+                            CorpCisStatEntity curEntity = entity.get();
+                            curEntity.update(
+                                    CorpCisStatModel.builder()
+                                            .stockName(corpCisStatModelList.get(i).getStockName())
+                                            .accountName(corpCisStatModelList.get(i).getAccountName())
+                                            .befBsnsYear(corpCisStatModelList.get(i-1).getBsnsYear())
+                                            .befQuarterlyReportCode(corpCisStatModelList.get(i-1).getQuarterlyReportCode())
+                                            .befNetAmount(befNetAmount)
+                                            .netAmount(netAmount)
+                                            .befYearAccumulatedNetAmount(befYearAccumulatedNetAmount)
+                                            .accumulatedNetAmount(accumulatedNetAmount)
+                                            .build()
+                            );
+                            updateCnt++;
+                            corpCisStatRepository.save(curEntity);
                         }else{
+                            CorpCisStatEntity newEntity = CorpCisStatEntity.builder()
+                                    .key(key)
+                                    .stockName(corpCisStatModelList.get(i).getStockName())
+                                    .accountName(corpCisStatModelList.get(i).getAccountName())
+                                    .befBsnsYear(corpCisStatModelList.get(i-1).getBsnsYear())
+                                    .befQuarterlyReportCode(corpCisStatModelList.get(i-1).getQuarterlyReportCode())
+                                    .befNetAmount(befNetAmount)
+                                    .netAmount(netAmount)
+                                    .befYearAccumulatedNetAmount(befYearAccumulatedNetAmount)
+                                    .accumulatedNetAmount(accumulatedNetAmount)
+                                    .build();
 
+                            createCnt++;
+                            corpCisStatRepository.save(newEntity);
                         }
                     }
                 }
             }
-            break;
         }
+        result.setCreateCnt(createCnt);
+        result.setUpdateCnt(updateCnt);
 
+        return result;
 
     }
 }

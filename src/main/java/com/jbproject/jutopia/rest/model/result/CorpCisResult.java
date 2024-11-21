@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Data
 public class CorpCisResult {
 
-    private String corpCode;
+    private String stockCode;
     private String accountId;
     private String bsnsYear;
     private String quarterlyReportCode;
