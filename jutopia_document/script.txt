@@ -138,3 +138,13 @@ code,group_code,create_dttm,create_id,code_name,seq,use_yn
 ) values (
 '02','POST_TYPE',sysdate(), 'SYSTEM','기업게시판',2,'Y'
 );
+
+
+
+select
+concat(round((((net_amount / nullif(bef_net_amount,0) )-1)*100),2),' %') as percent
+,tccs.*
+from tb_corp_cis_stat tccs
+where (((net_amount / nullif(bef_net_amount,0) )-1)*100) > 5
+order by tccs.stock_code , tccs.account_id , tccs.bsns_year , tccs.quarterly_report_code
+;
