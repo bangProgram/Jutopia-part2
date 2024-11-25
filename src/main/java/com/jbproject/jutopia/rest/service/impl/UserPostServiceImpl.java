@@ -6,10 +6,10 @@ import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.rest.entity.PostEntity;
 import com.jbproject.jutopia.rest.entity.PostReplyRelation;
 import com.jbproject.jutopia.rest.entity.ReplyEntity;
-import com.jbproject.jutopia.rest.model.payload.PostSearchPayload;
-import com.jbproject.jutopia.rest.model.payload.PostViewPayload;
+import com.jbproject.jutopia.rest.model.payload.SearchPostPayload;
+import com.jbproject.jutopia.rest.model.payload.ViewPostPayload;
 import com.jbproject.jutopia.rest.model.payload.ReplyPayload;
-import com.jbproject.jutopia.rest.model.payload.ReplySearchPayload;
+import com.jbproject.jutopia.rest.model.payload.SearchReplyPayload;
 import com.jbproject.jutopia.rest.model.result.PostResult;
 import com.jbproject.jutopia.rest.model.result.ReplyResult;
 import com.jbproject.jutopia.rest.repository.PostReplyRepository;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -35,7 +34,7 @@ public class UserPostServiceImpl implements UserPostService {
     private final ReplyRepository replyRepository;
     private final PostReplyRepository postReplyRepository;
 
-    public List<PostResult> searchPostList(PostSearchPayload payload){
+    public List<PostResult> searchPostList(SearchPostPayload payload){
         return postRepository.searchPostList(payload);
     }
 
@@ -81,7 +80,7 @@ public class UserPostServiceImpl implements UserPostService {
         return result;
     }
 
-    public Long savePost(PostViewPayload payload, AccessJwtToken.AccessJwtPrincipal principal){
+    public Long savePost(ViewPostPayload payload, AccessJwtToken.AccessJwtPrincipal principal){
         if(payload.getPostId() != null){
             payload.setPostWriterId(principal.getUserName());
             PostEntity curPost = postRepository.findById(payload.getPostId()).orElseThrow(
@@ -107,7 +106,7 @@ public class UserPostServiceImpl implements UserPostService {
         }
     }
 
-    public List<ReplyResult> searchReplyList(ReplySearchPayload payload){
+    public List<ReplyResult> searchReplyList(SearchReplyPayload payload){
         List<PostReplyRelation> postReplyRelationList = postReplyRepository.findByPostId(payload.getPostId());
 
 

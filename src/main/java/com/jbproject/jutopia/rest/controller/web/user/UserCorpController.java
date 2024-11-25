@@ -1,5 +1,6 @@
 package com.jbproject.jutopia.rest.controller.web.user;
 
+import com.jbproject.jutopia.rest.model.payload.SearchCorpPayload;
 import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class UserCorpController {
 
     @GetMapping("/main")
-    public String goBoard(HttpServletRequest request, Model model) {
+    public String goCorp(
+            HttpServletRequest request, Model model
+        , SearchCorpPayload searchCorpPayload
+    ) {
+
+        model.addAttribute("searchCorpPayload", searchCorpPayload);
         return "/user/corp/mainPage";
     }
 }

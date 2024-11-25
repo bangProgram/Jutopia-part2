@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.entity;
 
-import com.jbproject.jutopia.rest.model.payload.PostViewPayload;
+import com.jbproject.jutopia.rest.model.payload.ViewPostPayload;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,7 +56,7 @@ public class PostEntity extends BaseEntity{
         this.setUpdateId(updateId);
     }
 
-    public void updatePost(PostViewPayload payload){
+    public void updatePost(ViewPostPayload payload){
         this.postType = payload.getPostType();
         this.postTitle = payload.getPostTitle();
         this.postDetail = payload.getPostDetail();

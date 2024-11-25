@@ -1,8 +1,9 @@
 package com.jbproject.jutopia.rest.controller.web;
 
 import com.jbproject.jutopia.rest.model.CorpDetailModel;
-import com.jbproject.jutopia.rest.model.payload.PostSearchPayload;
-import com.jbproject.jutopia.rest.model.payload.ReplySearchPayload;
+import com.jbproject.jutopia.rest.model.payload.SearchCorpPayload;
+import com.jbproject.jutopia.rest.model.payload.SearchPostPayload;
+import com.jbproject.jutopia.rest.model.payload.SearchReplyPayload;
 import com.jbproject.jutopia.rest.model.result.PostResult;
 import com.jbproject.jutopia.rest.model.result.ReplyResult;
 import com.jbproject.jutopia.rest.service.UserPostService;
@@ -12,9 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -26,8 +25,8 @@ public class UtilController {
     private final UserPostService userPostService;
 
     @PostMapping("/ajax/stock/search")
-    public String searchStock(Model model, PostSearchPayload postSearchPayload){
-        String stockName = "%"+postSearchPayload.getSearchStockName()+"%";
+    public String searchStock(Model model, SearchPostPayload searchPostPayload){
+        String stockName = "%"+ searchPostPayload.getSearchStockName()+"%";
 
         List<CorpDetailModel> corpDetailList = utilService.getCorpDetailList(stockName);
         model.addAttribute("corpDetailList",corpDetailList);
@@ -35,19 +34,25 @@ public class UtilController {
     }
 
     @PostMapping("/ajax/post/search")
-    public String searchPost(Model model, PostSearchPayload postSearchPayload){
-        List<PostResult> postList = userPostService.searchPostList(postSearchPayload);
+    public String searchPost(Model model, SearchPostPayload searchPostPayload){
+        List<PostResult> postList = userPostService.searchPostList(searchPostPayload);
 
         model.addAttribute("postList",postList);
         return "/user/post/mainPage::#postListTable";
     }
 
     @PostMapping("/ajax/reply/search")
-    public String searchReply(Model model, ReplySearchPayload replySearchPayload){
-        List<ReplyResult> replyList = userPostService.searchReplyList(replySearchPayload);
+    public String searchReply(Model model, SearchReplyPayload searchReplyPayload){
+        List<ReplyResult> replyList = userPostService.searchReplyList(searchReplyPayload);
 
         System.out.println("replyList : "+replyList);
         model.addAttribute("replyList",replyList);
         return "/user/post/viewPage::#replyListTable";
+    }
+
+    @PostMapping("/ajax/corp/search")
+    public String searchCorp(Model model, SearchCorpPayload searchCorpPayload){
+
+        return "/user/corp/mainPage::#corpListTable";
     }
 }

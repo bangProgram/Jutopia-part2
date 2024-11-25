@@ -14,7 +14,7 @@
           게시글 작성 화면
         </h6>
         <div style="border: 2px solid;">
-            <form name="postViewForm" action="/post/create/cud"  method="post" th:object="${postViewPayload}">
+            <form name="postViewForm" action="/post/create/cud"  method="post" th:object="${viewPostPayload}">
                 <input type="hidden" th:field="*{postId}">
                 <table>
                     <tr>
@@ -32,7 +32,7 @@
                             <input type="text" id="searchStockName" placeholder="기업명 검색" th:onchange="getStockCode()">
                             <input type="hidden" th:field="*{stockName}">
                             <input type="hidden" th:field="*{stockCode}">
-                            <select id="corpDetailSelect" th:onchange="setStockCode()" th:value="${postViewPayload.stockCode}">
+                            <select id="corpDetailSelect" th:onchange="setStockCode()" th:value="${viewPostPayload.stockCode}">
                                 <option value="">-전체-</option>
                                 <option th:each="corpDetail : ${corpDetailList}" th:text="${corpDetail.stockName}" th:value="${corpDetail.stockCode}" ></option>
                             </select>
@@ -58,8 +58,8 @@
                         </td>
                     </tr>
                 </table>
-                <button type="submit" th:if="${postViewPayload.postId == null}">작성</button>
-                <button type="submit" th:if="${postViewPayload.postId != null}">수정</button>
+                <button type="submit" th:if="${viewPostPayload.postId == null}">작성</button>
+                <button type="submit" th:if="${viewPostPayload.postId != null}">수정</button>
             </form>
         </div>
     </body>
@@ -68,13 +68,13 @@
         function getStockCode(){
 
             const searchStockName = $('#searchStockName').val();
-            const postSearchPayload = {
+            const searchPostPayload = {
                 searchStockName : searchStockName
             }
 
             $.ajax({
                 url: "/ajax/stock/search",
-                data: postSearchPayload,
+                data: searchPostPayload,
                 type: 'POST',
                 success:function(data){
 					$("#corpDetailSelect").replaceWith(data);

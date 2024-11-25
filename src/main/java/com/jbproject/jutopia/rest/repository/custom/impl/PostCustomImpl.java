@@ -1,7 +1,6 @@
 package com.jbproject.jutopia.rest.repository.custom.impl;
 
-import com.jbproject.jutopia.rest.model.payload.PostSearchPayload;
-import com.jbproject.jutopia.rest.model.payload.PostViewPayload;
+import com.jbproject.jutopia.rest.model.payload.SearchPostPayload;
 import com.jbproject.jutopia.rest.model.result.PostResult;
 import com.jbproject.jutopia.rest.repository.custom.PostCustom;
 import com.querydsl.core.BooleanBuilder;
@@ -22,7 +21,7 @@ public class PostCustomImpl implements PostCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<PostResult> searchPostList(PostSearchPayload payload){
+    public List<PostResult> searchPostList(SearchPostPayload payload){
         BooleanBuilder whereCondition = postListWhereCondition(payload);
 
         return jpaQueryFactory.select(
@@ -44,7 +43,7 @@ public class PostCustomImpl implements PostCustom {
         .fetch();
     }
 
-    private BooleanBuilder postListWhereCondition(PostSearchPayload payload){
+    private BooleanBuilder postListWhereCondition(SearchPostPayload payload){
         BooleanBuilder where = new BooleanBuilder();
 
         if(hasText(payload.getSearchText())){

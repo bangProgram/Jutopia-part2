@@ -2,12 +2,11 @@ package com.jbproject.jutopia.rest.controller.web.user;
 
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.constant.CommonConstatns;
-import com.jbproject.jutopia.rest.model.payload.PostViewPayload;
-import com.jbproject.jutopia.rest.model.payload.PostSearchPayload;
+import com.jbproject.jutopia.rest.model.payload.ViewPostPayload;
+import com.jbproject.jutopia.rest.model.payload.SearchPostPayload;
 import com.jbproject.jutopia.rest.model.payload.ReplyPayload;
 import com.jbproject.jutopia.rest.model.result.CommCodeResult;
 import com.jbproject.jutopia.rest.model.result.PostResult;
-import com.jbproject.jutopia.rest.model.result.ReplyResult;
 import com.jbproject.jutopia.rest.service.CommCodeService;
 import com.jbproject.jutopia.rest.service.UserPostService;
 import groovy.util.logging.Slf4j;
@@ -37,23 +36,23 @@ public class UserPostController {
     @GetMapping("/main")
     public String goPostMain(
             HttpServletRequest request, Model model
-            , PostSearchPayload postSearchPayload
+            , SearchPostPayload searchPostPayload
     ) {
         List<CommCodeResult> postTypeList = commCodeService.getCommCodeListByGroupCode(CommonConstatns.POST_TYPE);
 
         model.addAttribute("postTypeList", postTypeList);
-        model.addAttribute("postSearchPayload",postSearchPayload);
+        model.addAttribute("postSearchPayload", searchPostPayload);
         return "/user/post/mainPage";
     }
 
     @GetMapping("/write")
     public String goPostWrite(
             HttpServletRequest request, Model model
-            , PostViewPayload postViewPayload
+            , ViewPostPayload viewPostPayload
     ){
-        System.out.println("1. postDetailPayload : "+ postViewPayload);
+        System.out.println("1. postDetailPayload : "+ viewPostPayload);
 
-        model.addAttribute("postDetailPayload", postViewPayload);
+        model.addAttribute("postDetailPayload", viewPostPayload);
         return "/user/post/writePage";
     }
 
@@ -72,14 +71,14 @@ public class UserPostController {
 
     @PostMapping("/create/cud")
     public RedirectView postCreateCud(
-            PostViewPayload postViewPayload
+            ViewPostPayload viewPostPayload
             , RedirectAttributes redirectAttributes
             , @AuthenticationPrincipal AccessJwtToken.AccessJwtPrincipal principal
     ){
 
-        Long postId = userPostService.savePost(postViewPayload, principal);
+        Long postId = userPostService.savePost(viewPostPayload, principal);
 
-        if(postViewPayload.getPostId() != null) {
+        if(viewPostPayload.getPostId() != null) {
             redirectAttributes.addFlashAttribute("serverMessage","게시글이 수정 되었습니다.");
         }else{
             redirectAttributes.addFlashAttribute("serverMessage","게시글이 작성 되었습니다.");

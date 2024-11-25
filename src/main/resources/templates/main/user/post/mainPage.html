@@ -19,7 +19,7 @@
             </button>
         </div>
         <div style="border: 2px solid; ">
-            <form name="searchForm" action="/post/main"  method="get" th:object="${postSearchPayload}"
+            <form name="searchForm" action="/post/main"  method="get" th:object="${searchPostPayload}"
                 style="display: flex; justify-content: right;"
             >
                 <div id="postTypeDiv">
@@ -80,15 +80,15 @@
         function getStockCode(){
 
             const searchStockName = $('#searchStockName').val();
-            const postSearchPayload = {
+            const searchPostPayload = {
                 searchStockName : searchStockName
             }
             console.log("searchStockName : " + searchStockName);
-            console.log("postSearchPayload : "+postSearchPayload);
+            console.log("searchPostPayload : "+searchPostPayload);
 
             $.ajax({
                 url: "/ajax/stock/search",
-                data: postSearchPayload,
+                data: searchPostPayload,
                 type: 'POST',
                 success:function(data){
 					$("#corpDetailSelect").replaceWith(data);
@@ -106,13 +106,13 @@
         }
 
         function searchPost(){
-            var postSearchPayload = $("form[name=searchForm]").serialize() ;
+            var searchPostPayload = $("form[name=searchForm]").serialize() ;
 
-            console.log("queryString : "+postSearchPayload);
+            console.log("queryString : "+searchPostPayload);
 
             $.ajax({
                 url: "/ajax/post/search",
-                data: postSearchPayload,
+                data: searchPostPayload,
                 type: 'POST',
                 success:function(data){
 					$("#postListTable").replaceWith(data);
