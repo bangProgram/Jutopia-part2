@@ -12,9 +12,6 @@ import java.util.List;
 
 public interface CorpCisCustom {
 
-    List<CorpCisEntity> getAll1();
-    List<CorpCisStatModel> getCorpCisList(MergeCorpCisStatPayload payload);
-    List<CorpCisEntity> getByAccountIds1(List<String> accountIds);
-
-    List<CorpCisResult> getByAccountIds2(List<String> accountIds);
+    List<CorpCisResult> getCorpCisList(MergeCorpCisStatPayload payload);
+    List<CorpCisStatModel> getCorpCisStatList(MergeCorpCisStatPayload payload);
 }

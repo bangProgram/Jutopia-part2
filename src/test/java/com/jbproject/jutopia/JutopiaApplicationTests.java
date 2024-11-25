@@ -9,9 +9,12 @@ import com.jbproject.jutopia.model.MenuTestModel;
 import com.jbproject.jutopia.model.RoleMenuRTestModel;
 import com.jbproject.jutopia.model.RoleTestModel;
 import com.jbproject.jutopia.rest.entity.*;
+import com.jbproject.jutopia.rest.entity.key.CorpCisKey;
 import com.jbproject.jutopia.rest.entity.key.CorpCisStatKey;
+import com.jbproject.jutopia.rest.entity.statistics.CorpCis2020Entity;
 import com.jbproject.jutopia.rest.model.CorpCisStatModel;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
+import com.jbproject.jutopia.rest.model.payload.MergeCorpCisStatPayload;
 import com.jbproject.jutopia.rest.model.result.CorpCisResult;
 import com.jbproject.jutopia.rest.model.result.MenuResult;
 import com.jbproject.jutopia.rest.model.result.ReplyResult;
@@ -54,6 +57,8 @@ public class JutopiaApplicationTests {
 	private CorpCisRepository corpCisRepository;
 	@Autowired
 	private CorpCisStatRepository corpCisStatRepository;
+	@Autowired
+	private CorpCisStat<CorpCis2020Entity> corpCis2020EntityCorpCisStat;
 
 
 
@@ -245,90 +250,25 @@ public class JutopiaApplicationTests {
 		accountIds.add("ifrs-full_EarningsPerShareAbstract");
 		Long start = System.currentTimeMillis();
 
-		corpCisRepository.getByAccountIds1(accountIds);
-		Long end = System.currentTimeMillis();
-		System.out.println("process time 1 : " + (end-start) );
-		start = System.currentTimeMillis();
-
-		corpCisRepository.getByAccountIds2(accountIds);
-
-		end = System.currentTimeMillis();
-		System.out.println("process time 2 : " + (end-start) );
-		start = System.currentTimeMillis();
-
-		corpCisRepository.findAll();
-
-		end = System.currentTimeMillis();
-		System.out.println("process time 3 : " + (end-start) );
-		start = System.currentTimeMillis();
-
-		end = System.currentTimeMillis();
-		System.out.println("process time 4 : " + (end-start) );
-		System.out.println("result : "+result.getFirst());
-
 	}
 
 	@Test
 	void mergeCisStat(){
-		List<CorpCisResult> corpCisResults = corpCisRepository.getAll();
+		MergeCorpCisStatPayload payload = new MergeCorpCisStatPayload();
+		payload.setBsnsYear("2023");
+		List<String> corpCls = new ArrayList<>();
+		corpCls.add("Y");
+		corpCls.add("K");
+		payload.setCorpCls(corpCls);
 
-		List<String> corpCodes = corpCisResults.stream().map(CorpCisResult::getCorpCode).distinct().toList();
-		List<String> accountIds = corpCisResults.stream().map(CorpCisResult::getAccountId).distinct().toList();
+		List<CorpCisResult> results = corpCisRepository.getCorpCisList(payload);
 
-		Map<String, Map<String, List<CorpCisResult>>> corpCisGroup =
-				corpCisResults.stream().collect(
-						Collectors.groupingBy(CorpCisResult::getCorpCode,
-								Collectors.groupingBy(CorpCisResult::getAccountId)
-						)
-				);
+		CorpCisKey corpCisKey = new CorpCisKey();
+		corpCisKey.setAccountId("1");
+		corpCisKey.setStockCode("1");
+		corpCisKey.setBsnsYear("1");
+		corpCisKey.setQuarterlyReportCode("1");
 
-		for(String corpCode : corpCodes) {
-			for(String accountId : accountIds){
-				List<CorpCisResult> corpCisList =corpCisGroup.get(corpCode).get(accountId);
-				if(corpCisList != null){
-					corpCisList.sort(Comparator.comparing(CorpCisResult::getBsnsYear)
-							.thenComparing(CorpCisResult::getQuarterlyReportCode));
-
-					for(int i=1; i<corpCisList.size(); i++){
-						CorpCisStatKey key = new CorpCisStatKey();
-						key.setCorpCode(corpCode);
-						key.setAccountId(accountId);
-						key.setBsnsYear(corpCisList.get(i).getBsnsYear());
-						key.setQuarterlyReportCode(corpCisList.get(i).getQuarterlyReportCode());
-
-						Optional<CorpCisStatEntity> entity = corpCisStatRepository.findById(key);
-						System.out.println("entity 여부 확인 : "+(entity.isPresent()));
-						if(entity.isPresent()){
-							CorpCisStatEntity curEntity = entity.get();
-							curEntity.update(
-									CorpCisStatModel.builder()
-											.accountName(corpCisList.get(i).getAccountName())
-											.befBsnsYear(corpCisList.get(i-1).getBsnsYear())
-											.befQuarterlyReportCode(corpCisList.get(i-1).getQuarterlyReportCode())
-											.befNetAmount(corpCisList.get(i-1).getBefNetAmount())
-											.netAmount(corpCisList.get(i).getNetAmount())
-											.build()
-							);
-
-							CorpCisStatEntity test = corpCisStatRepository.save(curEntity);
-							System.out.println("entity 저장 확인 1 : "+test.getId().getCorpCode());
-						}else{
-							CorpCisStatEntity newEntity = CorpCisStatEntity.builder()
-									.key(key)
-									.accountName(corpCisList.get(i).getAccountName())
-									.befBsnsYear(corpCisList.get(i-1).getBsnsYear())
-									.befQuarterlyReportCode(corpCisList.get(i-1).getQuarterlyReportCode())
-									.befNetAmount(corpCisList.get(i-1).getBefNetAmount())
-									.netAmount(corpCisList.get(i).getNetAmount())
-									.build();
-							CorpCisStatEntity test = corpCisStatRepository.save(newEntity);
-							System.out.println("entity 저장 확인 2 : "+test.getId().getCorpCode());
-						}
-					}
-				}
-			}
-			System.out.println(corpCode + " > 작업 완료. ");
-			break;
-		}
+		corpCis2020EntityCorpCisStat.findById(corpCisKey);
 	}
 }

@@ -1,10 +1,12 @@
 package com.jbproject.jutopia.rest.entity;
 
-import com.jbproject.jutopia.rest.entity.key.CommCodeKey;
 import com.jbproject.jutopia.rest.entity.key.CorpCisKey;
 import com.jbproject.jutopia.rest.model.CorpCisModel;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDate;
@@ -13,8 +15,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
+@MappedSuperclass
 @Table(name = "tb_corp_cis")
-public class CorpCisEntity extends BaseEntity implements Persistable<CorpCisKey> {
+public class CorpCisTestEntity extends BaseEntity implements Persistable<CorpCisKey> {
 
     @EmbeddedId
     private CorpCisKey id;
@@ -37,7 +40,7 @@ public class CorpCisEntity extends BaseEntity implements Persistable<CorpCisKey>
     @Column(name = "currency")
     private String currency;
 
-    public CorpCisEntity(
+    public CorpCisTestEntity(
             CorpCisModel model
     ){
         this.id = new CorpCisKey(model.getStockCode(),model.getBsnsYear(),model.getQuarterlyReportCode(),model.getAccountId());
@@ -52,7 +55,7 @@ public class CorpCisEntity extends BaseEntity implements Persistable<CorpCisKey>
     }
 
     @Builder
-    public CorpCisEntity(
+    public CorpCisTestEntity(
             String stockCode,String bsnsYear,String quarterlyReportCode,
             String accountId,String quarterlyReportName,LocalDate closingDate,
             String accountName,Long netAmount,Long accumulatedNetAmount,

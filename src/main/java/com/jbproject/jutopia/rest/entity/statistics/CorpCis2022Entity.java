@@ -1,10 +1,17 @@
-package com.jbproject.jutopia.rest.entity;
+package com.jbproject.jutopia.rest.entity.statistics;
 
-import com.jbproject.jutopia.rest.entity.key.CommCodeKey;
-import com.jbproject.jutopia.rest.entity.key.CorpCisKey;
+import com.jbproject.jutopia.rest.entity.BaseEntity;
+import com.jbproject.jutopia.rest.entity.CorpCis;
+import com.jbproject.jutopia.rest.entity.key.CorpCisStatKey;
 import com.jbproject.jutopia.rest.model.CorpCisModel;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDate;
@@ -13,34 +20,25 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "tb_corp_cis")
-public class CorpCisEntity extends BaseEntity implements Persistable<CorpCisKey> {
+@Table(name = "tb_corp_cis_2022")
+public class CorpCis2022Entity extends BaseEntity implements Persistable<CorpCisStatKey>, CorpCis {
 
     @EmbeddedId
-    private CorpCisKey id;
+    private CorpCisStatKey id;
 
-
-    @Column(name = "quarterly_report_name")
     private String quarterlyReportName;
-    @Column(name = "closing_date")
     private LocalDate closingDate;
-    @Column(name = "account_name")
     private String accountName;
-    @Column(name = "net_amount")
     private Long netAmount;
-    @Column(name = "accumulated_net_amount")
     private Long accumulatedNetAmount;
-    @Column(name = "bef_net_amount")
     private Long befNetAmount;
-    @Column(name = "bef_accumulated_net_amount")
     private Long befAccumulatedNetAmount;
-    @Column(name = "currency")
     private String currency;
 
-    public CorpCisEntity(
+    public CorpCis2022Entity(
             CorpCisModel model
     ){
-        this.id = new CorpCisKey(model.getStockCode(),model.getBsnsYear(),model.getQuarterlyReportCode(),model.getAccountId());
+        this.id = new CorpCisStatKey(model.getStockCode(),model.getBsnsYear(),model.getQuarterlyReportCode(),model.getAccountId());
         this.quarterlyReportName = model.getQuarterlyReportName();
         this.closingDate = model.getClosingDate();
         this.accountName = model.getAccountName();
@@ -52,21 +50,21 @@ public class CorpCisEntity extends BaseEntity implements Persistable<CorpCisKey>
     }
 
     @Builder
-    public CorpCisEntity(
+    public CorpCis2022Entity(
             String stockCode,String bsnsYear,String quarterlyReportCode,
             String accountId,String quarterlyReportName,LocalDate closingDate,
             String accountName,Long netAmount,Long accumulatedNetAmount,
             Long befNetAmount,Long befAccumulatedNetAmount,String currency
     ){
-            this.id = new CorpCisKey(stockCode,bsnsYear,quarterlyReportCode,accountId);
-            this.quarterlyReportName = quarterlyReportName;
-            this.closingDate = closingDate;
-            this.accountName = accountName;
-            this.netAmount = netAmount;
-            this.accumulatedNetAmount = accumulatedNetAmount;
-            this.befNetAmount = befNetAmount;
-            this.befAccumulatedNetAmount = befAccumulatedNetAmount;
-            this.currency = currency;
+        this.id = new CorpCisStatKey(stockCode,bsnsYear,quarterlyReportCode,accountId);
+        this.quarterlyReportName = quarterlyReportName;
+        this.closingDate = closingDate;
+        this.accountName = accountName;
+        this.netAmount = netAmount;
+        this.accumulatedNetAmount = accumulatedNetAmount;
+        this.befNetAmount = befNetAmount;
+        this.befAccumulatedNetAmount = befAccumulatedNetAmount;
+        this.currency = currency;
     }
 
     public void updateCorpCis(CorpCisModel model){
@@ -81,13 +79,11 @@ public class CorpCisEntity extends BaseEntity implements Persistable<CorpCisKey>
     }
 
     @Override
-    public CorpCisKey getId() {
+    public CorpCisStatKey getId() {
         return id;
     }
-
     @Override
     public boolean isNew() {
         return getCreateDttm() == null;
     }
-
 }

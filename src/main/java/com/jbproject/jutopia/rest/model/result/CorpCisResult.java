@@ -10,6 +10,7 @@ import java.time.LocalDate;
 public class CorpCisResult {
 
     private String stockCode;
+    private String stockName;
     private String accountId;
     private String bsnsYear;
     private String quarterlyReportCode;

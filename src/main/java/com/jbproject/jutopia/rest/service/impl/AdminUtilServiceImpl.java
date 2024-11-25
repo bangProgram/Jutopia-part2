@@ -255,7 +255,7 @@ public class AdminUtilServiceImpl implements AdminUtilService {
     }
 
     public MergeResult mergeCisStat(MergeCorpCisStatPayload payload){
-        List<CorpCisStatModel> corpCisResults = corpCisRepository.getCorpCisList(payload);
+        List<CorpCisStatModel> corpCisResults = corpCisRepository.getCorpCisStatList(payload);
 
         MergeResult result = new MergeResult();
         int createCnt = 0;

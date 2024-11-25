@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.jbproject.jutopia.rest.entity.QCorpCisEntity.corpCisEntity;
@@ -26,15 +27,35 @@ public class CorpCisCustomImpl implements CorpCisCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<CorpCisEntity> getAll1(){
-        return jpaQueryFactory.selectFrom(corpCisEntity).orderBy(
-                corpCisEntity.id.stockCode.asc(),
-                corpCisEntity.id.accountId.asc(),
-                corpCisEntity.id.bsnsYear.asc(),
-                corpCisEntity.id.quarterlyReportCode.asc()
-        ).fetch();
+    public List<CorpCisResult> getCorpCisList(MergeCorpCisStatPayload payload){
+
+        BooleanBuilder whereCondition = whereCorpCisList(payload);
+
+        return jpaQueryFactory.select(
+                        Projections.fields(
+                                CorpCisResult.class,
+                                corpCisEntity.id.stockCode
+                                ,corpDetailEntity.stockName
+                                ,corpCisEntity.id.accountId
+                                ,corpCisEntity.id.bsnsYear
+                                ,corpCisEntity.id.quarterlyReportCode
+                                ,corpCisEntity.quarterlyReportName
+                                ,corpCisEntity.closingDate
+                                ,corpCisEntity.accountName
+                                ,corpCisEntity.netAmount
+                                ,corpCisEntity.accumulatedNetAmount
+                                ,corpCisEntity.befNetAmount
+                                ,corpCisEntity.befAccumulatedNetAmount
+                                ,corpCisEntity.currency
+                        )
+                )
+                .from(corpCisEntity)
+                .innerJoin(corpDetailEntity)
+                .on(corpCisEntity.id.stockCode.eq(corpDetailEntity.stockCode))
+                .where(whereCondition)
+                .fetch();
     }
-    public List<CorpCisStatModel> getCorpCisList(MergeCorpCisStatPayload payload){
+    public List<CorpCisStatModel> getCorpCisStatList(MergeCorpCisStatPayload payload){
 
         BooleanBuilder whereCondition = whereCorpCisList(payload);
 
@@ -61,35 +82,6 @@ public class CorpCisCustomImpl implements CorpCisCustom {
                 .on(corpCisEntity.id.stockCode.eq(corpDetailEntity.stockCode))
                 .where(whereCondition)
                 .fetch();
-    }
-
-    public List<CorpCisEntity> getByAccountIds1(List<String> accountIds){
-        return jpaQueryFactory.selectFrom(corpCisEntity).where(
-                corpCisEntity.id.accountId.in(accountIds)
-        ).orderBy(
-                corpCisEntity.id.stockCode.asc(),
-                corpCisEntity.id.accountId.asc(),
-                corpCisEntity.id.bsnsYear.asc(),
-                corpCisEntity.id.quarterlyReportCode.asc()
-        ).fetch();
-    }
-
-    public List<CorpCisResult> getByAccountIds2(List<String> accountIds){
-        return jpaQueryFactory.select(
-            Projections.fields(
-                    CorpCisResult.class,
-                    corpCisEntity
-            )
-        )
-        .from(corpCisEntity)
-        .where(
-        corpCisEntity.id.accountId.in(accountIds)
-        ).orderBy(
-                corpCisEntity.id.stockCode.asc(),
-                corpCisEntity.id.accountId.asc(),
-                corpCisEntity.id.bsnsYear.asc(),
-                corpCisEntity.id.quarterlyReportCode.asc()
-        ).fetch();
     }
 
     public BooleanBuilder whereCorpCisList(MergeCorpCisStatPayload payload){
