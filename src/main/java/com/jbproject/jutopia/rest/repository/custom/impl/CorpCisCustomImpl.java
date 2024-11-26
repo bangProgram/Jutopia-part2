@@ -1,8 +1,10 @@
 package com.jbproject.jutopia.rest.repository.custom.impl;
 
 import com.jbproject.jutopia.rest.entity.CorpCisEntity;
+import com.jbproject.jutopia.rest.model.CorpCisModel;
 import com.jbproject.jutopia.rest.model.CorpCisStatModel;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpCisStatPayload;
+import com.jbproject.jutopia.rest.model.payload.SearchCorpPayload;
 import com.jbproject.jutopia.rest.model.result.CorpCisResult;
 import com.jbproject.jutopia.rest.repository.custom.CorpCisCustom;
 import com.querydsl.core.BooleanBuilder;
@@ -27,13 +29,13 @@ public class CorpCisCustomImpl implements CorpCisCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<CorpCisResult> getCorpCisList(MergeCorpCisStatPayload payload){
+    public List<CorpCisModel> getCorpCisList(MergeCorpCisStatPayload payload){
 
         BooleanBuilder whereCondition = whereCorpCisList(payload);
 
         return jpaQueryFactory.select(
                         Projections.fields(
-                                CorpCisResult.class,
+                                CorpCisModel.class,
                                 corpCisEntity.id.stockCode
                                 ,corpDetailEntity.stockName
                                 ,corpCisEntity.id.accountId
@@ -55,6 +57,31 @@ public class CorpCisCustomImpl implements CorpCisCustom {
                 .where(whereCondition)
                 .fetch();
     }
+
+    public List<CorpCisModel> searchCorpCisList(SearchCorpPayload payload) {
+        BooleanBuilder whereCondition = whereSearchCorpCisList(payload);
+
+        return jpaQueryFactory.select(
+                Projections.fields(
+                        CorpCisModel.class
+                        ,corpCisEntity.id.stockCode
+                        ,corpCisEntity.id.bsnsYear
+                        ,corpCisEntity.id.quarterlyReportCode
+                        ,corpCisEntity.id.accountId
+                        ,corpCisEntity.quarterlyReportName
+                        ,corpCisEntity.closingDate
+                        ,corpCisEntity.accountName
+                        ,corpCisEntity.netAmount
+                        ,corpCisEntity.accumulatedNetAmount
+                        ,corpCisEntity.befNetAmount
+                        ,corpCisEntity.befAccumulatedNetAmount
+                        ,corpCisEntity.currency
+                )
+        ).from(corpCisEntity)
+        .where(whereCondition)
+        .fetch();
+    }
+
     public List<CorpCisStatModel> getCorpCisStatList(MergeCorpCisStatPayload payload){
 
         BooleanBuilder whereCondition = whereCorpCisList(payload);
@@ -101,6 +128,24 @@ public class CorpCisCustomImpl implements CorpCisCustom {
         }
         if(payload.getCorpCls() != null){
             result.and(corpDetailEntity.corpCls.in(payload.getCorpCls()));
+        }
+        return result;
+    }
+
+    public BooleanBuilder whereSearchCorpCisList(SearchCorpPayload payload){
+        BooleanBuilder result = new BooleanBuilder();
+
+        if(hasText(payload.getStockCode())){
+            result.and(corpCisEntity.id.stockCode.eq(payload.getStockCode()));
+        }
+        if(hasText(payload.getStockName())){
+            result.and(corpDetailEntity.stockName.like("%"+payload.getStockName()+"%"));
+        }
+        if(payload.getAccountIds() != null){
+            result.and(corpCisEntity.id.accountId.in(payload.getAccountIds()));
+        }
+        if(hasText(payload.getStartBsnsYear()) && hasText(payload.getEndBsnsYear())){
+            result.and(corpCisEntity.id.bsnsYear.between(payload.getStartBsnsYear(), payload.getEndBsnsYear()));
         }
         return result;
     }

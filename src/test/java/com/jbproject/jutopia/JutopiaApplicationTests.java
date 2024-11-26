@@ -11,7 +11,9 @@ import com.jbproject.jutopia.model.RoleTestModel;
 import com.jbproject.jutopia.rest.entity.*;
 import com.jbproject.jutopia.rest.entity.key.CorpCisKey;
 import com.jbproject.jutopia.rest.entity.key.CorpCisStatKey;
+import com.jbproject.jutopia.rest.entity.key.CorpCisStatTKey;
 import com.jbproject.jutopia.rest.entity.statistics.CorpCis2020Entity;
+import com.jbproject.jutopia.rest.model.CorpCisModel;
 import com.jbproject.jutopia.rest.model.CorpCisStatModel;
 import com.jbproject.jutopia.rest.model.XmlCorpModel;
 import com.jbproject.jutopia.rest.model.payload.MergeCorpCisStatPayload;
@@ -19,6 +21,8 @@ import com.jbproject.jutopia.rest.model.result.CorpCisResult;
 import com.jbproject.jutopia.rest.model.result.MenuResult;
 import com.jbproject.jutopia.rest.model.result.ReplyResult;
 import com.jbproject.jutopia.rest.repository.*;
+import com.jbproject.jutopia.rest.repository.statistics.CorpCis2020Repository;
+import com.jbproject.jutopia.rest.repository.statistics.CorpCisStat;
 import io.swagger.v3.core.util.Json;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +60,7 @@ public class JutopiaApplicationTests {
 	@Autowired
 	private CorpCisRepository corpCisRepository;
 	@Autowired
-	private CorpCisStatRepository corpCisStatRepository;
+	private CorpCis2020Repository corpCis2020Repository;
 	@Autowired
 	private CorpCisStat<CorpCis2020Entity> corpCis2020EntityCorpCisStat;
 
@@ -261,12 +265,11 @@ public class JutopiaApplicationTests {
 		corpCls.add("K");
 		payload.setCorpCls(corpCls);
 
-		List<CorpCisResult> results = corpCisRepository.getCorpCisList(payload);
+		List<CorpCisModel> results = corpCisRepository.getCorpCisList(payload);
 
-		CorpCisKey corpCisKey = new CorpCisKey();
+		CorpCisStatTKey corpCisKey = new CorpCisStatTKey();
 		corpCisKey.setAccountId("1");
 		corpCisKey.setStockCode("1");
-		corpCisKey.setBsnsYear("1");
 		corpCisKey.setQuarterlyReportCode("1");
 
 		corpCis2020EntityCorpCisStat.findById(corpCisKey);

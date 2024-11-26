@@ -91,6 +91,8 @@ public class AdminUtilServiceImpl implements AdminUtilService {
         List<CommCodeResult> accountType = commCodeRepository.getCommCodeListByGroupCode(CommonConstatns.INCOME_STATEMENT);
         List<CommCodeResult> quarterlyReportType = commCodeRepository.getCommCodeListByGroupCode(CommonConstatns.QUARTERLY_REPORT_TYPE);
         List<String> accounIdList = accountType.stream().map(CommCodeResult::getCode).toList();
+        List<CorpCisModel> q4_corpCisList = new ArrayList<>();
+        Map<String , List<CorpCisModel>> mapData = new HashMap<>();
 
         InputStream inputStream = file.getInputStream();
         String[] fileName = Objects.requireNonNull(file.getOriginalFilename()).split("_");
@@ -113,6 +115,19 @@ public class AdminUtilServiceImpl implements AdminUtilService {
                 quarterlyReportName = quarterly.getCodeName();
                 quarterlyReportCode = quarterly.getCode();
             }
+        }
+
+        if(quarterlyReportCode.equals("Q4")){
+            MergeCorpCisStatPayload cisPayload = new MergeCorpCisStatPayload();
+            cisPayload.setBsnsYear(bsnsYear);
+            cisPayload.setQuarterlyReportCode("Q3");
+            q4_corpCisList = corpCisRepository.getCorpCisList(cisPayload);
+
+            mapData = q4_corpCisList.stream().collect(
+                    Collectors.groupingBy(
+                            CorpCisModel::getStockCode
+                )
+            );
         }
 
         XSSFSheet sheet = workbook.getSheetAt(0); // 해당 엑셀파일의 시트(Sheet) 수
@@ -198,6 +213,18 @@ public class AdminUtilServiceImpl implements AdminUtilService {
                                     corpCisModel.setNetAmount(Long.valueOf(value));
                                     break;
                                 case 13:
+                                    if(quarterlyReportCode.equals("Q4")){
+                                        List<CorpCisModel> datas = mapData.get(stockCode);
+                                        if(datas != null) {
+                                            Long q3_accNetAmount = 0L;
+                                            for(CorpCisModel data : datas){
+                                                if(data.getAccountId().equals(accountId)){
+                                                    q3_accNetAmount = data.getAccumulatedNetAmount();
+                                                }
+                                            }
+                                            corpCisModel.setNetAmount(Long.valueOf(value)-q3_accNetAmount);
+                                        }
+                                    }
                                     corpCisModel.setAccumulatedNetAmount(Long.valueOf(value));
                                     break;
                                 case 14:
