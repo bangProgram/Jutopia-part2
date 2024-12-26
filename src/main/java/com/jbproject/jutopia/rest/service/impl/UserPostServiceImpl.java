@@ -4,7 +4,7 @@ import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.constant.ServerErrorCode;
 import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.rest.entity.PostEntity;
-import com.jbproject.jutopia.rest.entity.PostReplyRelation;
+import com.jbproject.jutopia.rest.entity.relation.PostReplyRelation;
 import com.jbproject.jutopia.rest.entity.ReplyEntity;
 import com.jbproject.jutopia.rest.model.payload.SearchPostPayload;
 import com.jbproject.jutopia.rest.model.payload.ViewPostPayload;

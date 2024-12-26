@@ -1,5 +1,7 @@
-package com.jbproject.jutopia.rest.entity;
+package com.jbproject.jutopia.rest.entity.relation;
 
+import com.jbproject.jutopia.rest.entity.PostEntity;
+import com.jbproject.jutopia.rest.entity.ReplyEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

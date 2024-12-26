@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.repository;
 
-import com.jbproject.jutopia.rest.entity.PostReplyRelation;
+import com.jbproject.jutopia.rest.entity.relation.PostReplyRelation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

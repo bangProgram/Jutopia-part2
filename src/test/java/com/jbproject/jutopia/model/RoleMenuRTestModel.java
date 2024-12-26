@@ -1,9 +1,7 @@
 package com.jbproject.jutopia.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.jbproject.jutopia.rest.entity.RoleMenuRelation;
-import groovy.transform.builder.Builder;
-import jakarta.persistence.Column;
+import com.jbproject.jutopia.rest.entity.relation.RoleMenuRelation;
 
 public class RoleMenuRTestModel {
 

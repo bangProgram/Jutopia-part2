@@ -1,7 +1,6 @@
 package com.jbproject.jutopia.rest.service.impl;
 
-import com.jbproject.jutopia.rest.entity.RoleEntity;
-import com.jbproject.jutopia.rest.entity.RoleMenuRelation;
+import com.jbproject.jutopia.rest.entity.relation.RoleMenuRelation;
 import com.jbproject.jutopia.rest.model.result.AuthResult;
 import com.jbproject.jutopia.rest.repository.MenuRepository;
 import com.jbproject.jutopia.rest.repository.RoleMenuRepository;

@@ -1,6 +1,8 @@
-package com.jbproject.jutopia.rest.entity;
+package com.jbproject.jutopia.rest.entity.relation;
 
 import com.jbproject.jutopia.config.security.model.Role;
+import com.jbproject.jutopia.rest.entity.MenuEntity;
+import com.jbproject.jutopia.rest.entity.RoleEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

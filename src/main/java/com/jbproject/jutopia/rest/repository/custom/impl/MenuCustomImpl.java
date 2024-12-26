@@ -2,23 +2,19 @@ package com.jbproject.jutopia.rest.repository.custom.impl;
 
 import com.jbproject.jutopia.constant.CommonConstatns;
 import com.jbproject.jutopia.rest.entity.MenuEntity;
-import com.jbproject.jutopia.rest.entity.RoleMenuRelation;
 import com.jbproject.jutopia.rest.model.result.AuthResult;
 import com.jbproject.jutopia.rest.model.result.MenuResult;
 import com.jbproject.jutopia.rest.model.result.RoleMenuResult;
 import com.jbproject.jutopia.rest.repository.custom.MenuCustom;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.jbproject.jutopia.rest.entity.QMenuEntity.menuEntity;

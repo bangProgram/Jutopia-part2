@@ -1,5 +1,6 @@
 package com.jbproject.jutopia.rest.entity;
 
+import com.jbproject.jutopia.rest.entity.relation.RoleMenuRelation;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
