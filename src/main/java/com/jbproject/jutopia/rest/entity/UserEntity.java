@@ -1,6 +1,7 @@
 package com.jbproject.jutopia.rest.entity;
 
 
+import com.jbproject.jutopia.rest.entity.relation.UserTradeCorpRelation;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,6 +44,9 @@ public class UserEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "userEntity")
     private List<UserSocialRelation> userSocialRelations;
+
+    @OneToMany(mappedBy = "userEntity")
+    private List<UserTradeCorpRelation> userTradeCorpRelations;
 
     @Builder
     public UserEntity(

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.jbproject.jutopia.rest.entity.QMenuEntity.menuEntity;
-import static com.jbproject.jutopia.rest.entity.QRoleMenuRelation.roleMenuRelation;
+import static com.jbproject.jutopia.rest.entity.relation.QRoleMenuRelation.roleMenuRelation;
 
 
 

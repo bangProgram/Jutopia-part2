@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.jbproject.jutopia.rest.entity.QMenuEntity.menuEntity;
-import static com.jbproject.jutopia.rest.entity.QRoleMenuRelation.roleMenuRelation;
+import static com.jbproject.jutopia.rest.entity.relation.QRoleMenuRelation.roleMenuRelation;
 import static com.jbproject.jutopia.rest.entity.QRoleEntity.roleEntity;
 
 @Repository
