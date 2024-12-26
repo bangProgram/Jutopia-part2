@@ -54,7 +54,6 @@ dependencies {
 
 	// xml parsing 의존성 추가 - jaxb
 	implementation 'javax.xml.bind:jaxb-api:2.3.0'
-	runtimeOnly 'com.sun.xml.bind:jaxb-impl:3.0.0'
 	implementation 'org.glassfish.jaxb:jaxb-runtime'
 	implementation 'javax.activation:activation:1.1.1'
 
