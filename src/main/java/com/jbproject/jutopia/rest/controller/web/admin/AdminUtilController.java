@@ -2,7 +2,7 @@ package com.jbproject.jutopia.rest.controller.web.admin;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.jbproject.jutopia.constant.CommonConstatns;
-import com.jbproject.jutopia.rest.dto.XmlCorpModel;
+import com.jbproject.jutopia.rest.dto.model.XmlCorpModel;
 import com.jbproject.jutopia.rest.dto.payload.MergeCorpCisStatPayload;
 import com.jbproject.jutopia.rest.dto.payload.MergeCorpDetailPayload;
 import com.jbproject.jutopia.rest.dto.payload.MergeCorpReportPayload;

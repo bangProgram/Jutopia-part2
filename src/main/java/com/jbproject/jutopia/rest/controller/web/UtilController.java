@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.controller.web;
 
-import com.jbproject.jutopia.rest.dto.CorpDetailModel;
+import com.jbproject.jutopia.rest.dto.model.CorpDetailModel;
 import com.jbproject.jutopia.rest.dto.payload.SearchCorpPayload;
 import com.jbproject.jutopia.rest.dto.payload.SearchPostPayload;
 import com.jbproject.jutopia.rest.dto.payload.SearchReplyPayload;

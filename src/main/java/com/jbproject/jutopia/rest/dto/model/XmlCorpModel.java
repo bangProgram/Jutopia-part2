@@ -1,4 +1,4 @@
-package com.jbproject.jutopia.rest.dto;
+package com.jbproject.jutopia.rest.dto.model;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;

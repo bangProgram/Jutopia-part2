@@ -1,4 +1,4 @@
-package com.jbproject.jutopia.rest.dto;
+package com.jbproject.jutopia.rest.dto.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;

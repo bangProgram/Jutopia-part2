@@ -1,7 +1,7 @@
 package com.jbproject.jutopia.rest.entity;
 
 import com.jbproject.jutopia.rest.entity.key.CorpCisStatKey;
-import com.jbproject.jutopia.rest.dto.CorpCisStatModel;
+import com.jbproject.jutopia.rest.dto.model.CorpCisStatModel;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

@@ -1,7 +1,7 @@
 package com.jbproject.jutopia.rest.entity;
 
 import com.jbproject.jutopia.rest.entity.key.CorpCisKey;
-import com.jbproject.jutopia.rest.dto.CorpCisModel;
+import com.jbproject.jutopia.rest.dto.model.CorpCisModel;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.domain.Persistable;

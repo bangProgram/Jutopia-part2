@@ -1,4 +1,4 @@
-package com.jbproject.jutopia.rest.dto;
+package com.jbproject.jutopia.rest.dto.model;
 
 import lombok.Builder;
 import lombok.Data;

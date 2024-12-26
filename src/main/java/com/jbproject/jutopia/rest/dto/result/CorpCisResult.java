@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.dto.result;
 
-import com.jbproject.jutopia.rest.dto.CorpCisStatModel;
+import com.jbproject.jutopia.rest.dto.model.CorpCisStatModel;
 import lombok.Data;
 
 import java.util.List;

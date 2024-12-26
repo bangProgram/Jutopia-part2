@@ -2,7 +2,7 @@ package com.jbproject.jutopia.rest.service;
 
 import com.jbproject.jutopia.rest.entity.CorpCisEntity;
 import com.jbproject.jutopia.rest.entity.key.CorpCisKey;
-import com.jbproject.jutopia.rest.dto.XmlCorpModel;
+import com.jbproject.jutopia.rest.dto.model.XmlCorpModel;
 import com.jbproject.jutopia.rest.dto.payload.MergeCorpCisStatPayload;
 import com.jbproject.jutopia.rest.dto.payload.MergeCorpDetailPayload;
 import com.jbproject.jutopia.rest.dto.payload.MergeCorpReportPayload;

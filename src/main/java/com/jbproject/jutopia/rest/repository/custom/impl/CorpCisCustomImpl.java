@@ -1,7 +1,7 @@
 package com.jbproject.jutopia.rest.repository.custom.impl;
 
-import com.jbproject.jutopia.rest.dto.CorpCisModel;
-import com.jbproject.jutopia.rest.dto.CorpCisStatModel;
+import com.jbproject.jutopia.rest.dto.model.CorpCisModel;
+import com.jbproject.jutopia.rest.dto.model.CorpCisStatModel;
 import com.jbproject.jutopia.rest.dto.payload.MergeCorpCisStatPayload;
 import com.jbproject.jutopia.rest.dto.payload.SearchCorpPayload;
 import com.jbproject.jutopia.rest.repository.custom.CorpCisCustom;
