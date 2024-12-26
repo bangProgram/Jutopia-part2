@@ -1,7 +1,7 @@
 package com.jbproject.jutopia.rest.repository.custom;
 
-import com.jbproject.jutopia.rest.model.payload.SearchPostPayload;
-import com.jbproject.jutopia.rest.model.result.PostResult;
+import com.jbproject.jutopia.rest.dto.payload.SearchPostPayload;
+import com.jbproject.jutopia.rest.dto.result.PostResult;
 
 import java.util.List;
 

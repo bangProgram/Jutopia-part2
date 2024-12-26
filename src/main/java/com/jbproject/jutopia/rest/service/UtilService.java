@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.service;
 
-import com.jbproject.jutopia.rest.model.CorpDetailModel;
+import com.jbproject.jutopia.rest.dto.CorpDetailModel;
 
 import java.util.List;
 

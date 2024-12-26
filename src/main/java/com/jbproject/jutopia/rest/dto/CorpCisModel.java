@@ -1,11 +1,7 @@
-package com.jbproject.jutopia.rest.model;
+package com.jbproject.jutopia.rest.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
 import lombok.*;
 
 import java.time.LocalDate;

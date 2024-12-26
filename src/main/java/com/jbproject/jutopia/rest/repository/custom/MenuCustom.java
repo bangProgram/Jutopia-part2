@@ -1,7 +1,7 @@
 package com.jbproject.jutopia.rest.repository.custom;
 
-import com.jbproject.jutopia.rest.model.result.AuthResult;
-import com.jbproject.jutopia.rest.model.result.MenuResult;
+import com.jbproject.jutopia.rest.dto.result.AuthResult;
+import com.jbproject.jutopia.rest.dto.result.MenuResult;
 
 import java.util.List;
 

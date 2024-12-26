@@ -1,43 +1,32 @@
 package com.jbproject.jutopia.config.security.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.auth.service.AuthService;
 import com.jbproject.jutopia.config.security.constant.JwtTokenConstants;
 import com.jbproject.jutopia.config.security.constant.SecurityErrorCode;
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.config.security.jwt.JwtTokenInfo;
-import com.jbproject.jutopia.config.security.jwt.RefreshJwtToken;
 import com.jbproject.jutopia.config.security.model.Role;
 import com.jbproject.jutopia.config.security.provider.TokenProvider;
 import com.jbproject.jutopia.config.security.util.SecurityUtils;
 import com.jbproject.jutopia.exception.ErrorCode;
 import com.jbproject.jutopia.exception.ExceptionProvider;
-import com.jbproject.jutopia.exception.model.ExceptionModel;
-import com.jbproject.jutopia.rest.model.result.RoleMenuResult;
+import com.jbproject.jutopia.rest.dto.result.RoleMenuResult;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class AccessAuthFilter extends OncePerRequestFilter {
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();

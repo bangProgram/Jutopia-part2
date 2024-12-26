@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.repository.custom;
 
-import com.jbproject.jutopia.rest.model.result.ReplyResult;
+import com.jbproject.jutopia.rest.dto.result.ReplyResult;
 
 import java.util.List;
 

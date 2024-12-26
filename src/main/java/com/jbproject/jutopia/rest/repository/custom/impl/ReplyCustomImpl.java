@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.repository.custom.impl;
 
-import com.jbproject.jutopia.rest.model.result.ReplyResult;
+import com.jbproject.jutopia.rest.dto.result.ReplyResult;
 import com.jbproject.jutopia.rest.repository.custom.ReplyCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;

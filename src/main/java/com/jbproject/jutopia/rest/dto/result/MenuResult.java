@@ -1,4 +1,4 @@
-package com.jbproject.jutopia.rest.model.result;
+package com.jbproject.jutopia.rest.dto.result;
 
 import com.jbproject.jutopia.rest.entity.MenuEntity;
 import lombok.Data;

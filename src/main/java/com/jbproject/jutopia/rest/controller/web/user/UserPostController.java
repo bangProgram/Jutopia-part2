@@ -2,11 +2,11 @@ package com.jbproject.jutopia.rest.controller.web.user;
 
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.constant.CommonConstatns;
-import com.jbproject.jutopia.rest.model.payload.ViewPostPayload;
-import com.jbproject.jutopia.rest.model.payload.SearchPostPayload;
-import com.jbproject.jutopia.rest.model.payload.ReplyPayload;
-import com.jbproject.jutopia.rest.model.result.CommCodeResult;
-import com.jbproject.jutopia.rest.model.result.PostResult;
+import com.jbproject.jutopia.rest.dto.payload.ViewPostPayload;
+import com.jbproject.jutopia.rest.dto.payload.SearchPostPayload;
+import com.jbproject.jutopia.rest.dto.payload.ReplyPayload;
+import com.jbproject.jutopia.rest.dto.result.CommCodeResult;
+import com.jbproject.jutopia.rest.dto.result.PostResult;
 import com.jbproject.jutopia.rest.service.CommCodeService;
 import com.jbproject.jutopia.rest.service.UserPostService;
 import groovy.util.logging.Slf4j;

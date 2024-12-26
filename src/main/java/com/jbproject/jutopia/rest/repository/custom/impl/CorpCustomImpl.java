@@ -1,9 +1,7 @@
 package com.jbproject.jutopia.rest.repository.custom.impl;
 
-import com.jbproject.jutopia.constant.ServerUtilConstant;
-import com.jbproject.jutopia.rest.entity.CorpEntity;
-import com.jbproject.jutopia.rest.model.payload.MergeCorpDetailPayload;
-import com.jbproject.jutopia.rest.model.result.CorpResult;
+import com.jbproject.jutopia.rest.dto.payload.MergeCorpDetailPayload;
+import com.jbproject.jutopia.rest.dto.result.CorpResult;
 import com.jbproject.jutopia.rest.repository.custom.CorpCustom;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;

@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.repository.custom;
 
-import com.jbproject.jutopia.rest.model.result.CommCodeResult;
+import com.jbproject.jutopia.rest.dto.result.CommCodeResult;
 
 import java.util.List;
 

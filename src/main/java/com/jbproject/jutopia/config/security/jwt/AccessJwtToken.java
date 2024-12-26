@@ -1,14 +1,11 @@
 package com.jbproject.jutopia.config.security.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.jbproject.jutopia.auth.model.RoleBasedWhiteList;
-import com.jbproject.jutopia.rest.model.result.RoleMenuResult;
 import lombok.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
-import java.util.List;
 
 /*
     토큰 (인증)

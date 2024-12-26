@@ -1,12 +1,12 @@
 package com.jbproject.jutopia.rest.service;
 
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
-import com.jbproject.jutopia.rest.model.payload.SearchPostPayload;
-import com.jbproject.jutopia.rest.model.payload.ViewPostPayload;
-import com.jbproject.jutopia.rest.model.payload.ReplyPayload;
-import com.jbproject.jutopia.rest.model.payload.SearchReplyPayload;
-import com.jbproject.jutopia.rest.model.result.PostResult;
-import com.jbproject.jutopia.rest.model.result.ReplyResult;
+import com.jbproject.jutopia.rest.dto.payload.SearchPostPayload;
+import com.jbproject.jutopia.rest.dto.payload.ViewPostPayload;
+import com.jbproject.jutopia.rest.dto.payload.ReplyPayload;
+import com.jbproject.jutopia.rest.dto.payload.SearchReplyPayload;
+import com.jbproject.jutopia.rest.dto.result.PostResult;
+import com.jbproject.jutopia.rest.dto.result.ReplyResult;
 
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package com.jbproject.jutopia.rest.repository.custom.impl;
 
-import com.jbproject.jutopia.auth.model.RoleBasedWhiteList;
-import com.jbproject.jutopia.rest.model.result.RoleMenuResult;
+import com.jbproject.jutopia.rest.dto.result.RoleMenuResult;
 import com.jbproject.jutopia.rest.repository.custom.RoleMenuCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;

@@ -1,7 +1,7 @@
 package com.jbproject.jutopia.rest.service.impl;
 
 import com.jbproject.jutopia.rest.entity.CorpDetailEntity;
-import com.jbproject.jutopia.rest.model.CorpDetailModel;
+import com.jbproject.jutopia.rest.dto.CorpDetailModel;
 import com.jbproject.jutopia.rest.repository.CorpDetailRepository;
 import com.jbproject.jutopia.rest.service.UtilService;
 import groovy.util.logging.Slf4j;

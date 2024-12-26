@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.repository.custom.impl;
 
-import com.jbproject.jutopia.rest.model.result.CommCodeResult;
+import com.jbproject.jutopia.rest.dto.result.CommCodeResult;
 import com.jbproject.jutopia.rest.repository.custom.CommCodeCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;

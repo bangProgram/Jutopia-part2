@@ -1,8 +1,6 @@
-package com.jbproject.jutopia.rest.model.result;
+package com.jbproject.jutopia.rest.dto.result;
 
-import com.jbproject.jutopia.rest.entity.PostEntity;
 import com.jbproject.jutopia.rest.entity.ReplyEntity;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

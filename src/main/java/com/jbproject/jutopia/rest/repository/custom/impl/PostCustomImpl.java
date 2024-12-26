@@ -1,7 +1,7 @@
 package com.jbproject.jutopia.rest.repository.custom.impl;
 
-import com.jbproject.jutopia.rest.model.payload.SearchPostPayload;
-import com.jbproject.jutopia.rest.model.result.PostResult;
+import com.jbproject.jutopia.rest.dto.payload.SearchPostPayload;
+import com.jbproject.jutopia.rest.dto.result.PostResult;
 import com.jbproject.jutopia.rest.repository.custom.PostCustom;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;

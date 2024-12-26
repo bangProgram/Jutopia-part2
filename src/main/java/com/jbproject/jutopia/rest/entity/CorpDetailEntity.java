@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.entity;
 
-import com.jbproject.jutopia.rest.model.CorpDetailModel;
+import com.jbproject.jutopia.rest.dto.CorpDetailModel;
 import jakarta.persistence.*;
 import lombok.*;
 

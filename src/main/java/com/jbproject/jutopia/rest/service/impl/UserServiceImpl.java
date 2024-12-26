@@ -3,7 +3,7 @@ package com.jbproject.jutopia.rest.service.impl;
 import com.jbproject.jutopia.constant.CommonErrorCode;
 import com.jbproject.jutopia.exception.ExceptionProvider;
 import com.jbproject.jutopia.rest.entity.UserEntity;
-import com.jbproject.jutopia.rest.model.payload.SignupPayload;
+import com.jbproject.jutopia.rest.dto.payload.SignupPayload;
 import com.jbproject.jutopia.rest.repository.UserRepository;
 import com.jbproject.jutopia.rest.service.UserService;
 import lombok.RequiredArgsConstructor;

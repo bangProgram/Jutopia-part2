@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.service;
 
-import com.jbproject.jutopia.rest.model.result.AuthResult;
+import com.jbproject.jutopia.rest.dto.result.AuthResult;
 
 import java.util.List;
 

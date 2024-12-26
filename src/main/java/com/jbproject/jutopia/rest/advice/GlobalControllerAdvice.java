@@ -2,11 +2,8 @@ package com.jbproject.jutopia.rest.advice;
 
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.config.security.model.Role;
-import com.jbproject.jutopia.config.security.util.SecurityUtils;
 import com.jbproject.jutopia.constant.CommonConstatns;
-import com.jbproject.jutopia.rest.model.result.MenuResult;
-import com.jbproject.jutopia.rest.model.result.RoleMenuResult;
-import com.jbproject.jutopia.rest.repository.RoleMenuRepository;
+import com.jbproject.jutopia.rest.dto.result.MenuResult;
 import com.jbproject.jutopia.rest.service.MenuService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

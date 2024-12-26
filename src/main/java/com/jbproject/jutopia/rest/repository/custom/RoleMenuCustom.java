@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.repository.custom;
 
-import com.jbproject.jutopia.rest.model.result.RoleMenuResult;
+import com.jbproject.jutopia.rest.dto.result.RoleMenuResult;
 
 import java.util.List;
 

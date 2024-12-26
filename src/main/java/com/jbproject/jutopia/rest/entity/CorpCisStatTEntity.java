@@ -1,10 +1,7 @@
 package com.jbproject.jutopia.rest.entity;
 
-import com.jbproject.jutopia.rest.entity.key.CorpCisStatKey;
 import com.jbproject.jutopia.rest.entity.key.CorpCisStatTKey;
-import com.jbproject.jutopia.rest.model.CorpCisStatModel;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

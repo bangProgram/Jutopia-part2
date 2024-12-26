@@ -1,11 +1,11 @@
 package com.jbproject.jutopia.rest.controller.web;
 
-import com.jbproject.jutopia.rest.model.CorpDetailModel;
-import com.jbproject.jutopia.rest.model.payload.SearchCorpPayload;
-import com.jbproject.jutopia.rest.model.payload.SearchPostPayload;
-import com.jbproject.jutopia.rest.model.payload.SearchReplyPayload;
-import com.jbproject.jutopia.rest.model.result.PostResult;
-import com.jbproject.jutopia.rest.model.result.ReplyResult;
+import com.jbproject.jutopia.rest.dto.CorpDetailModel;
+import com.jbproject.jutopia.rest.dto.payload.SearchCorpPayload;
+import com.jbproject.jutopia.rest.dto.payload.SearchPostPayload;
+import com.jbproject.jutopia.rest.dto.payload.SearchReplyPayload;
+import com.jbproject.jutopia.rest.dto.result.PostResult;
+import com.jbproject.jutopia.rest.dto.result.ReplyResult;
 import com.jbproject.jutopia.rest.service.UserPostService;
 import com.jbproject.jutopia.rest.service.UtilService;
 import groovy.util.logging.Slf4j;

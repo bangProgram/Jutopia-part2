@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.service.impl;
 
-import com.jbproject.jutopia.rest.model.result.CommCodeResult;
+import com.jbproject.jutopia.rest.dto.result.CommCodeResult;
 import com.jbproject.jutopia.rest.repository.CommCodeRepository;
 import com.jbproject.jutopia.rest.service.CommCodeService;
 import lombok.RequiredArgsConstructor;

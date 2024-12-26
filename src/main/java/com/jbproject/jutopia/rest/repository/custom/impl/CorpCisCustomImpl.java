@@ -1,11 +1,9 @@
 package com.jbproject.jutopia.rest.repository.custom.impl;
 
-import com.jbproject.jutopia.rest.entity.CorpCisEntity;
-import com.jbproject.jutopia.rest.model.CorpCisModel;
-import com.jbproject.jutopia.rest.model.CorpCisStatModel;
-import com.jbproject.jutopia.rest.model.payload.MergeCorpCisStatPayload;
-import com.jbproject.jutopia.rest.model.payload.SearchCorpPayload;
-import com.jbproject.jutopia.rest.model.result.CorpCisResult;
+import com.jbproject.jutopia.rest.dto.CorpCisModel;
+import com.jbproject.jutopia.rest.dto.CorpCisStatModel;
+import com.jbproject.jutopia.rest.dto.payload.MergeCorpCisStatPayload;
+import com.jbproject.jutopia.rest.dto.payload.SearchCorpPayload;
 import com.jbproject.jutopia.rest.repository.custom.CorpCisCustom;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
@@ -14,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static com.jbproject.jutopia.rest.entity.QCorpCisEntity.corpCisEntity;

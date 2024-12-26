@@ -1,7 +1,7 @@
 package com.jbproject.jutopia.auth.service;
 
 import com.jbproject.jutopia.rest.entity.UserEntity;
-import com.jbproject.jutopia.rest.model.result.RoleMenuResult;
+import com.jbproject.jutopia.rest.dto.result.RoleMenuResult;
 import com.jbproject.jutopia.rest.repository.RoleMenuRepository;
 import com.jbproject.jutopia.rest.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

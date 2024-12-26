@@ -1,7 +1,7 @@
 package com.jbproject.jutopia.rest.entity;
 
 import com.jbproject.jutopia.rest.entity.relation.PostReplyRelation;
-import com.jbproject.jutopia.rest.model.payload.ReplyPayload;
+import com.jbproject.jutopia.rest.dto.payload.ReplyPayload;
 import jakarta.persistence.*;
 import lombok.*;
 

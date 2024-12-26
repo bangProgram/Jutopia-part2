@@ -2,9 +2,9 @@ package com.jbproject.jutopia.rest.repository.custom.impl;
 
 import com.jbproject.jutopia.constant.CommonConstatns;
 import com.jbproject.jutopia.rest.entity.MenuEntity;
-import com.jbproject.jutopia.rest.model.result.AuthResult;
-import com.jbproject.jutopia.rest.model.result.MenuResult;
-import com.jbproject.jutopia.rest.model.result.RoleMenuResult;
+import com.jbproject.jutopia.rest.dto.result.AuthResult;
+import com.jbproject.jutopia.rest.dto.result.MenuResult;
+import com.jbproject.jutopia.rest.dto.result.RoleMenuResult;
 import com.jbproject.jutopia.rest.repository.custom.MenuCustom;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;

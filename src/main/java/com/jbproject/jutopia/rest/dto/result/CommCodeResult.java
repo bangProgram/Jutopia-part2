@@ -1,7 +1,5 @@
-package com.jbproject.jutopia.rest.model.result;
+package com.jbproject.jutopia.rest.dto.result;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
 import lombok.Data;
 
 @Data

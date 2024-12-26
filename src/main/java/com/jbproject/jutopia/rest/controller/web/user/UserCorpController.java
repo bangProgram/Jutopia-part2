@@ -1,6 +1,6 @@
 package com.jbproject.jutopia.rest.controller.web.user;
 
-import com.jbproject.jutopia.rest.model.payload.SearchCorpPayload;
+import com.jbproject.jutopia.rest.dto.payload.SearchCorpPayload;
 import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
