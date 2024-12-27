@@ -33,7 +33,7 @@ public class NyStockModelTest {
     void modelSerializeTest1() throws URISyntaxException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        URI request = new URI("https://api.stock.naver.com/stock/exchange/NASDAQ/marketValue?page=1&pageSize=10");
+        URI request = new URI("https://api.stock.naver.com/stock/exchange/NYSE/marketValue?page=1&pageSize=5");
 
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(request, String.class);
@@ -46,7 +46,7 @@ public class NyStockModelTest {
     void modelSerializeTest2() throws URISyntaxException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        URL url = new URL("https://api.stock.naver.com/stock/exchange/NASDAQ/marketValue?page=1&pageSize=10");
+        URL url = new URL("https://api.stock.naver.com/stock/exchange/NASDAQ/marketValue?page=1&pageSize=5");
         InputStreamReader isr = new InputStreamReader(url.openConnection().getInputStream(), "UTF-8");
         ApiResponseModel model2 = objectMapper.readValue(isr, ApiResponseModel.class);
 

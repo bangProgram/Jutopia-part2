@@ -163,4 +163,9 @@ public class AdminUtilController {
         }
     }
 
+
+    @PostMapping("/naver/stock")
+    public RedirectView mergeNyCorp(){
+        return new RedirectView();
+    }
 }

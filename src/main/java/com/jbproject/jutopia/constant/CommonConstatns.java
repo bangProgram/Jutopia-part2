@@ -13,4 +13,7 @@ public class CommonConstatns {
     public final static String REPORT_TYPE = "REPORT_TYPE";
     public final static String IS_YES = "Y";
     public final static String IS_NO = "N";
+
+    public final static String NYS_STOCK_PATH = "NYSE";
+    public final static String NSQ_STOCK_PATH = "NASDAQ";
 }
