@@ -43,7 +43,7 @@ public class NyStockModelTest {
     }
 
     @Test
-    void modelSerializeTest2() throws URISyntaxException, IOException {
+    void modelSerializeTest2() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         URL url = new URL("https://api.stock.naver.com/stock/exchange/NASDAQ/marketValue?page=1&pageSize=5");

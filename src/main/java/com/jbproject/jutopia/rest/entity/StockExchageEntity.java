@@ -25,6 +25,7 @@ public class StockExchageEntity extends BaseEntity implements Persistable<StockE
     private String nationName;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reuters_code")
     private NyCorpDetailEntity nyCorpDetailEntity;
 
     public StockExchageEntity(NyStockModel.StockExchangeType stockExchangeType){

@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
+import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
+import com.fasterxml.jackson.databind.ser.std.NumberSerializers;
+import com.fasterxml.jackson.databind.ser.std.StringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,15 +48,15 @@ public class NyStockModel {
     @Schema(title = "executedVolume (확인불가)")
     private String executedVolume;
     @Schema(title = "누적 거래량")
-    private Double accumulatedTradingVolume;
+    private String accumulatedTradingVolume;
     @Schema(title = "누적 거래액 (달러)")
-    private Double accumulatedTradingValue;
+    private String accumulatedTradingValue;
     @Schema(title = "누적 거래액 (원화)")
     private String accumulatedTradingValueKrwHangeul;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     @Schema(title = "현지 거래시간")
     private LocalDateTime localTradedAt;
     @Schema(title = "마켓 상태")
@@ -60,7 +64,7 @@ public class NyStockModel {
     @Schema(title = "overMarketPriceInfo")
     private String overMarketPriceInfo;
     @Schema(title = "시가총액(달러)")
-    private Double marketValue;
+    private String marketValue;
     @Schema(title = "시가총액(달러번역)")
     private String marketValueHangeul;
     @Schema(title = "시가총액(원화)")
@@ -70,7 +74,7 @@ public class NyStockModel {
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     @Schema(title = "배당 지급일")
     private LocalDateTime dividendPayAt;
 
@@ -146,4 +150,5 @@ public class NyStockModel {
         private String text;
         private String name;
     }
+
 }
