@@ -23,9 +23,6 @@ public class NyCorpEntity extends BaseEntity implements Persistable<String> {
     private String stockName;
     private LocalDate modifyDate;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "nyCorpEntity")
-    private NyCorpDetailEntity nyCorpDetailEntity;
-
     @Builder
     public NyCorpEntity(String reutersCode, String stockCode, String stockName, LocalDate modifyDate){
         this.reutersCode = reutersCode;

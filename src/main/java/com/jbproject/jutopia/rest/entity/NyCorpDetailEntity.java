@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.jbproject.jutopia.rest.dto.model.NyStockModel;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -90,11 +91,6 @@ public class NyCorpDetailEntity extends BaseEntity implements Persistable<String
     @Comment(value = "exchangeOperatingTime")
     private Boolean exchangeOperatingTime;
 
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "")
-    private NyCorpEntity nyCorpEntity;
-
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "nyCorpDetailEntity")
     private StockExchageEntity stockExchageEntity;
 
@@ -109,6 +105,40 @@ public class NyCorpDetailEntity extends BaseEntity implements Persistable<String
     @Override
     public boolean isNew() {
         return getCreateDttm() == null;
+    }
+
+
+    public NyCorpDetailEntity(NyStockModel model){
+        D
+
+        this.reutersCode = model.getReutersCode();
+        this.stockCode = model.getStockType();
+        this.stockName = model.getStockName();
+        this.stockNameEng = model.getStockNameEng();
+        this.stockType = model.getStockType();
+        this.nationType = model.getNationType();
+        this.reutersIndustryCode = model.getReutersIndustryCode();
+        this.openPrice = model.getOpenPrice();
+        this.closePrice = model.getClosePrice();
+        this.compareToPreviousClosePrice = model.getCompareToPreviousClosePrice();
+        this.fluctuationsRatio = model.getFluctuationsRatio();
+        this.executedVolume = model.getExecutedVolume();
+        this.accumulatedTradingVolume = model.getAccumulatedTradingVolume();
+        this.accumulatedTradingValue = model.getAccumulatedTradingValue();
+        this.accumulatedTradingValueKrwHangeul = model.getAccumulatedTradingValueKrwHangeul();
+        this.localTradedAt = model.getLocalTradedAt();
+        this.marketStatus = model.getMarketStatus();
+        this.overMarketPriceInfo = model.getOverMarketPriceInfo();
+        this.marketValue = model.getMarketValue();
+        this.marketValueHangeul = model.getMarketValueHangeul();
+        this.marketValueKrwHangeul = model.getMarketValueKrwHangeul();
+        this.dividend = model.getDividend();
+        this.dividendPayAt = model.getDividendPayAt();
+        this.endUrl = model.getEndUrl();
+        this.delayTime = model.getDelayTime();
+        this.delayTimeName = model.getDelayTimeName();
+        this.stockEndUrl = model.getStockEndUrl();
+        this.exchangeOperatingTime = model.getExchangeOperatingTime();
     }
 
 }

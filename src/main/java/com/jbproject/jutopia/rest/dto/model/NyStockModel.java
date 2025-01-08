@@ -87,7 +87,7 @@ public class NyStockModel {
     @Schema(title = "네이버증권 url")
     private String stockEndUrl;
     @Schema(title = "exchangeOperatingTime")
-    private String exchangeOperatingTime;
+    private Boolean exchangeOperatingTime;
 
     @Schema(title = "전일 종가 비교")
     private CompareToPreviousPrice compareToPreviousPrice;
