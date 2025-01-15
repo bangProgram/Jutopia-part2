@@ -19,4 +19,7 @@ public interface AdminUtilService {
     void mergeCorpDetail(MergeCorpDetailPayload payload) throws Exception;
     MergeResult mergeCorpCis(MergeCorpReportPayload payload, MultipartFile file) throws Exception;
     MergeResult mergeCisStat(MergeCorpCisStatPayload payload);
+
+
+    void mergeNyCorpDetail() throws Exception;
 }

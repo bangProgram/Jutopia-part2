@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.jbproject.jutopia.rest.common.CommonUtils;
 import com.jbproject.jutopia.rest.dto.model.NyStockModel;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -109,7 +110,6 @@ public class NyCorpDetailEntity extends BaseEntity implements Persistable<String
 
 
     public NyCorpDetailEntity(NyStockModel model){
-        D
 
         this.reutersCode = model.getReutersCode();
         this.stockCode = model.getStockType();
@@ -118,21 +118,21 @@ public class NyCorpDetailEntity extends BaseEntity implements Persistable<String
         this.stockType = model.getStockType();
         this.nationType = model.getNationType();
         this.reutersIndustryCode = model.getReutersIndustryCode();
-        this.openPrice = model.getOpenPrice();
-        this.closePrice = model.getClosePrice();
-        this.compareToPreviousClosePrice = model.getCompareToPreviousClosePrice();
-        this.fluctuationsRatio = model.getFluctuationsRatio();
+        this.openPrice = CommonUtils.convertToString(model.getOpenPrice());
+        this.closePrice = CommonUtils.convertToString(model.getClosePrice());
+        this.compareToPreviousClosePrice = CommonUtils.convertToString(model.getCompareToPreviousClosePrice());
+        this.fluctuationsRatio = CommonUtils.convertToString(model.getFluctuationsRatio());
         this.executedVolume = model.getExecutedVolume();
-        this.accumulatedTradingVolume = model.getAccumulatedTradingVolume();
-        this.accumulatedTradingValue = model.getAccumulatedTradingValue();
+        this.accumulatedTradingVolume = CommonUtils.convertToString(model.getAccumulatedTradingVolume());
+        this.accumulatedTradingValue = CommonUtils.convertToString(model.getAccumulatedTradingValue());
         this.accumulatedTradingValueKrwHangeul = model.getAccumulatedTradingValueKrwHangeul();
         this.localTradedAt = model.getLocalTradedAt();
         this.marketStatus = model.getMarketStatus();
         this.overMarketPriceInfo = model.getOverMarketPriceInfo();
-        this.marketValue = model.getMarketValue();
+        this.marketValue = CommonUtils.convertToString(model.getMarketValue());
         this.marketValueHangeul = model.getMarketValueHangeul();
         this.marketValueKrwHangeul = model.getMarketValueKrwHangeul();
-        this.dividend = model.getDividend();
+        this.dividend = CommonUtils.convertToString(model.getDividend());
         this.dividendPayAt = model.getDividendPayAt();
         this.endUrl = model.getEndUrl();
         this.delayTime = model.getDelayTime();

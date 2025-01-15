@@ -11,7 +11,7 @@ import org.springframework.data.domain.Persistable;
 @Entity @Getter @Setter
 @NoArgsConstructor
 @Table(name = "tb_stock_industry")
-public class StockIndustryEntity extends BaseEntity implements Persistable<String> {
+public class StockIndustryEntity extends BaseEntity {
 
     @Id
     @Comment(value = "산업 코드")
@@ -31,13 +31,4 @@ public class StockIndustryEntity extends BaseEntity implements Persistable<Strin
         this.industryName = model.getName();
     }
 
-    @Override
-    public String getId() {
-        return industryCode;
-    }
-
-    @Override
-    public boolean isNew() {
-        return getCreateDttm() == null;
-    }
 }

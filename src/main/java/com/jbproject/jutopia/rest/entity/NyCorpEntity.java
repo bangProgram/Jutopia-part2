@@ -1,5 +1,6 @@
 package com.jbproject.jutopia.rest.entity;
 
+import com.jbproject.jutopia.rest.dto.model.NyStockModel;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +30,12 @@ public class NyCorpEntity extends BaseEntity implements Persistable<String> {
         this.stockCode = stockCode;
         this.stockName = stockName;
         this.modifyDate = modifyDate;
+    }
+
+    public NyCorpEntity(NyStockModel model){
+        this.reutersCode = model.getReutersCode();
+        this.stockCode = model.getReutersCode();
+        this.stockName = model.getStockName();
     }
 
     @Override

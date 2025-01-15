@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 public class AdminUtilServiceImpl implements AdminUtilService {
 
     @Value("${opendart.secret}")
@@ -51,6 +50,13 @@ public class AdminUtilServiceImpl implements AdminUtilService {
     private final CorpCisStatRepository corpCisStatRepository;
     private final CommCodeRepository commCodeRepository;
 
+    private final NyCorpRepository nyCorpRepository;
+    private final NyCorpDetailRepository nyCorpDetailRepository;
+    private final StockExchageRepository stockExchageRepository;
+    private final StockIndustryRepository stockIndustryRepository;
+
+
+    @Transactional
     public void mergeCorpDetail(MergeCorpDetailPayload payload) throws Exception{
         List<CorpResult> getCorpList = corpRepository.getCorpListByMergeCorpDetailPayload(payload); // adminService.getCorpListForMerge(commandMap);
         String apiUrl = "https://opendart.fss.or.kr/api/company.json";
@@ -82,6 +88,8 @@ public class AdminUtilServiceImpl implements AdminUtilService {
         }
     }
 
+
+    @Transactional
     public MergeResult mergeCorpCis(MergeCorpReportPayload payload, MultipartFile file) throws Exception{
         MergeResult mergeResult = new MergeResult();
 
@@ -256,10 +264,12 @@ public class AdminUtilServiceImpl implements AdminUtilService {
         return mergeResult;
     }
 
+    @Transactional
     public Optional<CorpCisEntity> findById(CorpCisKey key){
         return corpCisRepository.findById(key);
     }
 
+    @Transactional
     public void saveCorp(XmlCorpModel xmlCorpModel){
 
         System.out.println("test 2 : "+xmlCorpModel.getCorpModels().getFirst());
@@ -276,10 +286,12 @@ public class AdminUtilServiceImpl implements AdminUtilService {
         }
     }
 
+    @Transactional
     public void updateCorpCis(CorpCisEntity entity){
         corpCisRepository.save(entity);
     }
 
+    @Transactional
     public MergeResult mergeCisStat(MergeCorpCisStatPayload payload){
         List<CorpCisStatModel> corpCisResults = corpCisRepository.getCorpCisStatList(payload);
 
@@ -380,5 +392,60 @@ public class AdminUtilServiceImpl implements AdminUtilService {
 
         return result;
 
+    }
+
+
+    @Transactional
+    public void mergeNyCorpDetail() throws Exception {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String[] stockUrls = {
+                ServerUtilConstant.NY_CORP_STOCK_NYSE_PATH.getValue()
+                ,ServerUtilConstant.NY_CORP_STOCK_NASDAQ_PATH.getValue()
+        };
+
+        for(String stockUrl: stockUrls){
+
+            int sumCnt = 0;
+
+            URL url = new URL(stockUrl+"?page=1&pageSize=100");
+            InputStreamReader isr = new InputStreamReader(url.openConnection().getInputStream(), "UTF-8");
+            ApiResponseModel initData = objectMapper.readValue(isr, ApiResponseModel.class);
+
+            if(initData != null){
+                if(initData.getTotalCount() > 0){
+                    int totalCnt = initData.getTotalCount().intValue();
+                    int curPage = 1;
+
+                    while(totalCnt > sumCnt){
+
+                        URL responseURL = new URL(stockUrl+"?page="+curPage+"&pageSize=100");
+                        isr = new InputStreamReader(responseURL.openConnection().getInputStream(), "UTF-8");
+                        ApiResponseModel response = objectMapper.readValue(isr, ApiResponseModel.class);
+
+                        for(NyStockModel model : response.getStocks()){
+
+                            NyCorpEntity nyCorpEntity = new NyCorpEntity(model);
+                            NyCorpDetailEntity nyCorpDetailEntity = new NyCorpDetailEntity(model);
+                            if(model.getStockExchangeType() != null){
+                                StockExchageEntity stockExchageEntity = new StockExchageEntity(model.getStockExchangeType());
+                                stockExchageRepository.save(stockExchageEntity);
+                            }
+                            if(model.getIndustryCodeType() != null){
+                                StockIndustryEntity stockIndustryEntity = new StockIndustryEntity(model.getIndustryCodeType());
+                                stockIndustryRepository.save(stockIndustryEntity);
+                            }
+
+                            nyCorpRepository.save(nyCorpEntity);
+                            nyCorpDetailRepository.save(nyCorpDetailEntity);
+                            sumCnt++;
+                        }
+                        curPage++;
+                    }
+                }
+            }
+
+        }
     }
 }

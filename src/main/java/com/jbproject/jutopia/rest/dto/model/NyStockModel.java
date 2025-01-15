@@ -38,13 +38,13 @@ public class NyStockModel {
     @Schema(title = "로이터 산업 코드")
     private String reutersIndustryCode;
     @Schema(title = "시가")
-    private Double openPrice;
+    private String openPrice;
     @Schema(title = "종가")
-    private Double closePrice;
+    private String closePrice;
     @Schema(title = "시가 종가 변동금액")
-    private Double compareToPreviousClosePrice;
+    private String compareToPreviousClosePrice;
     @Schema(title = "시가 종가 변동비율")
-    private Double fluctuationsRatio;
+    private String fluctuationsRatio;
     @Schema(title = "executedVolume (확인불가)")
     private String executedVolume;
     @Schema(title = "누적 거래량")
@@ -70,7 +70,7 @@ public class NyStockModel {
     @Schema(title = "시가총액(원화)")
     private String marketValueKrwHangeul;
     @Schema(title = "배당")
-    private Double dividend;
+    private String dividend;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
