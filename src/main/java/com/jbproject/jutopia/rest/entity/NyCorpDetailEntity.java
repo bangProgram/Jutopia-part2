@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Table(name = "tb_ny_corp_detail")
-public class NyCorpDetailEntity extends BaseEntity implements Persistable<String> {
+public class NyCorpDetailEntity extends BaseEntity {
 
     @Id
     private String reutersCode;
@@ -97,16 +97,6 @@ public class NyCorpDetailEntity extends BaseEntity implements Persistable<String
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "nyCorpDetailEntity")
     private StockIndustryEntity stockIndustryEntity;
-
-    @Override
-    public String getId() {
-        return reutersCode;
-    }
-
-    @Override
-    public boolean isNew() {
-        return getCreateDttm() == null;
-    }
 
 
     public NyCorpDetailEntity(NyStockModel model){

@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @Table(name = "tb_ny_corp")
-public class NyCorpEntity extends BaseEntity implements Persistable<String> {
+public class NyCorpEntity extends BaseEntity {
 
     @Id
     private String reutersCode;
@@ -36,16 +36,6 @@ public class NyCorpEntity extends BaseEntity implements Persistable<String> {
         this.reutersCode = model.getReutersCode();
         this.stockCode = model.getReutersCode();
         this.stockName = model.getStockName();
-    }
-
-    @Override
-    public String getId() {
-        return reutersCode;
-    }
-
-    @Override
-    public boolean isNew() {
-        return getCreateDttm() == null;
     }
 
 }

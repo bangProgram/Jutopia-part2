@@ -29,7 +29,6 @@ public class StockExchageEntity extends BaseEntity {
     private NyCorpDetailEntity nyCorpDetailEntity;
 
     public StockExchageEntity(NyStockModel.StockExchangeType stockExchangeType){
-        System.out.println("stockExchange : "+stockExchangeType);
 
         this.key = StockExchangeKey.builder()
                 .nationType(stockExchangeType.getNationType())

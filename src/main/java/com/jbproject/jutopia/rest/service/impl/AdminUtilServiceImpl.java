@@ -394,7 +394,6 @@ public class AdminUtilServiceImpl implements AdminUtilService {
 
     }
 
-
     @Transactional
     public void mergeNyCorpDetail() throws Exception {
 
