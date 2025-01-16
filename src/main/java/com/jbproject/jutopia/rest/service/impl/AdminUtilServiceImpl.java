@@ -399,6 +399,8 @@ public class AdminUtilServiceImpl implements AdminUtilService {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
+        System.out.println("ny-corp/merge Detail start!!");
+
         String[] stockUrls = {
                 ServerUtilConstant.NY_CORP_STOCK_NYSE_PATH.getValue()
                 ,ServerUtilConstant.NY_CORP_STOCK_NASDAQ_PATH.getValue()

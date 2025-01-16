@@ -170,6 +170,7 @@ public class AdminUtilController {
             , RedirectAttributes redirectAttributes
     ){
         try {
+            System.out.println("ny-corp/merge start!");
             adminUtilService.mergeNyCorpDetail();
             redirectAttributes.addFlashAttribute("serverMessage","뉴욕 기업 데이터 수정을 완료했습니다.");
             return new RedirectView("/admin/util/main") ;
