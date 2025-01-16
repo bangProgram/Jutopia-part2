@@ -1,4 +1,4 @@
-package com.jbproject.jutopia.rest.common;
+package com.jbproject.jutopia.common;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.jbproject.jutopia.rest.dto.model.XmlCorpModel;
@@ -20,9 +20,9 @@ public class CommonUtils {
 
 
     public static Double convertToString(String value){
-        String result = value.replaceAll(",","").replaceAll("-","");
+        String result = value.replaceAll(",","");
 
-        if(result.isEmpty()){
+        if(result.isEmpty() || result.equals("-")){
             return 0D;
         }else{
             return Double.valueOf(result);
