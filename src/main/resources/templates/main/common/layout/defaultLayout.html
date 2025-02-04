@@ -3,21 +3,23 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 >
-    <!-- config -->
-    <th:block th:replace="~{/common/fragments/config :: configFragment}"></th:block>
-    <!-- header -->
+
+
     <body id="page-top">
+        <!-- config -->
+        <th:block th:replace="~{/common/fragments/config :: configFragment}"></th:block>
         <div id="wrapper">
+
+            <th:block th:replace="~{/common/fragments/adminSidebar :: sidebarFragment}"></th:block>
             <div id="content-wrapper" class="d-flex flex-column">
                 <div id="content">
+                    <!-- header -->
                     <th:block th:replace="~{/common/fragments/header :: headerFragment}"></th:block>
-                    <th:block th:replace="~{/common/fragments/userMenubar :: menuBarFragment}"></th:block>
-                    <div class="container">
-                        <th:block th:replace="~{/common/fragments/adminSidebar :: sidebarFragment}"></th:block>
+
+                    <div class="container-fluid">
+                        <th:block th:replace="~{/common/fragments/userMenubar :: menuBarFragment}"></th:block>
                         <!-- content -->
-                        <div id="contentDiv">
-                            <th:block layout:fragment="content"></th:block>
-                        </div>
+                        <th:block layout:fragment="content"></th:block>
                     </div>
                 </div>
 

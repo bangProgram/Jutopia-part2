@@ -1,16 +1,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
-    <nav th:fragment="menuBarFragment" th:if="${curPage == 'USER'}">
-        <div id="menuBarDiv">
-            <div id="menuBarDiv-button">
-                <button th:each="topMenu : ${topMenuList}" th:onclick="|location.href='@{${topMenu.menuUrl}}'|" th:utext="${topMenu.menuName}" ></button>
+    <div class="row" th:fragment="menuBarFragment" th:if="${curPage == 'USER'}">
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="'col-xl-' + (12 / ${topMenuInfo.menuSize}) + ' col-md-6 mb-4'"
+             th:each="topMenu : ${topMenuInfo.menuList}" th:onclick="|location.href='@{${topMenu.menuUrl}}'|"
+        >
+            <div class="card border-bottom-primary shadow h-100 py-2">
+                <div class="card-body text-center">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                [[${topMenu.menuName}]]
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <!--
-        <div id="childMenuBarDiv">
-            <div id="childMenuBarDiv-button">
-                <button th:each="topMenu : ${topMenuList}" th:onclick="|location.href='@{${topMenu.menuUrl}}'|" th:utext="${topMenu.menuName}" ></button>
-            </div>
-        </div>
-        -->
-    </nav>
+    </div>
 </html>

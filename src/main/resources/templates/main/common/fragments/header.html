@@ -1,20 +1,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <nav th:fragment="headerFragment" class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-        <a class="sidebar-brand d-flex align-items-center justify-content-center"
-           th:onclick="|location.href='@{/home/main}'|" >
-            <div class="sidebar-brand-text mx-3">주토피아 <sup>2</sup></div>
+        <a class="d-sm-flex d-flex align-items-center justify-content-center"
+           th:onclick="|location.href='@{/home/main}'|"
+           th:if="${curPage == 'USER'}"
+        >
+            <h1 class="h3 mb-0 text-primary">주토피아 <sup>2</sup></h1>
         </a>
 
         <ul class="navbar-nav ml-auto">
 
-            <li class="nav-item dropdown no-arrow mx-1" th:if="${isRole == 'SYSTEM'}">
-                <a th:if="${isAdmin}" th:onclick="|location.href='@{/admin/home/main}'|">관리자 메인 이동</a>
-                <a th:if="${isAdmin}" th:onclick="|location.href='@{/home/main}'|">사용자 메인 이동</a>
-            </li>
-
-            <li class="nav-item dropdown no-arrow mx-1" th:if="${isRole == 'VISITOR'}">
-                <button type="button" th:onclick="|location.href='@{/auth/login}'|" >로그인</button>
+            <li class="nav-item dropdown no-arrow" th:if="${isRole == 'VISITOR'}">
+                <a class="nav-link" th:onclick="|location.href='@{/auth/login}'|" >
+                    <span>로그인</span>
+                </a>
             </li>
 
             <li class="nav-item dropdown no-arrow" th:if="${isRole != 'VISITOR'}">
@@ -27,6 +26,16 @@
                 <!-- Dropdown - User Information -->
                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                      aria-labelledby="userDropdown">
+                    <a class="dropdown-item" th:if="${isAdmin}"  th:onclick="|location.href='@{/admin/home/main}'|">
+                        <i class="fas fa-fw fa-cog"></i>
+                        관리자 홈 이동
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" th:if="${isAdmin}" th:onclick="|location.href='@{/home/main}'|">
+                        <i class="fas fa-fw fa-cog"></i>
+                        사용자 홈 이동
+                    </a>
+                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item" th:onclick="|location.href='@{/home/main}'|">
                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                         Profile
