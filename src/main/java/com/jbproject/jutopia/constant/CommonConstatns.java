@@ -14,6 +14,12 @@ public class CommonConstatns {
     public final static String IS_YES = "Y";
     public final static String IS_NO = "N";
 
+    public final static String READ = "R";
+    public final static String CREATE = "C";
+    public final static String UPDATE = "U";
+    public final static String DELETE = "D";
+
+
     public final static String NYS_STOCK_PATH = "NYSE";
     public final static String NSQ_STOCK_PATH = "NASDAQ";
 }

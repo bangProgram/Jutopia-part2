@@ -75,13 +75,19 @@ public class AdminMenuController {
             ){
         Long menuId = payload.getMenuId();
         try {
-            if(menuId == 0L){
-                menuService.addMenu(payload);
-                redirectAttributes.addFlashAttribute("serverMessage",payload.getMenuName() + " 메뉴 등록 완료.");
+            if(!payload.getCudType().equals(CommonConstatns.DELETE)){
+                if(menuId == 0L){
+                    menuService.addMenu(payload);
+                    redirectAttributes.addFlashAttribute("serverMessage",payload.getMenuName() + " 메뉴 등록 완료.");
+                }else{
+                    menuService.modMenu(payload);
+                    redirectAttributes.addFlashAttribute("serverMessage",payload.getMenuName() + " 메뉴 수정 완료.");
+                }
             }else{
-                menuService.modMenu(payload);
-                redirectAttributes.addFlashAttribute("serverMessage",payload.getMenuName() + " 메뉴 수정 완료.");
+                menuService.delMenu(payload);
+                redirectAttributes.addFlashAttribute("serverMessage",payload.getMenuName() + " 메뉴 삭제 완료.");
             }
+
             return new RedirectView("/admin/menu/main/"+payload.getMenuType());
         }catch (Exception e){
             log.error("error : {}",e.getLocalizedMessage());

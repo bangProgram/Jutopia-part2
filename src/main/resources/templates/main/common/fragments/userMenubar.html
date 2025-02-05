@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <div class="row" th:fragment="menuBarFragment" th:if="${curPage == 'USER'}">
         <!-- Earnings (Monthly) Card Example -->
-        <div class="'col-xl-' + (12 / ${topMenuInfo.menuSize}) + ' col-md-6 mb-4'"
+        <div class="userMenuClass"
              th:each="topMenu : ${topMenuInfo.menuList}" th:onclick="|location.href='@{${topMenu.menuUrl}}'|"
         >
             <div class="card border-bottom-primary shadow h-100 py-2">
@@ -17,4 +17,6 @@
             </div>
         </div>
     </div>
+
+
 </html>

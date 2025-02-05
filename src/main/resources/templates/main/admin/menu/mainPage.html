@@ -41,7 +41,9 @@
 
 <div class="card shadow mb-4">
     <form action="#" name="cudForm" th:action="@{/admin/menu/main/cud}" th:object="${menuCudPayload}" th:method="post">
-        <input type="hidden" th:field="*{menuId}" required />
+        <input type="hidden" th:field="*{menuId}" value="0">
+        <input type="hidden" th:field="*{menuType}">
+        <input type="hidden" th:field="*{cudType}">
         <div class="card-header py-3">
             <h6>메뉴 등록</h6>
             <div class="dataTables_wrapper dt-bootstrap4">
@@ -113,6 +115,17 @@
                     <div class="col-sm-12">
                         <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0"
                                role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                            <colgroup>
+                                <col width="10%"/>
+                                <col width="25%"/>
+                                <col width="20%"/>
+                                <col width="10%"/>
+                                <col width="5%"/>
+                                <col width="10%"/>
+                                <col width="10%"/>
+                                <col width="5%"/>
+                                <col width="5%"/>
+                            </colgroup>
                             <thead>
                                 <tr role="row">
                                     <th>메뉴 ID</th>
@@ -123,6 +136,7 @@
                                     <th>사용 여부</th>
                                     <th>메뉴표시 여부</th>
                                     <th>수정</th>
+                                    <th>삭제</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -135,58 +149,18 @@
     </form>
 </div>
 
-
-
-
-<!--
-
-<form action="#" name="cudForm" th:action="@{/admin/menu/main/cud}" th:object="${menuCudPayload}" th:method="post">
-    <input type="hidden" th:field="*{menuId}" value="0">
-    <input type="hidden" th:field="*{menuType}">
-    <table>
-        <tr>
-            <td>메뉴 명</td>
-            <td>메뉴 경로</td>
-            <td>부모메뉴 ID</td>
-            <td>순서</td>
-            <td>사용 여부</td>
-            <td>메뉴표시 여부</td>
-            <td>저장</td>
-        </tr>
-        <tr>
-            <td>
-                <label><input type="text" th:field="*{menuName}" required></label>
-            </td>
-            <td>
-                <label><input type="text" th:field="*{menuUrl}" required></label>
-            </td>
-            <td>
-                <label><input type="text" th:field="*{parentId}"></label>
-            </td>
-            <td>
-                <label><input type="text" th:field="*{seq}"></label>
-            </td>
-            <td>
-                <label><input type="text" th:field="*{useYn}"></label>
-            </td>
-            <td>
-                <label><input type="text" th:field="*{showYn}"></label>
-            </td>
-            <td>
-                <button type="submit">
-                    메뉴등록
-                </button>
-            </td>
-        </tr>
-    </table>
-</form>
--->
-
-
-<!--<th:block th:replace="~{/admin/menu/listPage :: list}"></th:block>-->
-<button type="button" th:onclick="|location.href='@{/admin/home/main}'|">
-    뒤로가기
-</button>
+<div class="row" style="margin-right: 0rem; margin-left: 0rem;">
+    <div class="col-xl-12" style="padding-right: 0rem; padding-left: .75rem;">
+        <div class="card-body text-right">
+            <a th:onclick="|location.href='@{/admin/home/main}'|" class="btn btn-light btn-icon-split" style="background: lightgrey;">
+                <span class="icon text-gray-600">
+                    <i class="fas fa-arrow-left"></i>
+                </span>
+                <span class="text">홈으로</span>
+            </a>
+        </div>
+    </div>
+</div>
 
 <style>
     .menuList {
@@ -267,15 +241,34 @@
                     '${item.menuId}',
                     '${item.menuName}',
                     '${item.menuUrl}',
-                    '${item.parentId}',
+                    ${item.parentId},
                     ${item.seq},
                     '${item.useYn}',
-                    '${item.showYn}'
+                    '${item.showYn}',
+                    'U'
                 )">
                     <span>수정</span>
                 </button>
             `;
             row.appendChild(buttonCell);
+
+            // 두 번째 셀: 삭제 버튼
+            const buttonCell2 = document.createElement('td');
+            buttonCell2.innerHTML = `
+                <button type="button" onclick="fillInput(
+                    '${item.menuId}',
+                    '${item.menuName}',
+                    '${item.menuUrl}',
+                    ${item.parentId},
+                    ${item.seq},
+                    '${item.useYn}',
+                    '${item.showYn}',
+                    'D'
+                )">
+                    <span>삭제</span>
+                </button>
+            `;
+            row.appendChild(buttonCell2);
 
             tableBody.appendChild(row);
 
@@ -327,15 +320,34 @@
                             '${childItem.menuId}',
                             '${childItem.menuName}',
                             '${childItem.menuUrl}',
-                            '${childItem.parentId}',
+                            ${childItem.parentId},
                             ${childItem.seq},
                             '${childItem.useYn}',
-                            '${childItem.showYn}'
+                            '${childItem.showYn}',
+                            'U'
                         )">
                             <span>수정</span>
                         </button>
                     `;
                     row.appendChild(buttonCell);
+
+                    // 두 번째 셀: 삭제 버튼
+                    const buttonCell2 = document.createElement('td');
+                    buttonCell2.innerHTML = `
+                        <button type="button" onclick="fillInput(
+                            '${childItem.menuId}',
+                            '${childItem.menuName}',
+                            '${childItem.menuUrl}',
+                            ${childItem.parentId},
+                            ${childItem.seq},
+                            '${childItem.useYn}',
+                            '${childItem.showYn}',
+                            'D'
+                        )">
+                            <span>삭제</span>
+                        </button>
+                    `;
+                    row.appendChild(buttonCell2);
 
                     tableBody.appendChild(row);
                 });
@@ -347,35 +359,40 @@
 
 
 
+    function submitBtn(){
+        var frm = document.cudForm;
+        frm.submit();
+    }
 
-        function submitBtn(){
-            var frm = document.cudForm;
-            frm.submit();
+    function goPage(menuType){
+        location.href = "/admin/menu/main/"+menuType;
+    }
+
+    function fillInput(
+        menuId ,menuName ,menuUrl ,parentId ,seq ,useYn ,showYn, cudType
+    ) {
+        const input1 = document.getElementById("menuId");
+        const input2 = document.getElementById("menuName");
+        const input3 = document.getElementById("menuUrl");
+        const input4 = document.getElementById("parentId");
+        const input5 = document.getElementById("seq");
+        const input6 = document.getElementById("useYn");
+        const input7 = document.getElementById("showYn");
+        const input8 = document.getElementById("cudType");
+
+        input1.value = menuId;
+        input2.value = menuName;
+        input3.value = menuUrl;
+        input4.value = parentId;
+        input5.value = seq;
+        input6.value = useYn;
+        input7.value = showYn;
+        input8.value = cudType;
+
+        if(cudType == 'D') {
+            submitBtn();
         }
-
-        function goPage(menuType){
-            location.href = "/admin/menu/main/"+menuType;
-        }
-
-        function fillInput(
-            menuId ,menuName ,menuUrl ,parentId ,seq ,useYn ,showYn
-        ) {
-            const input1 = document.getElementById("menuId");
-            const input2 = document.getElementById("menuName");
-            const input3 = document.getElementById("menuUrl");
-            const input4 = document.getElementById("parentId");
-            const input5 = document.getElementById("seq");
-            const input6 = document.getElementById("useYn");
-            const input7 = document.getElementById("showYn");
-
-            input1.value = menuId;
-            input2.value = menuName;
-            input3.value = menuUrl;
-            input4.value = parentId;
-            input5.value = seq;
-            input6.value = useYn;
-            input7.value = showYn;
-        }
+    }
 </script>
 </body>
 </html>
