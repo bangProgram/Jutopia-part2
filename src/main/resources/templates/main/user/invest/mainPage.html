@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="content"
+>
+    <head>
+        <meta charset="UTF-8">
+        <title>투자일지 홈 화면.</title>
+    </head>
+    <body>
+        <h6>
+            투자일지 홈 화면
+        </h6>
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+            <!-- Topbar Search -->
+            <div style="width :100%; text-align: -webkit-right;">
+                <div class="input-group" style="width:  25rem;">
+                    <input type="text" id="searchInput"class="form-control bg-light border-0 small" placeholder="검색어를 입력하세요...">
+                    <div class="input-group-append">
+                        <button id="searchButton" class="btn btn-primary">검색</button>
+                    </div>
+                </div>
+                <!--<div id="results" class="dropdown-menu mt-2"></div>-->
+
+                <div id="results" class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown"
+                    style="width: 25rem !important;"
+                >
+                </div>
+            </div>
+        </nav>
+        <div class="card-body" style="background: white;">
+            <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                <div class="row" style="margin-right: 0rem; margin-left: 0rem;">
+                    <div class="col-xl-12" style="padding-right: 0rem; padding-left: .75rem;">
+                        <div class="card-body text-right">
+                            <a th:onclick="|location.href='@{/invest/write}'|"  class="btn btn-success btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-plus"></i>
+                                        </span>
+                                <span class="text">신규 작성</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0"
+                               role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                            <colgroup>
+                                <col width="10%"/>
+                                <col width="25%"/>
+                                <col width="15%"/>
+                                <col width="10%"/>
+                                <col width="20%"/>
+                                <col width="20%"/>
+                            </colgroup>
+                            <thead>
+                            <tr role="row">
+                                <th>티커명</th>
+                                <th>종목명</th>
+                                <th>현재가</th>
+                                <th>수량</th>
+                                <th>평균 단가</th>
+                                <th>실현 손익</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script th:inline="javascript">
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const resultsDiv = document.getElementById('results');
+
+        // 예시 데이터
+        const data = [
+            '사과',
+            '바나나',
+            '체리',
+            '데이트',
+            '포도',
+            '키위'
+        ];
+
+        // 검색 버튼 클릭 시 결과 표시
+        searchButton.addEventListener('click', () => {
+            const query = searchInput.value.toLowerCase();
+            resultsDiv.innerHTML = ''; // 이전 결과 지우기
+
+            if (query) {
+                const filteredData = data;
+
+                if (filteredData.length > 0) {
+                    filteredData.forEach(item => {
+                        console.log('item : '+item);
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'dropdown-item';
+                        resultItem.textContent = item;
+                        resultsDiv.appendChild(resultItem);
+                    });
+                    resultsDiv.style.display = 'block'; // 드롭다운 표시
+                } else {
+                    resultsDiv.innerHTML = '<div class="dropdown-item">결과 없음</div>';
+                    resultsDiv.style.display = 'block'; // 드롭다운 표시
+                }
+            } else {
+                resultsDiv.style.display = 'none'; // 검색어가 없으면 드롭다운 숨김
+            }
+        });
+
+        // 검색 인풋 박스에서 Enter 키를 눌렀을 때
+        searchInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                searchButton.click(); // 검색 버튼 클릭 이벤트 발생
+            }
+        });
+
+        // 드롭다운 항목 클릭 시 검색어 입력
+        resultsDiv.addEventListener('click', (event) => {
+            if (event.target.classList.contains('dropdown-item')) {
+                searchInput.value = event.target.textContent; // 클릭한 항목을 입력창에 넣기
+                resultsDiv.style.display = 'none'; // 드롭다운 숨김
+            }
+        });
+
+        function goInvestWrite() {
+
+        }
+    </script>
+</html>
