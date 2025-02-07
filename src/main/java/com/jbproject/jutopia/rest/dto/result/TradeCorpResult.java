@@ -13,7 +13,7 @@ public class TradeCorpResult {
     private String stockName;
     private Long quantity;
     private Double avgAmount;
-    private Long profitLossAmount;
+    private Long totalProfitLossAmount;
 
     private LocalDateTime modifyDate;
 }

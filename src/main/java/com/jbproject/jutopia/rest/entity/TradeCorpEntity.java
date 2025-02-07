@@ -23,9 +23,6 @@ public class TradeCorpEntity extends BaseEntity{
 
     private String stockCode;
     private String stockName;
-    private Long quantity;
-    private Double avgAmount;
-    private Long profitLossAmount;
 
     private LocalDateTime modifyDate;
 

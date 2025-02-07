@@ -1,11 +1,10 @@
-package com.jbproject.jutopia.rest.repository.custom;
+package com.jbproject.jutopia.rest.service;
 
-import com.jbproject.jutopia.rest.dto.payload.SearchTradeCorpPayload;
+import com.jbproject.jutopia.rest.dto.payload.*;
 import com.jbproject.jutopia.rest.dto.result.TradeCorpResult;
 
 import java.util.List;
 
-public interface TradeCorpCustom {
-
+public interface UserInvestService {
     List<TradeCorpResult> searchTradeCorpList(SearchTradeCorpPayload payload);
 }

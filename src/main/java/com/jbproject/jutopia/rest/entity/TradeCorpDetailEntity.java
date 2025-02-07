@@ -20,16 +20,18 @@ public class TradeCorpDetailEntity extends BaseEntity{
 
     private String stockCode;
     private String stockName;
+    private Long stockAmount;
 
     private String investType;
     private LocalDateTime investDate;
-    private Long quantity;
-    private Long amount;
 
+    private Long buyQuantity;
     private Long buyAmount;
     private Double buyFee;
+    private Long sellQuantity;
     private Long sellAmount;
     private Double sellFee;
+    private Long profitLossAmount;
 
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -4,10 +4,13 @@ import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.constant.CommonConstatns;
 import com.jbproject.jutopia.rest.dto.payload.ReplyPayload;
 import com.jbproject.jutopia.rest.dto.payload.SearchPostPayload;
+import com.jbproject.jutopia.rest.dto.payload.SearchTradeCorpPayload;
 import com.jbproject.jutopia.rest.dto.payload.ViewPostPayload;
 import com.jbproject.jutopia.rest.dto.result.CommCodeResult;
 import com.jbproject.jutopia.rest.dto.result.PostResult;
+import com.jbproject.jutopia.rest.dto.result.TradeCorpResult;
 import com.jbproject.jutopia.rest.service.CommCodeService;
+import com.jbproject.jutopia.rest.service.UserInvestService;
 import com.jbproject.jutopia.rest.service.UserPostService;
 import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,16 +34,16 @@ import java.util.List;
 public class UserInvestController {
 
     private final CommCodeService commCodeService;
+    private final UserInvestService userInvestService;
 
     @GetMapping("/main")
     public String goInvestMain(
             HttpServletRequest request, Model model
-            , SearchPostPayload searchPostPayload
+            , SearchTradeCorpPayload payload
     ) {
-        List<CommCodeResult> postTypeList = commCodeService.getCommCodeListByGroupCode(CommonConstatns.POST_TYPE);
+        List<TradeCorpResult> tradeCorpList = userInvestService.searchTradeCorpList(payload);
 
-        model.addAttribute("postTypeList", postTypeList);
-        model.addAttribute("postSearchPayload", searchPostPayload);
+        model.addAttribute("tradeCorpList", tradeCorpList);
         return "/user/invest/mainPage";
     }
 
