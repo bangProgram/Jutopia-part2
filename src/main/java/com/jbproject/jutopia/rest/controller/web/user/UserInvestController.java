@@ -2,10 +2,7 @@ package com.jbproject.jutopia.rest.controller.web.user;
 
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.constant.CommonConstatns;
-import com.jbproject.jutopia.rest.dto.payload.ReplyPayload;
-import com.jbproject.jutopia.rest.dto.payload.SearchPostPayload;
-import com.jbproject.jutopia.rest.dto.payload.SearchTradeCorpPayload;
-import com.jbproject.jutopia.rest.dto.payload.ViewPostPayload;
+import com.jbproject.jutopia.rest.dto.payload.*;
 import com.jbproject.jutopia.rest.dto.result.CommCodeResult;
 import com.jbproject.jutopia.rest.dto.result.PostResult;
 import com.jbproject.jutopia.rest.dto.result.TradeCorpResult;
@@ -50,12 +47,11 @@ public class UserInvestController {
     @GetMapping("/write")
     public String goPostWrite(
             HttpServletRequest request, Model model
-            , ViewPostPayload viewPostPayload
-    ){
-        System.out.println("1. postDetailPayload : "+ viewPostPayload);
+            , SearchNyCorpPayload searchNyCorpPayload
+        ){
 
-        model.addAttribute("postDetailPayload", viewPostPayload);
-        return "/user/post/writePage";
+        model.addAttribute("searchNyCorpPayload",searchNyCorpPayload);
+        return "/user/invest/writePage";
     }
 
 

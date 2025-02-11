@@ -10,8 +10,11 @@ import com.fasterxml.jackson.databind.ser.std.NumberSerializers;
 import com.fasterxml.jackson.databind.ser.std.StringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.jbproject.jutopia.common.CommonUtils;
+import com.jbproject.jutopia.rest.entity.NyCorpDetailEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 
@@ -31,6 +34,8 @@ public class NyStockModel {
     private String reutersCode;
     @Schema(title = "종목 코드")
     private String symbolCode;
+    @Schema(title = "종목 티커")
+    private String stockCode;
     @Schema(title = "종목 명 (한글)")
     private String stockName;
     @Schema(title = "종목 명 (영어)")
@@ -151,4 +156,40 @@ public class NyStockModel {
         private String name;
     }
 
+
+    public static NyStockModel create(NyCorpDetailEntity entity) {
+
+        NyStockModel result = new NyStockModel();
+
+        result.setReutersCode(entity.getReutersCode());
+        result.setStockCode(entity.getStockType());
+        result.setStockName(entity.getStockName());
+        result.setStockNameEng(entity.getStockNameEng());
+        result.setStockType(entity.getStockType());
+        result.setNationType(entity.getNationType());
+        result.setReutersIndustryCode(entity.getReutersIndustryCode());
+        result.setOpenPrice(entity.getOpenPrice().toString());
+        result.setClosePrice(entity.getClosePrice().toString());
+        result.setCompareToPreviousClosePrice(entity.getCompareToPreviousClosePrice().toString());
+        result.setFluctuationsRatio(entity.getFluctuationsRatio().toString());
+        result.setExecutedVolume(entity.getExecutedVolume());
+        result.setAccumulatedTradingVolume(entity.getAccumulatedTradingVolume().toString());
+        result.setAccumulatedTradingValue(entity.getAccumulatedTradingValue().toString());
+        result.setAccumulatedTradingValueKrwHangeul(entity.getAccumulatedTradingValueKrwHangeul());
+        result.setLocalTradedAt(entity.getLocalTradedAt());
+        result.setMarketStatus(entity.getMarketStatus());
+        result.setOverMarketPriceInfo(entity.getOverMarketPriceInfo());
+        result.setMarketValue(entity.getMarketValue().toString());
+        result.setMarketValueHangeul(entity.getMarketValueHangeul());
+        result.setMarketValueKrwHangeul(entity.getMarketValueKrwHangeul());
+        result.setDividend(entity.getDividend().toString());
+        result.setDividendPayAt(entity.getDividendPayAt());
+        result.setEndUrl(entity.getEndUrl());
+        result.setDelayTime(entity.getDelayTime());
+        result.setDelayTimeName(entity.getDelayTimeName());
+        result.setStockEndUrl(entity.getStockEndUrl());
+        result.setExchangeOperatingTime(entity.getExchangeOperatingTime());
+
+        return result;
+    }
 }

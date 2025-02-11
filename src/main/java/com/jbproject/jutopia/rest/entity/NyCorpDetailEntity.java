@@ -101,7 +101,7 @@ public class NyCorpDetailEntity extends BaseEntity {
     public NyCorpDetailEntity(NyStockModel model){
 
         this.reutersCode = model.getReutersCode();
-        this.stockCode = model.getStockType();
+        this.stockCode = model.getReutersCode();
         this.stockName = model.getStockName();
         this.stockNameEng = model.getStockNameEng();
         this.stockType = model.getStockType();

@@ -26,12 +26,12 @@ public class TradeCorpDetailEntity extends BaseEntity{
     private LocalDateTime investDate;
 
     private Long buyQuantity;
-    private Long buyAmount;
+    private Double buyAmount;
     private Double buyFee;
     private Long sellQuantity;
-    private Long sellAmount;
+    private Double sellAmount;
     private Double sellFee;
-    private Long profitLossAmount;
+    private Double profitLossAmount;
 
 
     @ManyToOne(fetch = FetchType.LAZY)

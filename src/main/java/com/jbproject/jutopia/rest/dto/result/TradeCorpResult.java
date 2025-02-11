@@ -11,9 +11,11 @@ public class TradeCorpResult {
 
     private String stockCode;
     private String stockName;
+    private Double befDaysOpenPrice;
+    private Double befDaysClosePrice;
     private Long quantity;
     private Double avgAmount;
-    private Long totalProfitLossAmount;
+    private Double totalProfitLossAmount;
 
     private LocalDateTime modifyDate;
 }

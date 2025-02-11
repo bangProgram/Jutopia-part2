@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static org.springframework.util.StringUtils.hasText;
+import static com.jbproject.jutopia.rest.entity.QNyCorpDetailEntity.nyCorpDetailEntity;
 import static com.jbproject.jutopia.rest.entity.QTradeCorpEntity.tradeCorpEntity;
 import static com.jbproject.jutopia.rest.entity.QTradeCorpDetailEntity.tradeCorpDetailEntity;
 
@@ -39,14 +40,24 @@ public class TradeCorpCustomImpl implements TradeCorpCustom {
                         TradeCorpResult.class,
                         tradeCorpEntity.stockCode,
                         tradeCorpEntity.stockName,
-                        tradeCorpDetailEntity.buyQuantity.sum().subtract(tradeCorpDetailEntity.sellQuantity.sum()),
-                        tradeCorpDetailEntity.buyAmount.sum().divide(tradeCorpDetailEntity.buyQuantity.sum().subtract(tradeCorpDetailEntity.sellQuantity.sum())),
-                        tradeCorpDetailEntity.profitLossAmount.sum()
+                        nyCorpDetailEntity.openPrice,
+                        nyCorpDetailEntity.closePrice,
+                        (tradeCorpDetailEntity.buyQuantity.sum().subtract(tradeCorpDetailEntity.sellQuantity.sum())).as("quantity"),
+                        (tradeCorpDetailEntity.buyAmount.sum().divide(tradeCorpDetailEntity.buyQuantity.sum().subtract(tradeCorpDetailEntity.sellQuantity.sum()))).as("avgAmount"),
+                        (tradeCorpDetailEntity.profitLossAmount.sum()).as("totalProfitLossAmount")
                 )
         ).from(tradeCorpEntity)
+        .innerJoin(nyCorpDetailEntity)
+        .on(tradeCorpEntity.stockCode.eq(nyCorpDetailEntity.stockCode))
         .leftJoin(tradeCorpDetailEntity)
         .on(tradeCorpEntity.id.eq(tradeCorpDetailEntity.tradeCorpEntity.id))
         .where(whereCondition)
+        .groupBy(
+            tradeCorpEntity.stockCode,
+            tradeCorpEntity.stockName,
+            nyCorpDetailEntity.openPrice,
+            nyCorpDetailEntity.closePrice
+        )
         .fetch()
         ;
 
