@@ -124,7 +124,7 @@ public class NyStockModel {
     }
     @Getter
     @Setter
-    @NoArgsConstructor
+    @Builder
     public static class IndustryCodeType{
         private String code;
         private String industryGroupKor;

@@ -1,0 +1,92 @@
+package com.jbproject.jutopia.rest.service.impl;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.jbproject.jutopia.config.EdgarClient;
+import com.jbproject.jutopia.config.TickerCikCache;
+import com.jbproject.jutopia.rest.dto.model.NyStockModel;
+import com.jbproject.jutopia.rest.entity.NyCorpDetailEntity;
+import com.jbproject.jutopia.rest.entity.NyCorpEntity;
+import com.jbproject.jutopia.rest.entity.StockIndustryEntity;
+import com.jbproject.jutopia.rest.repository.NyCorpDetailRepository;
+import com.jbproject.jutopia.rest.repository.NyCorpRepository;
+import com.jbproject.jutopia.rest.repository.StockIndustryRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class NyCorpSyncServiceImpl {
+    private final TickerCikCache tickerCikCache;
+    private final EdgarClient edgarClient;
+    private final NyCorpRepository nyCorpRepo;
+    private final NyCorpDetailRepository nyCorpDetailRepo;
+    private final StockIndustryRepository stockIndustryRepo;
+
+    /** 단일 티커 동기화 */
+    public void sync(String ticker) {
+        String cik = tickerCikCache.cikOf(ticker);
+        if (cik == null) throw new IllegalArgumentException("Unknown ticker: " + ticker);
+
+        /* ---------- 1) 기업 메타 ---------- */
+        JsonNode sub = edgarClient.getSubmissions(cik);
+        String companyName = sub.at("/entityName").asText();
+
+        NyCorpEntity corp = nyCorpRepo.findById(cik)          // reutersCode == CIK
+                .orElse(NyCorpEntity.builder()
+                        .reutersCode(cik)
+                        .stockCode(ticker)
+                        .build());
+        corp.setStockName(companyName);
+        corp.setModifyDate(LocalDate.now());
+        nyCorpRepo.save(corp);
+
+        /* ---------- 2) 상세 정보 ---------- */
+        NyCorpDetailEntity detail = nyCorpDetailRepo.findById(cik)
+                .orElse(new NyCorpDetailEntity());
+        detail.setReutersCode(cik);
+        detail.setStockCode(ticker);
+        detail.setStockNameEng(companyName);
+        detail.setNationType("US");
+        detail.setNyCorpEntity(corp);
+
+        // SIC 산업코드 → StockIndustryEntity 로 전파
+        String sic = sub.at("/sic").asText(null);
+        if (sic != null && !sic.isBlank()) {
+            StockIndustryEntity industry = stockIndustryRepo.findById(sic)
+                    .orElse(new StockIndustryEntity(
+                            NyStockModel.IndustryCodeType.builder()
+                                    .code(sic)
+                                    .name(sub.at("/sicDescription").asText())
+                                    .industryGroupKor("미국 SIC").build()));
+            industry.setNyCorpDetailEntity(detail);
+            stockIndustryRepo.save(industry);
+            detail.setStockIndustryEntity(industry);
+        }
+        nyCorpDetailRepo.save(detail);
+
+        /* ---------- 3) XBRL 재무 Facts ---------- */
+        JsonNode facts = edgarClient.getCompanyFacts(cik).path("facts").path("us-gaap");
+        storeFact(facts, cik, "Revenues", "USD");
+        storeFact(facts, cik, "NetIncomeLoss", "USD");
+        storeFact(facts, cik, "Assets", "USD");
+    }
+
+    private void storeFact(JsonNode usGaap, String cik, String concept, String unit) {
+        JsonNode arr = usGaap.path(concept).path("units").path(unit);
+        if (!arr.isArray()) return;
+        for (JsonNode f : arr) {
+            LocalDate end = LocalDate.parse(f.path("end").asText());
+            BigDecimal val = f.path("val").decimalValue();
+
+            // 예시: 각각을 NyFinancialFactEntity 로 저장
+//            if (!financialFactRepo.existsByReutersCodeAndConceptAndEndDate(cik, concept, end)) {
+//                financialFactRepo.save(NyFinancialFactEntity.of(cik, concept, unit, end, val));
+//            }
+        }
+    }
+}
