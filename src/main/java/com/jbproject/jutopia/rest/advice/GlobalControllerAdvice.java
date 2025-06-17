@@ -4,6 +4,7 @@ import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.config.security.model.Role;
 import com.jbproject.jutopia.constant.CommonConstatns;
 import com.jbproject.jutopia.rest.dto.result.MenuResult;
+import com.jbproject.jutopia.rest.dto.result.TopMenuResult;
 import com.jbproject.jutopia.rest.service.MenuService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -63,20 +64,26 @@ public class GlobalControllerAdvice {
         return principal;
     }
 
-    @ModelAttribute("topMenuList")
-    public List<MenuResult> getTopMenuList(HttpServletRequest request) {
+    @ModelAttribute("topMenuInfo")
+    public TopMenuResult getTopMenuInfo(HttpServletRequest request) {
         String requestUrl = request.getRequestURI();
+        TopMenuResult result = new TopMenuResult();
+        result.setMenuSize(curMenuList.size());
+        result.setMenuList(curMenuList);
 
         if(defaultPermitAllPath.matches(request)){
-            return curMenuList;
+            return result;
         }
 
 
         if(!requestUrl.contains("/admin")){
             curMenuList = menuService.getShowMenuList(CommonConstatns.MENU_ROLE_USER);
-            return curMenuList;
+            result.setMenuSize(curMenuList.size());
+            result.setMenuList(curMenuList);
+
+            return result;
         }else{
-            return new ArrayList<>();
+            return result;
         }
     }
 }

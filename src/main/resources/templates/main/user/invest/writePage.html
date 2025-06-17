@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/common/layout/defaultLayout}"
+      layout:fragment="content"
+>
+    <head>
+        <meta charset="UTF-8">
+        <title>투자일지 홈 화면.</title>
+    </head>
+    <body>
+        <h6>
+            투자일지
+        </h6>
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <div style="width :100%; text-align: -webkit-right;">
+                    <form name="searchForm" th:object="${searchNyCorpPayload}">
+                        <div class="input-group" style="width:  25rem;">
+                                <input type="text" th:field="*{searchWord}" class="form-control bg-light border-0 small" placeholder="티커 혹은 종목명을 입력하세요...">
+                                <div class="input-group-append">
+                                    <button id="searchButton" class="btn btn-primary">검색</button>
+                                </div>
+                        </div>
+                    </form>
+                    <!--<div id="results" class="dropdown-menu mt-2"></div>-->
+
+                    <div id="results" class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown"
+                        style="width: 25rem !important;"
+                    >
+                    </div>
+                </div>
+        </nav>
+        <div class="card-body" style="background: white;">
+            <div class="row">
+                <div class="col-sm-7" style="background: lightgray; border-radius: 9px;">
+                    <div style="padding: 10px 20px;">
+                        기업정보 div
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div style="padding: 10px 20px;">
+                        매수 매도 입력 div
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script th:inline="javascript">
+        const searchWord = document.getElementById('searchWord');
+        const searchButton = document.getElementById('searchButton');
+        const resultsDiv = document.getElementById('results');
+
+        function searchNyCorp(){
+
+        }
+
+        // 예시 데이터
+        const data = [
+            '사과',
+            '바나나',
+            '체리',
+            '데이트',
+            '포도',
+            '키위'
+        ];
+
+        // 검색 버튼 클릭 시 결과 표시
+        searchButton.addEventListener('click', () => {
+            const query = searchWord.value.toLowerCase();
+            resultsDiv.innerHTML = ''; // 이전 결과 지우기
+
+            if (query) {
+                var searchNyCorpPayload = $("form[name=searchForm]").serialize() ;
+
+                alert("queryString : "+searchNyCorpPayload);
+
+
+                $.ajax({
+                    url: "/ajax/nyCorp/search",
+                    data: searchNyCorpPayload,
+                    type: 'POST',
+                    success:function(data){
+                        const filteredData = data;
+                        console.log("data : ",data);
+
+
+                    }
+                })
+
+
+            } else {
+                resultsDiv.style.display = 'none'; // 검색어가 없으면 드롭다운 숨김
+            }
+        });
+
+        // 검색 인풋 박스에서 Enter 키를 눌렀을 때
+        searchWord.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                searchButton.click(); // 검색 버튼 클릭 이벤트 발생
+            }
+        });
+
+        // 드롭다운 항목 클릭 시 검색어 입력
+        resultsDiv.addEventListener('click', (event) => {
+            if (event.target.classList.contains('dropdown-item')) {
+                searchWord.value = event.target.textContent; // 클릭한 항목을 입력창에 넣기
+                resultsDiv.style.display = 'none'; // 드롭다운 숨김
+            }
+        });
+
+
+
+    </script>
+</html>

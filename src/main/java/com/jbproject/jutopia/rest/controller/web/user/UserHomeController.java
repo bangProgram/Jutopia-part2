@@ -29,6 +29,12 @@ public class UserHomeController {
         return "/user/home/mainPage";
     }
 
+    @GetMapping("/bootstrap")
+    public String bootstrapIndex() {
+
+        return "/bootstrap/index";
+    }
+
     @GetMapping("/test")
     public String test() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

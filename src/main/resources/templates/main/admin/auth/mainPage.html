@@ -14,11 +14,16 @@
     [[${roleType}]] 권한관리 화면
 </h1>
 
-<div class="buttonDiv-row">
-    <div class="adminAuthButton" th:each="roleType : ${roleTypes}" >
-        <button type="button" th:if="${roleType.code != isRole && roleType.code != 'SYSTEM' || isRole == 'SYSTEM'}" th:onclick="goPage([[${roleType.code}]])">
-            <span th:text="${roleType.code}">Button Name</span>
-        </button>
+<div class="row" style="margin-right: 8.25rem; margin-left: 8.25rem;">
+    <div class="col-xl-2 col-md-6 mb-4" th:each="roleType : ${roleTypes}" >
+        <div class="card-body text-center">
+            <a class="btn btn-secondary btn-icon-split" th:onclick="goPage([[${roleType.code}]])" >
+                <span class="icon text-white-60">
+                    <i class="fas fa-arrow-right"></i>
+                </span>
+                <span class="text" th:text="${roleType.code}">Button Name</span>
+            </a>
+        </div>
     </div>
 </div>
 
@@ -26,193 +31,293 @@
     <form action="/admin/auth/main/cud" method="post" name="userForm">
         <input type="hidden" name="roleType" th:value="${roleType}">
         <div class="userMenuList">
-            <div class="menuList">
-                <ul>
-                    <li>메뉴 ID</li>
-                    <li>메뉴 명</li>
-                    <li>메뉴 URL</li>
-                    <li>상위 메뉴</li>
-                    <li>보기</li>
-                    <!--<li>수정</li>-->
-                </ul>
-            </div>
-            <div class="menuList" th:if="${authResult.userMenuRoleList.size() <= 0 || authResult.userMenuRoleList == null}">
-                등록된 사용자 메뉴가 없습니다.
+            <div class="row" style="margin-right: 0rem; margin-left: 0rem;">
+                <div class="col-xl-2">
+                    <div class="card-body text-center">
+                        <span>메뉴 ID</span>
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <div class="card-body text-center">
+                        <span>메뉴 명</span>
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <div class="card-body text-center">
+                        <span>메뉴 URL</span>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="card-body text-center">
+                        <span>상위 메뉴</span>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="card-body text-center">
+                        <span>보기</span>
+                    </div>
+                </div>
+                <div class="menuList" th:if="${authResult.userMenuRoleList.size() <= 0 || authResult.userMenuRoleList == null}">
+                    등록된 사용자 메뉴가 없습니다.
+                </div>
             </div>
             <div class="menuList" th:if="${authResult.userMenuRoleList.size() > 0 && authResult.userMenuRoleList != null}">
-                <ul th:each="menuResult : ${authResult.userMenuRoleList}">
+                <div class="row" style="margin-right: 0rem; margin-left: 0rem;" th:each="menuResult : ${authResult.userMenuRoleList}">
                     <input type="hidden" name="chkMenuId" th:value="${menuResult.menuId}" >
-                    <li><span th:text="${menuResult.menuId}">menuId</span></li>
-                    <li><span th:text="${menuResult.menuName}">menuNm</span></li>
-                    <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
-                    <li><span th:text="${menuResult.parentId}">parentId</span></li>
-                    <li>
-                        <input type="checkbox" name="menuId"
-                               th:id="'view_' + ${menuResult.menuId}"
-                               th:value="${menuResult.menuId}"
-                               th:checked="${menuResult.roleMenuResult.roleId != null}"
-                               th:onclick="toggleCheckbox([[${menuResult.menuId}]])"
-                        >
-                    </li>
-                    <!--
-                    <li>
-                        <input type="checkbox" name="cudMenuId"
-                               th:id="'cud_' + ${menuResult.menuId}"
-                               th:value="${menuResult.menuId}"
-                               th:checked="${menuResult.roleMenuResult.isCud != null && menuResult.roleMenuResult.isCud == 'Y'}"
-                               th:disabled="${menuResult.roleMenuResult.roleId == null}"
-                        >
-                    </li>
-                    -->
-                    <div class="menuList">
-                        <ul th:each="childMenu : ${menuResult.childMenu}" >
-                            <input type="hidden" name="chkMenuId" th:value="${childMenu.menuId}">
-                            <li><span th:text="${childMenu.menuId}">menuId</span></li>
-                            <li><span th:text="${childMenu.menuName}">menuNm</span></li>
-                            <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
-                            <li><span th:text="${childMenu.parentId}">parentId</span></li>
-                            <li>
-                                <input type="checkbox" name="menuId"
-                                       th:id="'view_' + ${childMenu.menuId}"
-                                       th:value="${childMenu.menuId}"
-                                       th:checked="${childMenu.roleMenuResult.roleId != null}"
-                                       th:onclick="toggleCheckbox([[${childMenu.menuId}]])"
-                                >
-                            </li>
-                            <!--
-                            <li>
-                                <input type="checkbox" name="cudMenuId"
-                                       th:id="'cud_' + ${childMenu.menuId}"
-                                       th:value="${childMenu.menuId}"
-                                       th:checked="${childMenu.roleMenuResult.isCud != null && childMenu.roleMenuResult.isCud == 'Y'}"
-                                       th:disabled="${childMenu.roleMenuResult.roleId == null}"
-                                >
-                            </li>
-                            -->
-                        </ul>
+                    <div class="col-xl-2 menuList">
+                        <div class="card-body text-center">
+                            <span th:text="${menuResult.menuId}">menuId</span>
+                        </div>
                     </div>
-                </ul>
+                    <div class="col-xl-3">
+                        <div class="card-body text-center">
+                            <span th:text="${menuResult.menuName}">menuNm</span>
+                        </div>
+                    </div>
+                    <div class="col-xl-3">
+                        <div class="card-body text-center">
+                            <span th:text="${menuResult.menuUrl}">menuUrl</span>
+                        </div>
+                    </div>
+                    <div class="col-xl-2">
+                        <div class="card-body text-center">
+                            <span th:text="${menuResult.parentId}">parentId</span>
+                        </div>
+                    </div>
+                    <div class="col-xl-2">
+                        <div class="card-body text-center">
+                            <input type="checkbox" name="menuId"
+                                   th:id="'view_' + ${menuResult.menuId}"
+                                   th:value="${menuResult.menuId}"
+                                   th:checked="${menuResult.roleMenuResult.roleId != null}"
+                                   th:onclick="toggleCheckbox([[${menuResult.menuId}]])"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="col-xl-12" style="padding: 0rem;">
+                        <div class="row" style="margin-right: 0rem; margin-left: 0rem;" th:each="childMenu : ${menuResult.childMenu}">
+                            <input type="hidden" name="chkMenuId" th:value="${childMenu.menuId}">
+                            <div class="col-xl-2 ">
+                                <div class="card-body text-center">
+                                    <span th:text="'↳&nbsp;&nbsp;&nbsp;' + ${childMenu.menuId}">menuId</span>
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="card-body text-center" style="padding: 1rem;">
+                                    <span th:text="${childMenu.menuName}">menuNm</span>
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="card-body text-center">
+                                    <span th:text="${childMenu.menuUrl}">menuUrl</span>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="card-body text-center">
+                                    <span th:text="${childMenu.parentId}">parentId</span>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="card-body text-center">
+                                    <input type="checkbox" name="menuId"
+                                           th:id="'view_' + ${childMenu.menuId}"
+                                           th:value="${childMenu.menuId}"
+                                           th:checked="${childMenu.roleMenuResult.roleId != null}"
+                                           th:onclick="toggleCheckbox([[${childMenu.menuId}]])"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
             </div>
         </div>
-        <button type="submit">
-            저장
-        </button>
+        <div class="row" style="margin-right: 0rem; margin-left: 0rem;">
+            <div class="col-xl-12" style="padding-right: 0rem; padding-left: .75rem;">
+                <div class="card-body text-right">
+                    <a th:onclick="submitBtn('user')" class="btn btn-success btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                        <span class="text">저장</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </form>
     <form action="/admin/auth/main/cud" method="post" name="adminForm" th:if="${isRole == 'SYSTEM'}">
         <input type="hidden" name="roleType" th:value="${roleType}">
         <div class="adminMenuList">
-            <div class="menuList">
-                <ul>
-                    <li>메뉴 ID</li>
-                    <li>메뉴 명</li>
-                    <li>메뉴 URL</li>
-                    <li>상위 메뉴</li>
-                    <li>보기</li>
-                    <!--<li>수정</li>-->
-                </ul>
-            </div>
-            <div class="menuList" id="test1" th:if="${authResult.adminMenuRoleList.size() <= 0 || authResult.adminMenuRoleList == null}">
-                등록된 관리자 메뉴가 없습니다.
-            </div>
-            <div class="menuList" id="test2" th:if="${authResult.adminMenuRoleList.size() > 0 && authResult.adminMenuRoleList != null}">
-                <ul th:each="menuResult : ${authResult.adminMenuRoleList}">
-                    <input type="hidden" name="chkMenuId" th:value="${menuResult.menuId}" >
-                    <li><span th:text="${menuResult.menuId}">menuId</span></li>
-                    <li><span th:text="${menuResult.menuName}">menuNm</span></li>
-                    <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
-                    <li><span th:text="${menuResult.parentId}">parentId</span></li>
-                    <li>
-                        <input type="checkbox" name="menuId"
-                                th:id="'view_' + ${menuResult.menuId}"
-                                th:value="${menuResult.menuId}"
-                                th:checked="${menuResult.roleMenuResult.roleId != null}"
-                                th:onclick="toggleCheckbox([[${menuResult.menuId}]])"
-                        >
-                    </li>
-                    <!--
-                    <li>
-                        <input type="checkbox" name="cudMenuId"
-                               th:id="'cud_' + ${menuResult.menuId}"
-                               th:value="${menuResult.menuId}"
-                               th:checked="${menuResult.roleMenuResult.isCud != null && menuResult.roleMenuResult.isCud == 'Y'}"
-                               th:disabled="${menuResult.roleMenuResult.roleId == null}"
-                        >
-                    </li>
-                    -->
-                    <div class="menuList">
-                        <ul th:each="childMenu : ${menuResult.childMenu}" >
-                            <input type="hidden" name="chkMenuId" th:value="${childMenu.menuId}">
-                            <li><span th:text="${childMenu.menuId}">menuId</span></li>
-                            <li><span th:text="${childMenu.menuName}">menuNm</span></li>
-                            <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
-                            <li><span th:text="${childMenu.parentId}">parentId</span></li>
-                            <li>
-                                <input type="checkbox" name="menuId"
-                                       th:id="'view_' + ${childMenu.menuId}"
-                                       th:value="${childMenu.menuId}"
-                                       th:checked="${childMenu.roleMenuResult.roleId != null}"
-                                       th:onclick="toggleCheckbox([[${childMenu.menuId}]])"
-                                >
-                            </li>
-                            <!--
-                            <li>
-                                <input type="checkbox" name="cudMenuId"
-                                       th:id="'cud_' + ${childMenu.menuId}"
-                                       th:value="${childMenu.menuId}"
-                                       th:checked="${childMenu.roleMenuResult.isCud != null && childMenu.roleMenuResult.isCud == 'Y'}"
-                                       th:disabled="${childMenu.roleMenuResult.roleId == null}"
-                                >
-                            </li>
-                            -->
-                        </ul>
+
+            <div class="row" style="margin-right: 0rem; margin-left: 0rem;">
+                <div class="col-xl-2">
+                    <div class="card-body text-center">
+                        <span>메뉴 ID</span>
                     </div>
-                </ul>
+                </div>
+                <div class="col-xl-3">
+                    <div class="card-body text-center">
+                        <span>메뉴 명</span>
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <div class="card-body text-center">
+                        <span>메뉴 URL</span>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="card-body text-center">
+                        <span>상위 메뉴</span>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="card-body text-center">
+                        <span>보기</span>
+                    </div>
+                </div>
+                <div class="menuList" id="test1" th:if="${authResult.adminMenuRoleList.size() <= 0 || authResult.adminMenuRoleList == null}">
+                    등록된 관리자 메뉴가 없습니다.
+                </div>
+            </div>
+
+            <div class="menuList" id="test2" th:if="${authResult.adminMenuRoleList.size() > 0 && authResult.adminMenuRoleList != null}">
+                <div class="row" style="margin-right: 0rem; margin-left: 0rem;" th:each="menuResult : ${authResult.adminMenuRoleList}">
+                    <input type="hidden" name="chkMenuId" th:value="${menuResult.menuId}" >
+                    <div class="col-xl-2 menuList">
+                        <div class="card-body text-center">
+                            <span th:text="${menuResult.menuId}">menuId</span>
+                        </div>
+                    </div>
+                    <div class="col-xl-3">
+                        <div class="card-body text-center">
+                            <span th:text="${menuResult.menuName}">menuNm</span>
+                        </div>
+                    </div>
+                    <div class="col-xl-3">
+                        <div class="card-body text-center">
+                            <span th:text="${menuResult.menuUrl}">menuUrl</span>
+                        </div>
+                    </div>
+                    <div class="col-xl-2">
+                        <div class="card-body text-center">
+                            <span th:text="${menuResult.parentId}">parentId</span>
+                        </div>
+                    </div>
+                    <div class="col-xl-2">
+                        <div class="card-body text-center">
+                            <input type="checkbox" name="menuId"
+                                   th:id="'view_' + ${menuResult.menuId}"
+                                   th:value="${menuResult.menuId}"
+                                   th:checked="${menuResult.roleMenuResult.roleId != null}"
+                                   th:onclick="toggleCheckbox([[${menuResult.menuId}]])"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="col-xl-12" style="padding: 0rem;">
+                        <div class="row" style="margin-right: 0rem; margin-left: 0rem;" th:each="childMenu : ${menuResult.childMenu}">
+                            <input type="hidden" name="chkMenuId" th:value="${childMenu.menuId}">
+                            <div class="col-xl-2 ">
+                                <div class="card-body text-center">
+                                    <span th:text="'↳&nbsp;&nbsp;&nbsp;' + ${childMenu.menuId}">menuId</span>
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="card-body text-center" style="padding: 1rem;">
+                                    <span th:text="${childMenu.menuName}">menuNm</span>
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="card-body text-center">
+                                    <span th:text="${childMenu.menuUrl}">menuUrl</span>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="card-body text-center">
+                                    <span th:text="${childMenu.parentId}">parentId</span>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="card-body text-center">
+                                    <input type="checkbox" name="menuId"
+                                           th:id="'view_' + ${childMenu.menuId}"
+                                           th:value="${childMenu.menuId}"
+                                           th:checked="${childMenu.roleMenuResult.roleId != null}"
+                                           th:onclick="toggleCheckbox([[${childMenu.menuId}]])"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <button type="submit">
-            저장
-        </button>
+        <div class="row" style="margin-right: 0rem; margin-left: 0rem;">
+            <div class="col-xl-12" style="padding-right: 0rem; padding-left: .75rem;">
+                <div class="card-body text-right">
+                    <a th:onclick="submitBtn('admin')" class="btn btn-success btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                        <span class="text">저장</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 
 <!--<th:block th:replace="~{/admin/menu/listPage :: list}"></th:block>-->
-<button type="button" th:onclick="|location.href='@{/admin/home/main}'|">
-    뒤로가기
-</button>
+<div class="row" style="margin-right: 0rem; margin-left: 0rem;">
+    <div class="col-xl-12" style="padding-right: 0rem; padding-left: .75rem;">
+        <div class="card-body text-right">
+            <a th:onclick="|location.href='@{/admin/home/main}'|" class="btn btn-light btn-icon-split" style="background: lightgrey;">
+                <span class="icon text-gray-600">
+                    <i class="fas fa-arrow-left"></i>
+                </span>
+                <span class="text">홈으로</span>
+            </a>
+        </div>
+    </div>
+</div>
+
 
 <style>
-.listDiv {
-    display: inline-flex;
-    width: 100%;
-}
-.listDiv > form {
-    border: solid 1px;
-    flex: 1;
-}
-.listDiv > form > div {
-    width: 100%;
-}
-.menuList {
-    width: 100%;
-}
+    .listDiv {
+        display: inline-flex;
+        width: 100%;
+    }
+    .listDiv > form {
+        border: solid 1px;
+        flex: 1;
+    }
+    .listDiv > form > div {
+        width: 100%;
+    }
+    .menuList {
+        width: 100%;
+    }
 
-.menuList > ul {
-    width: 100%;
-}
+    .menuList > ul {
+        width: 100%;
+    }
 
-.menuList > ul > li {
-    display: inline-block;
-    width: 19%;
-}
+    .menuList > ul > li {
+        display: inline-block;
+        width: 19%;
+    }
 
-.depth2 > ul {
-    width: 100%;
-}
+    .depth2 > ul {
+        width: 100%;
+    }
 
-.depth2 > ul > li {
-    display: inline-block;
-    width: 19%;
-}
+    .depth2 > ul > li {
+        display: inline-block;
+        width: 19%;
+    }
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -237,6 +342,17 @@
             -->
         }
 
+    function submitBtn(flag) {
+        console.log('flag check : ' + flag);
+        if(flag == 'user') {
+            console.log('user form check ');
+            var frm = document.userForm;
+            frm.submit();
+        }else{
+            var frm = document.adminForm;
+            frm.submit();
+        }
+    }
 </script>
 </body>
 </html>

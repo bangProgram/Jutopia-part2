@@ -1,5 +1,6 @@
 package com.jbproject.jutopia.rest.entity;
 
+import com.jbproject.jutopia.rest.dto.model.NyStockModel;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @Table(name = "tb_ny_corp")
-public class NyCorpEntity extends BaseEntity implements Persistable<String> {
+public class NyCorpEntity extends BaseEntity {
 
     @Id
     private String reutersCode;
@@ -22,9 +23,6 @@ public class NyCorpEntity extends BaseEntity implements Persistable<String> {
     private String stockCode;
     private String stockName;
     private LocalDate modifyDate;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "nyCorpEntity")
-    private NyCorpDetailEntity nyCorpDetailEntity;
 
     @Builder
     public NyCorpEntity(String reutersCode, String stockCode, String stockName, LocalDate modifyDate){
@@ -34,14 +32,10 @@ public class NyCorpEntity extends BaseEntity implements Persistable<String> {
         this.modifyDate = modifyDate;
     }
 
-    @Override
-    public String getId() {
-        return reutersCode;
-    }
-
-    @Override
-    public boolean isNew() {
-        return getCreateDttm() == null;
+    public NyCorpEntity(NyStockModel model){
+        this.reutersCode = model.getReutersCode();
+        this.stockCode = model.getReutersCode();
+        this.stockName = model.getStockName();
     }
 
 }

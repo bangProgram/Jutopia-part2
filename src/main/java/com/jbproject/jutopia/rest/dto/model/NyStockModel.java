@@ -4,10 +4,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
+import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
+import com.fasterxml.jackson.databind.ser.std.NumberSerializers;
+import com.fasterxml.jackson.databind.ser.std.StringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.jbproject.jutopia.common.CommonUtils;
+import com.jbproject.jutopia.rest.entity.NyCorpDetailEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +34,8 @@ public class NyStockModel {
     private String reutersCode;
     @Schema(title = "종목 코드")
     private String symbolCode;
+    @Schema(title = "종목 티커")
+    private String stockCode;
     @Schema(title = "종목 명 (한글)")
     private String stockName;
     @Schema(title = "종목 명 (영어)")
@@ -34,25 +43,25 @@ public class NyStockModel {
     @Schema(title = "로이터 산업 코드")
     private String reutersIndustryCode;
     @Schema(title = "시가")
-    private Double openPrice;
+    private String openPrice;
     @Schema(title = "종가")
-    private Double closePrice;
+    private String closePrice;
     @Schema(title = "시가 종가 변동금액")
-    private Double compareToPreviousClosePrice;
+    private String compareToPreviousClosePrice;
     @Schema(title = "시가 종가 변동비율")
-    private Double fluctuationsRatio;
+    private String fluctuationsRatio;
     @Schema(title = "executedVolume (확인불가)")
     private String executedVolume;
     @Schema(title = "누적 거래량")
-    private Double accumulatedTradingVolume;
+    private String accumulatedTradingVolume;
     @Schema(title = "누적 거래액 (달러)")
-    private Double accumulatedTradingValue;
+    private String accumulatedTradingValue;
     @Schema(title = "누적 거래액 (원화)")
     private String accumulatedTradingValueKrwHangeul;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     @Schema(title = "현지 거래시간")
     private LocalDateTime localTradedAt;
     @Schema(title = "마켓 상태")
@@ -60,17 +69,17 @@ public class NyStockModel {
     @Schema(title = "overMarketPriceInfo")
     private String overMarketPriceInfo;
     @Schema(title = "시가총액(달러)")
-    private Double marketValue;
+    private String marketValue;
     @Schema(title = "시가총액(달러번역)")
     private String marketValueHangeul;
     @Schema(title = "시가총액(원화)")
     private String marketValueKrwHangeul;
     @Schema(title = "배당")
-    private Double dividend;
+    private String dividend;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     @Schema(title = "배당 지급일")
     private LocalDateTime dividendPayAt;
 
@@ -83,7 +92,7 @@ public class NyStockModel {
     @Schema(title = "네이버증권 url")
     private String stockEndUrl;
     @Schema(title = "exchangeOperatingTime")
-    private String exchangeOperatingTime;
+    private Boolean exchangeOperatingTime;
 
     @Schema(title = "전일 종가 비교")
     private CompareToPreviousPrice compareToPreviousPrice;
@@ -145,5 +154,42 @@ public class NyStockModel {
         private String code;
         private String text;
         private String name;
+    }
+
+
+    public static NyStockModel create(NyCorpDetailEntity entity) {
+
+        NyStockModel result = new NyStockModel();
+
+        result.setReutersCode(entity.getReutersCode());
+        result.setStockCode(entity.getStockType());
+        result.setStockName(entity.getStockName());
+        result.setStockNameEng(entity.getStockNameEng());
+        result.setStockType(entity.getStockType());
+        result.setNationType(entity.getNationType());
+        result.setReutersIndustryCode(entity.getReutersIndustryCode());
+        result.setOpenPrice(entity.getOpenPrice().toString());
+        result.setClosePrice(entity.getClosePrice().toString());
+        result.setCompareToPreviousClosePrice(entity.getCompareToPreviousClosePrice().toString());
+        result.setFluctuationsRatio(entity.getFluctuationsRatio().toString());
+        result.setExecutedVolume(entity.getExecutedVolume());
+        result.setAccumulatedTradingVolume(entity.getAccumulatedTradingVolume().toString());
+        result.setAccumulatedTradingValue(entity.getAccumulatedTradingValue().toString());
+        result.setAccumulatedTradingValueKrwHangeul(entity.getAccumulatedTradingValueKrwHangeul());
+        result.setLocalTradedAt(entity.getLocalTradedAt());
+        result.setMarketStatus(entity.getMarketStatus());
+        result.setOverMarketPriceInfo(entity.getOverMarketPriceInfo());
+        result.setMarketValue(entity.getMarketValue().toString());
+        result.setMarketValueHangeul(entity.getMarketValueHangeul());
+        result.setMarketValueKrwHangeul(entity.getMarketValueKrwHangeul());
+        result.setDividend(entity.getDividend().toString());
+        result.setDividendPayAt(entity.getDividendPayAt());
+        result.setEndUrl(entity.getEndUrl());
+        result.setDelayTime(entity.getDelayTime());
+        result.setDelayTimeName(entity.getDelayTimeName());
+        result.setStockEndUrl(entity.getStockEndUrl());
+        result.setExchangeOperatingTime(entity.getExchangeOperatingTime());
+
+        return result;
     }
 }

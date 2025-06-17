@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @ToString
 @AllArgsConstructor
-public enum CommonErrorCode implements CommonError {
+public enum CommonErrorCode implements ErrorCode {
 
     AUTHENTICATION_400_01(400, "AUTHENTICATION.400.01", "Invalid User Info.")
 

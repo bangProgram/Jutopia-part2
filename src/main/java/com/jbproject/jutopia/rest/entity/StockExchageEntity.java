@@ -12,7 +12,7 @@ import org.springframework.data.domain.Persistable;
 @Entity @Getter @Setter
 @NoArgsConstructor
 @Table(name = "tb_stock_exchange")
-public class StockExchageEntity extends BaseEntity implements Persistable<StockExchangeKey> {
+public class StockExchageEntity extends BaseEntity {
 
     @EmbeddedId
     private StockExchangeKey key;
@@ -25,13 +25,16 @@ public class StockExchageEntity extends BaseEntity implements Persistable<StockE
     private String nationName;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reuters_code")
     private NyCorpDetailEntity nyCorpDetailEntity;
 
     public StockExchageEntity(NyStockModel.StockExchangeType stockExchangeType){
+
         this.key = StockExchangeKey.builder()
                 .nationType(stockExchangeType.getNationType())
                 .exchangeCode(stockExchangeType.getCode())
                 .build();
+
         this.startTime = stockExchangeType.getStartTime();
         this.endTime = stockExchangeType.getEndTime();
         this.closePriceSendTime = stockExchangeType.getClosePriceSendTime();
@@ -39,15 +42,5 @@ public class StockExchageEntity extends BaseEntity implements Persistable<StockE
         this.ExchangeNameEng = stockExchangeType.getNameEng();
         this.nationName = stockExchangeType.getNationName();
 
-    }
-
-    @Override
-    public StockExchangeKey getId() {
-        return key;
-    }
-
-    @Override
-    public boolean isNew() {
-        return getCreateDttm() == null;
     }
 }

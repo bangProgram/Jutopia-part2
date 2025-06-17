@@ -13,4 +13,6 @@ public class MenuCudPayload {
     private Long parentId;
     private String menuType;
     private String showYn = "N";
+
+    private String cudType = "C";
 }

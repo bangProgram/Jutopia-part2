@@ -5,22 +5,24 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Comment;
 import org.springframework.data.domain.Persistable;
 
 @Entity @Getter @Setter
 @NoArgsConstructor
 @Table(name = "tb_stock_industry")
-public class StockIndustryEntity extends BaseEntity implements Persistable<String> {
+public class StockIndustryEntity extends BaseEntity {
 
     @Id
-    @Column(columnDefinition = "산업 코드")
+    @Comment(value = "산업 코드")
     private String industryCode;
-    @Column(columnDefinition = "산업 명 (한글)")
+    @Comment(value = "산업 명 (한글)")
     private String industryGroupKor;
-    @Column(columnDefinition = "산업 코드명")
+    @Comment(value = "산업 코드명")
     private String industryName;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reuters_code")
     private NyCorpDetailEntity nyCorpDetailEntity;
 
     public StockIndustryEntity(NyStockModel.IndustryCodeType model){
@@ -29,13 +31,4 @@ public class StockIndustryEntity extends BaseEntity implements Persistable<Strin
         this.industryName = model.getName();
     }
 
-    @Override
-    public String getId() {
-        return industryCode;
-    }
-
-    @Override
-    public boolean isNew() {
-        return getCreateDttm() == null;
-    }
 }

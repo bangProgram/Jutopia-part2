@@ -64,6 +64,14 @@ public class MenuServiceImpl implements MenuService {
         menuRepository.save(curMenu);
     }
 
+    public void delMenu(MenuCudPayload payload) {
+        MenuEntity curMenu = menuRepository.findById(payload.getMenuId()).orElseThrow(
+                () -> new ExceptionProvider(CommonErrorCode.MENU_404_01)
+        );
+
+        menuRepository.delete(curMenu);
+    }
+
     public List<MenuResult> getMenuList(String menuType){
         return menuRepository.getMenuList(menuType);
     }

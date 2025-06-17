@@ -39,10 +39,10 @@ public class MenuEntity extends BaseEntity {
     @JoinColumn(name = "parent_id")
     private MenuEntity parentMenu;
 
-    @OneToMany(mappedBy = "parentMenu")
+    @OneToMany(mappedBy = "parentMenu", cascade = CascadeType.REMOVE)
     private List<MenuEntity> childMenu;
 
-    @OneToMany(mappedBy = "menuEntity")
+    @OneToMany(mappedBy = "menuEntity", cascade = CascadeType.REMOVE)
     private List<RoleMenuRelation> roleMenuRelations;
 
     @Builder

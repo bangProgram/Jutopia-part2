@@ -11,161 +11,365 @@
 </head>
 <body>
 <h1>
-  [[${menuCudPayload.menuType}]] 메뉴 화면 이라네요
+    [[${menuCudPayload.menuType}]] 메뉴 화면 이라네요
 </h1>
 
-<div class="buttonDiv-row">
-    <div class="adminMenuButton" th:each="menuType : ${menuTypes}" >
-        <button type="button" th:onclick="goPage([[${menuType.code}]])" th:if="${isRole != 'SYSTEM' && menuType != 'ADMIN'}">
-            <span th:text="${menuType.code}">Button Name</span>
-        </button>
-        <button type="button" th:onclick="goPage([[${menuType.code}]])" th:if="${isRole == 'SYSTEM'}">
-            <span th:text="${menuType.code}">Button Name</span>
-        </button>
+<div class="row" style="margin-right: 8.25rem; margin-left: 8.25rem;">
+    <div class="col-xl-4 col-md-6 mb-4"></div>
+    <div class="col-xl-2 col-md-6 mb-4" th:each="menuType : ${menuTypes}">
+        <div class="card-body text-center">
+            <a class="btn btn-secondary btn-icon-split" th:onclick="goPage([[${menuType.code}]])"
+               th:if="${isRole != 'SYSTEM' && menuType != 'ADMIN'}">
+                <span class="icon text-white-60">
+                    <i class="fas fa-arrow-right"></i>
+                </span>
+                <span class="text" th:text="${menuType.code}">Button Name</span>
+            </a>
+            <a class="btn btn-secondary btn-icon-split" th:onclick="goPage([[${menuType.code}]])"
+               th:if="${isRole == 'SYSTEM'}">
+                <span class="icon text-white-60">
+                    <i class="fas fa-arrow-right"></i>
+                </span>
+                <span class="text" th:text="${menuType.code}">Button Name</span>
+            </a>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-6 mb-4"></div>
+</div>
+
+
+
+<div class="card shadow mb-4">
+    <form action="#" name="cudForm" th:action="@{/admin/menu/main/cud}" th:object="${menuCudPayload}" th:method="post">
+        <input type="hidden" th:field="*{menuId}" value="0">
+        <input type="hidden" th:field="*{menuType}">
+        <input type="hidden" th:field="*{cudType}">
+        <div class="card-header py-3">
+            <h6>메뉴 등록</h6>
+            <div class="dataTables_wrapper dt-bootstrap4">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered dataTable" width="100%" cellspacing="0"
+                               role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                            <thead>
+                            <tr role="row">
+                                <th><label for="menuName">메뉴 명</label></th>
+                                <th>메뉴 경로</th>
+                                <th>부모메뉴 ID</th>
+                                <th>순서</th>
+                                <th>사용 여부</th>
+                                <th>메뉴표시 여부</th>
+                                <th>저장</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <input type="text" th:field="*{menuName}" required />
+                                </td>
+                                <td>
+                                    <label><input type="text" th:field="*{menuUrl}" required></label>
+                                </td>
+                                <td>
+                                    <label><input type="text" th:field="*{parentId}"></label>
+                                </td>
+                                <td>
+                                    <label><input type="text" th:field="*{seq}"></label>
+                                </td>
+                                <td>
+                                    <label><input type="text" th:field="*{useYn}"></label>
+                                </td>
+                                <td>
+                                    <label><input type="text" th:field="*{showYn}"></label>
+                                </td>
+                                <td>
+                                    <a th:onclick="submitBtn()" class="btn btn-success btn-icon-split">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                        <span class="text">저장</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <div id="dataTable_filter" class="dataTables_filter">
+                            <label>Search:
+                                <input type="search"
+                                       class="form-control form-control-sm"
+                                       placeholder=""
+                                       aria-controls="dataTable">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0"
+                               role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                            <colgroup>
+                                <col width="10%"/>
+                                <col width="25%"/>
+                                <col width="20%"/>
+                                <col width="10%"/>
+                                <col width="5%"/>
+                                <col width="10%"/>
+                                <col width="10%"/>
+                                <col width="5%"/>
+                                <col width="5%"/>
+                            </colgroup>
+                            <thead>
+                                <tr role="row">
+                                    <th>메뉴 ID</th>
+                                    <th>메뉴 명</th>
+                                    <th>메뉴 경로</th>
+                                    <th>부모메뉴 ID</th>
+                                    <th>순서</th>
+                                    <th>사용 여부</th>
+                                    <th>메뉴표시 여부</th>
+                                    <th>수정</th>
+                                    <th>삭제</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="row" style="margin-right: 0rem; margin-left: 0rem;">
+    <div class="col-xl-12" style="padding-right: 0rem; padding-left: .75rem;">
+        <div class="card-body text-right">
+            <a th:onclick="|location.href='@{/admin/home/main}'|" class="btn btn-light btn-icon-split" style="background: lightgrey;">
+                <span class="icon text-gray-600">
+                    <i class="fas fa-arrow-left"></i>
+                </span>
+                <span class="text">홈으로</span>
+            </a>
+        </div>
     </div>
 </div>
 
-<form action="#" name="cudForm" th:action="@{/admin/menu/main/cud}" th:object="${menuCudPayload}" th:method="post">
-    <input type="hidden" th:field="*{menuId}" value="0">
-    <input type="hidden" th:field="*{menuType}">
-    <table>
-        <tr>
-            <td>메뉴 명</td>
-            <td>메뉴 경로</td>
-            <td>부모메뉴 ID</td>
-            <td>순서</td>
-            <td>사용 여부</td>
-            <td>메뉴표시 여부</td>
-            <td>저장</td>
-        </tr>
-        <tr>
-            <td>
-                <label><input type="text" th:field="*{menuName}" required></label>
-            </td>
-            <td>
-                <label><input type="text" th:field="*{menuUrl}" required></label>
-            </td>
-            <td>
-                <label><input type="text" th:field="*{parentId}"></label>
-            </td>
-            <td>
-                <label><input type="text" th:field="*{seq}"></label>
-            </td>
-            <td>
-                <label><input type="text" th:field="*{useYn}"></label>
-            </td>
-            <td>
-                <label><input type="text" th:field="*{showYn}"></label>
-            </td>
-            <td>
-                <button type="submit">
-                    메뉴등록
-                </button>
-            </td>
-        </tr>
-    </table>
-</form>
-
-<table>
-
-</table>
-<div class="menuList">
-    <ul>
-        <li>메뉴 Id</li>
-        <li>메뉴 명</li>
-        <li>메뉴 경로</li>
-        <li>부모메뉴 ID</li>
-        <li>순서</li>
-        <li>사용 여부</li>
-        <li>메뉴표시 여부</li>
-        <li>수정</li>
-    </ul>
-</div>
-<div id="depth1" class="menuList">
-    <ul th:each="menuResult : ${menuResults}">
-        <li><span th:text="${menuResult.menuId}">menuId</span></li>
-        <li><span th:text="${menuResult.menuName}">menuNm</span></li>
-        <li><span th:text="${menuResult.menuUrl}">menuUrl</span></li>
-        <li><span th:text="${menuResult.parentId}">parentId</span></li>
-        <li><span th:text="${menuResult.seq}">seq</span></li>
-        <li><span th:text="${menuResult.useYn}">useYn</span></li>
-        <li><span th:text="${menuResult.showYn}">useYn</span></li>
-        <li>
-            <button type="button"  th:onclick="fillInput(
-                [[${menuResult.menuId}]]
-                ,[[${menuResult.menuName}]]
-                ,[[${menuResult.menuUrl}]]
-                ,[[${menuResult.parentId}]]
-                ,[[${menuResult.seq}]]
-                ,[[${menuResult.useYn}]]
-                ,[[${menuResult.showYn}]]
-            )">
-                <span>수정</span>
-            </button>
-        </li>
-        <div id="depth2">
-            <ul th:each="childMenu : ${menuResult.childMenu}" >
-                <li><span th:text="${childMenu.menuId}">menuId</span></li>
-                <li><span th:text="${childMenu.menuName}">menuNm</span></li>
-                <li><span th:text="${childMenu.menuUrl}">menuUrl</span></li>
-                <li><span th:text="${childMenu.parentId}">parentId</span></li>
-                <li><span th:text="${childMenu.seq}">seq</span></li>
-                <li><span th:text="${childMenu.useYn}">useYn</span></li>
-                <li><span th:text="${childMenu.showYn}">useYn</span></li>
-                <li>
-                    <button type="button"  th:onclick="fillInput(
-                        [[${childMenu.menuId}]]
-                        ,[[${childMenu.menuName}]]
-                        ,[[${childMenu.menuUrl}]]
-                        ,[[${childMenu.parentId}]]
-                        ,[[${childMenu.seq}]]
-                        ,[[${childMenu.useYn}]]
-                        ,[[${childMenu.showYn}]]
-                    )">
-                        <span>수정</span>
-                    </button>
-                </li>
-            </ul>
-        </div>
-    </ul>
-</div>
-
-<!--<th:block th:replace="~{/admin/menu/listPage :: list}"></th:block>-->
-<button type="button" th:onclick="|location.href='@{/admin/home/main}'|">
-    뒤로가기
-</button>
-
 <style>
-.menuList {
-    width: 100%;
-}
+    .menuList {
+        width: 100%;
+    }
 
-.menuList > ul {
-    width: 100%;
-}
+    .menuList > ul {
+        width: 100%;
+    }
 
-.menuList > ul > li {
-    display: inline-block;
-    width: 12%;
-}
+    .menuList > ul > li {
+        display: inline-block;
+        width: 12%;
+    }
 
-#depth2 > ul {
-    width: 100%;
-}
+    #depth2 > ul {
+        width: 100%;
+    }
 
-#depth2 > ul > li {
-    display: inline-block;
-    width: 12%;
-}
+    #depth2 > ul > li {
+        display: inline-block;
+        width: 12%;
+    }
 </style>
 
-<script>
+<script th:inline="javascript" type="text/javascript">
+
+    const parent = '[[${menuResults}]]';
+    const parnetData = JSON.parse(parent);
+
+    const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+
+    $(document).ready(function() {
+        menuListLoop(parnetData);
+    });
+
+    function menuListLoop(parentData) {
+        parentData.forEach(item => {
+            const row = document.createElement('tr');
+
+            // 첫 번째 셀: menuId
+            const idCell = document.createElement('td');
+            idCell.innerHTML = `<span>${item.menuId}</span>`;
+            row.appendChild(idCell);
+
+            console.log('idCell : '+idCell);
+            console.log('row : '+row);
+
+            // 첫 번째 셀: menuName
+            const menuNameCell = document.createElement('td');
+            menuNameCell.innerHTML = `<span>${item.menuName}</span>`;
+            row.appendChild(menuNameCell);
+            // 첫 번째 셀: menuUrl
+            const menuUrlCell = document.createElement('td');
+            menuUrlCell.innerHTML = `<span>${item.menuUrl}</span>`;
+            row.appendChild(menuUrlCell);
+            // 첫 번째 셀: parentId
+            const parentIdCell = document.createElement('td');
+            parentIdCell.innerHTML = `<span>${item.parentId || ''}</span>`;
+            row.appendChild(parentIdCell);
+            // 첫 번째 셀: seq
+            const seqCell = document.createElement('td');
+            seqCell.innerHTML = `<span>${item.seq}</span>`;
+            row.appendChild(seqCell);
+            // 첫 번째 셀: useYn
+            const useYnCell = document.createElement('td');
+            useYnCell.innerHTML = `<span>${item.useYn}</span>`;
+            row.appendChild(useYnCell);
+            // 첫 번째 셀: showYn
+            const showYnCell = document.createElement('td');
+            showYnCell.innerHTML = `<span>${item.showYn}</span>`;
+            row.appendChild(showYnCell);
+
+            // 두 번째 셀: 수정 버튼
+            const buttonCell = document.createElement('td');
+            buttonCell.innerHTML = `
+                <button type="button" onclick="fillInput(
+                    '${item.menuId}',
+                    '${item.menuName}',
+                    '${item.menuUrl}',
+                    ${item.parentId},
+                    ${item.seq},
+                    '${item.useYn}',
+                    '${item.showYn}',
+                    'U'
+                )">
+                    <span>수정</span>
+                </button>
+            `;
+            row.appendChild(buttonCell);
+
+            // 두 번째 셀: 삭제 버튼
+            const buttonCell2 = document.createElement('td');
+            buttonCell2.innerHTML = `
+                <button type="button" onclick="fillInput(
+                    '${item.menuId}',
+                    '${item.menuName}',
+                    '${item.menuUrl}',
+                    ${item.parentId},
+                    ${item.seq},
+                    '${item.useYn}',
+                    '${item.showYn}',
+                    'D'
+                )">
+                    <span>삭제</span>
+                </button>
+            `;
+            row.appendChild(buttonCell2);
+
+            tableBody.appendChild(row);
+
+            const child = item.childMenu;
+            if(child.length > 0 ){
+
+                console.log('child : '+child);
+
+                child.forEach(childItem => {
+                    const row = document.createElement('tr');
+
+                    // 첫 번째 셀: menuId
+                    const idCell = document.createElement('td');
+                    idCell.innerHTML = `<span>↳&nbsp;&nbsp;&nbsp;${childItem.menuId}</span>`;
+                    row.appendChild(idCell);
+
+                    console.log('idCell : '+idCell);
+                    console.log('row : '+row);
+
+                    // 첫 번째 셀: menuName
+                    const menuNameCell = document.createElement('td');
+                    menuNameCell.innerHTML = `<span>${childItem.menuName}</span>`;
+                    row.appendChild(menuNameCell);
+                    // 첫 번째 셀: menuUrl
+                    const menuUrlCell = document.createElement('td');
+                    menuUrlCell.innerHTML = `<span>${childItem.menuUrl}</span>`;
+                    row.appendChild(menuUrlCell);
+                    // 첫 번째 셀: parentId
+                    const parentIdCell = document.createElement('td');
+                    parentIdCell.innerHTML = `<span>${childItem.parentId || ''}</span>`;
+                    row.appendChild(parentIdCell);
+                    // 첫 번째 셀: seq
+                    const seqCell = document.createElement('td');
+                    seqCell.innerHTML = `<span>${childItem.seq}</span>`;
+                    row.appendChild(seqCell);
+                    // 첫 번째 셀: useYn
+                    const useYnCell = document.createElement('td');
+                    useYnCell.innerHTML = `<span>${childItem.useYn}</span>`;
+                    row.appendChild(useYnCell);
+                    // 첫 번째 셀: showYn
+                    const showYnCell = document.createElement('td');
+                    showYnCell.innerHTML = `<span>${childItem.showYn}</span>`;
+                    row.appendChild(showYnCell);
+
+                    // 두 번째 셀: 수정 버튼
+                    const buttonCell = document.createElement('td');
+                    buttonCell.innerHTML = `
+                        <button type="button" onclick="fillInput(
+                            '${childItem.menuId}',
+                            '${childItem.menuName}',
+                            '${childItem.menuUrl}',
+                            ${childItem.parentId},
+                            ${childItem.seq},
+                            '${childItem.useYn}',
+                            '${childItem.showYn}',
+                            'U'
+                        )">
+                            <span>수정</span>
+                        </button>
+                    `;
+                    row.appendChild(buttonCell);
+
+                    // 두 번째 셀: 삭제 버튼
+                    const buttonCell2 = document.createElement('td');
+                    buttonCell2.innerHTML = `
+                        <button type="button" onclick="fillInput(
+                            '${childItem.menuId}',
+                            '${childItem.menuName}',
+                            '${childItem.menuUrl}',
+                            ${childItem.parentId},
+                            ${childItem.seq},
+                            '${childItem.useYn}',
+                            '${childItem.showYn}',
+                            'D'
+                        )">
+                            <span>삭제</span>
+                        </button>
+                    `;
+                    row.appendChild(buttonCell2);
+
+                    tableBody.appendChild(row);
+                });
+            }
+
+        });
+    }
+
+
+
+
+    function submitBtn(){
+        var frm = document.cudForm;
+        frm.submit();
+    }
+
     function goPage(menuType){
         location.href = "/admin/menu/main/"+menuType;
     }
 
     function fillInput(
-        menuId ,menuName ,menuUrl ,parentId ,seq ,useYn ,showYn
+        menuId ,menuName ,menuUrl ,parentId ,seq ,useYn ,showYn, cudType
     ) {
         const input1 = document.getElementById("menuId");
         const input2 = document.getElementById("menuName");
@@ -174,6 +378,7 @@
         const input5 = document.getElementById("seq");
         const input6 = document.getElementById("useYn");
         const input7 = document.getElementById("showYn");
+        const input8 = document.getElementById("cudType");
 
         input1.value = menuId;
         input2.value = menuName;
@@ -182,6 +387,11 @@
         input5.value = seq;
         input6.value = useYn;
         input7.value = showYn;
+        input8.value = cudType;
+
+        if(cudType == 'D') {
+            submitBtn();
+        }
     }
 </script>
 </body>

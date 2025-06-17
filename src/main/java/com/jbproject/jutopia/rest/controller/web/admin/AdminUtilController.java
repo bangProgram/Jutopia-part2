@@ -164,8 +164,22 @@ public class AdminUtilController {
     }
 
 
-    @PostMapping("/naver/stock")
-    public RedirectView mergeNyCorp(){
-        return new RedirectView();
+    @PostMapping("/ny-corp/merge")
+    public RedirectView mergeNyCorpFromNaver(
+            HttpServletRequest request, HttpServletResponse response, Model model
+            , RedirectAttributes redirectAttributes
+    ){
+        try {
+            System.out.println("ny-corp/merge start!");
+            adminUtilService.mergeNyCorpDetail();
+            redirectAttributes.addFlashAttribute("serverMessage","뉴욕 기업 데이터 수정을 완료했습니다.");
+            return new RedirectView("/admin/util/main") ;
+
+        }catch (Exception e){
+            System.out.println("error : "+e);
+            redirectAttributes.addFlashAttribute("serverMessage","뉴욕 기업 데이터 수정에 실패했습니다.");
+            return new RedirectView("/admin/util/main") ;
+        }
+
     }
 }

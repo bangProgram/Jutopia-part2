@@ -1,39 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
+<script >
+
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
         // 페이지가 로드되자마자 실행될 JavaScript 코드
-    const isAdmin = '[[${isAdmin}]]';
-    const isRole = '[[${isRole}]]';
-    const roleBasedUrls = '[[${roleBasedUrls}]]';
+        const isAdmin = '[[${isAdmin}]]';
+        const isRole = '[[${isRole}]]';
+        const roleBasedUrls = '[[${roleBasedUrls}]]';
 
-    console.log(isAdmin + " / "+ isRole);
-    console.log('roleBasedUrls : '+roleBasedUrls);
+        // size 변수 정의
+        const menuSize = '[[${topMenuInfo.menuSize}]]'; // 원하는 숫자로 변경
+
+        console.log(isAdmin + " / "+ isRole);
+        console.log('roleBasedUrls : '+roleBasedUrls);
 
 
-    const serverMessage = '[[${serverMessage}]]';
+        const serverMessage = '[[${serverMessage}]]';
 
-    if (serverMessage) {
-        alert(serverMessage); // 팝업 메시지
+        if (serverMessage) {
+            alert(serverMessage); // 팝업 메시지
+        }
+
+        // class 속성 설정
+        const addClass = `col-xl-${12 / menuSize}`;
+
+        const userMenuElements = document.querySelectorAll('.userMenuClass');
+
+        // 각 요소에 col-xl-4 클래스 추가
+        userMenuElements.forEach(element => {
+            element.classList.add(addClass);
+            element.classList.add('col-md-6');
+            element.classList.add('mb-4');
+        });
+
+    });
+
+    var isActiveSidebar = true;
+
+    function toggleActiveSidebar() {
+        isActiveSidebar = !isActiveSidebar;
+        var sidebarDiv = document.getElementById('accordionSidebar');
+        if(isActiveSidebar) {
+            sidebarDiv.style.display = 'block';
+        }else{
+            sidebarDiv.style.display = 'none';
+        }
     }
-});
-
-var isActiveSidebar = true;
-
-function toggleActiveSidebar() {
-    isActiveSidebar = !isActiveSidebar;
-    var sidebarDiv = document.getElementById('sidebarDiv');
-    if(isActiveSidebar) {
-        sidebarDiv.style.display = 'block';
-    }else{
-        sidebarDiv.style.display = 'none';
-    }
-}
 </script>
 </body>
 </html>

@@ -77,19 +77,32 @@
         </div>
 
 
-        <div >
-            기업정보(xml) 업로드
-            <form action="/admin/util/dart/corp" method="post" name="corpForm" enctype="multipart/form-data">
-                <table>
-                    <tr>
-                        <td colspan="2"><input type="file" name="file" /></td>
-                    </tr>
-                    <tr>
-                        <td><button onclick="submit()" >XML 업로드</button></td>
-                    </tr>
-                </table>
+        <div style="display:flex;">
+            <div style="flex:1;">
+                기업정보(xml) 업로드
+                <form action="/admin/util/dart/corp" method="post" name="corpForm" enctype="multipart/form-data">
+                    <table>
+                        <tr>
+                            <td colspan="2"><input type="file" name="file" /></td>
+                        </tr>
+                        <tr>
+                            <td><button onclick="submit()" >XML 업로드</button></td>
+                        </tr>
+                    </table>
 
-            </form>
+                </form>
+            </div>
+            <div style="flex:1;">
+                뉴욕 기업정보(xml) 업로드
+                <form action="/admin/util/ny-corp/merge" method="post" name="nyCorpForm" >
+                    <table>
+                        <tr>
+                            <td><button onclick="submit()" >사업장 최신화</button></td>
+                        </tr>
+                    </table>
+
+                </form>
+            </div>
         </div>
 
         <div>
@@ -115,7 +128,6 @@
                 </table>
             </form>
         </div>
-
 
     </div>
 </body>
