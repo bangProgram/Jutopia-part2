@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -19,10 +20,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TickerCikCache {
 
     private final WebClient webClient;
-    private Map<String, String> cache = new ConcurrentHashMap<>();
+    private Map<String, String> tickerToCik = new ConcurrentHashMap<>();
+    private Map<String, String> cikToTicker = new ConcurrentHashMap<>();
 
-    /** 매일 06:00 뉴욕시각에 업데이트 */
-    @Scheduled(cron = "0 0 19 * * ?", zone = "America/New_York")
+
+    /** 하루 1회 새벽(서버 tz 04:00) 자동 갱신 */
+    @Scheduled(cron = "0 0 4 * * ?")
     public void refresh() throws IOException {
         String raw = webClient.get()
                 .uri("https://www.sec.gov/include/ticker.txt")
@@ -30,15 +33,26 @@ public class TickerCikCache {
                 .bodyToMono(String.class)
                 .block();
 
-        Map<String, String> map = new HashMap<>();
-        CSVParser.parse(raw, CSVFormat.DEFAULT.withDelimiter(' '))
-                .forEach(r -> map.put(r.get(0).toUpperCase(), String.format("%010d",
-                        Integer.parseInt(r.get(1)))));
-        cache = map;
-        log.info("✔︎ Ticker→CIK 매핑 {}건 로드 완료", map.size());
+        Map<String, String> t2c = new HashMap<>();
+        Map<String, String> c2t = new HashMap<>();
+
+        // 파일 형식:  aapl  320193   (티커, 공백, CIK)
+        for (String line : raw.split("\n")) {
+            String[] arr = line.split("\\s+");
+            if (arr.length != 2) continue;
+            String ticker = arr[0].toUpperCase(Locale.ROOT);
+            String cik    = String.format("%010d", Integer.parseInt(arr[1]));
+            t2c.put(ticker, cik);
+            c2t.put(cik, ticker);
+        }
+        tickerToCik = t2c;
+        cikToTicker = c2t;
+        log.info("✔  ticker.txt loaded: {} pairs", t2c.size());
     }
 
-    public String cikOf(String ticker) {
-        return cache.get(ticker.toUpperCase());
-    }
+    /** 티커 → CIK */
+    public String cikOf(String ticker) {return tickerToCik.get(ticker.toUpperCase(Locale.ROOT));}
+
+    /** CIK → 티커  (여러 티커가 있을 경우 첫 번째 반환) */
+    public String tickerOf(String cik) {return cikToTicker.get(cik);}
 }

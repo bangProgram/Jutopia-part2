@@ -20,9 +20,14 @@ public class NyCorpEntity extends BaseEntity {
     @Id
     private String reutersCode;
 
+    /** NASDAQ / NYSE 티커 */
+    @Column(length = 12, unique = true)
     private String stockCode;
     private String stockName;
     private LocalDate modifyDate;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "nyCorp")
+    private NyCorpDetailEntity nyCorpDetail;
 
     @Builder
     public NyCorpEntity(String reutersCode, String stockCode, String stockName, LocalDate modifyDate){
