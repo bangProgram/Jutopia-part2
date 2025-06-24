@@ -17,7 +17,9 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -150,6 +152,14 @@ public class NyCorpSyncServiceImpl {
 //                                n.path("form").asText()));
                     });
                 });
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                int cnt = br.read();
+
+                String test = "1234";
+
+
+
             }
         } catch (IOException ex) {
             throw new RuntimeException("ingest failed", ex);

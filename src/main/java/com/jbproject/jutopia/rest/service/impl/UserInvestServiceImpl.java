@@ -41,7 +41,7 @@ public class UserInvestServiceImpl implements UserInvestService {
 
     public List<NyStockModel> searchNyCorpList(SearchNyCorpPayload payload){
         String searchWord = "%" + payload.getSearchWord() + "%";
-        List<NyCorpDetailEntity> test =  nyCorpDetailRepository.findByStockCodeLikeOrStockNameLike(searchWord,searchWord);
+//        List<NyCorpDetailEntity> test =  nyCorpDetailRepository.findByStockCodeLikeOrStockNameLike(searchWord,searchWord);
 //        List<NyStockModel> resultList = nyCorpDetailRepository.searchNyCorpList(payload).stream().map(NyStockModel::create).toList();
 
         return null;

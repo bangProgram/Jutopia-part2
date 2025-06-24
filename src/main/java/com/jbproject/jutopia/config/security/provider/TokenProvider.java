@@ -22,13 +22,13 @@ import java.util.Map;
 @Slf4j
 public class TokenProvider {
 
-    @Value("${jutopia.jwt.access.secret}")
+    @Value("${jutopia.access.jwt.secret}")
     private String accessSecret;
-    @Value("${jutopia.jwt.refresh.secret}")
+    @Value("${jutopia.refresh.jwt.secret}")
     private String refreshSecret;
-    @Value("${jutopia.jwt.access.duration}")
+    @Value("${jutopia.access.jwt.duration}")
     private Long accessTokenExpired;
-    @Value("${jutopia.jwt.refresh.duration}")
+    @Value("${jutopia.refresh.jwt.duration}")
     private Long refreshTokenExpired;
 
     private final ObjectMapper objectMapper = new ObjectMapper();

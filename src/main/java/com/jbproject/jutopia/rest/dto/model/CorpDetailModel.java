@@ -59,8 +59,8 @@ public class CorpDetailModel {
         @Schema(title = "fax_no", description = "팩스번호")
         private String faxNo;
         @JsonProperty("induty_code")
-        @Schema(title = "induty_code", description = "업종코드")
-        private String indutyCode;
+        @Schema(title = "industry_code", description = "업종코드")
+        private String industryCode;
         @JsonProperty("est_dt")
         @Schema(title = "est_dt", description = "설립일(YYYYMMDD)")
         private String estDt;
@@ -85,7 +85,7 @@ public class CorpDetailModel {
                 model.irUrl = entity.getIrUrl();
                 model.phnNo = entity.getPhnNo();
                 model.faxNo = entity.getFaxNo();
-                model.indutyCode = entity.getIndutyCode();
+                model.industryCode = entity.getIndustryCode();
                 model.estDt = entity.getEstDate();
                 model.accMt = entity.getAccMt();
                 return model;

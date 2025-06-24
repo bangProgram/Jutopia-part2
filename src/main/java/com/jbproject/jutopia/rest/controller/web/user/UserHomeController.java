@@ -9,9 +9,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 @Controller
@@ -36,23 +36,56 @@ public class UserHomeController {
     }
 
     @GetMapping("/test")
-    public String test() throws IOException {
+    public String test() throws IOException, NullPointerException {
+        System.out.println("==== start!! ====");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int input = Integer.parseInt(br.readLine());
-        int cnt = 2 * input - 1;
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        StringBuilder sb = new StringBuilder("    ");
-        for(int i=1; i<=cnt; i++){
-            if(i>=input){
-                System.out.println(sb);
-                if(i<cnt) sb.delete(sb.length()-2, sb.length());
+
+        while(true){
+            String[] inputs = br.readLine().split(" ");
+
+            int num1 = Integer.parseInt(inputs[0]);
+            int num2 = Integer.parseInt(inputs[1]);
+
+            if(num1 == 0 && num2 == 0){
+                break;
+            }
+
+            if(num1/num2 > 0 && num1%num2 == 0){
+                bw.write("multiple\n");
+            }else if(num2/num1 > 0 && num2%num1 == 0){
+                bw.write("factor\n");
             }else{
-                System.out.println(sb);
-                sb.append(" ");
-                sb.append("**");
+                bw.write("neither\n");
             }
         }
 
+        bw.flush();
+        bw.close();
+
+
+
+        System.out.println("==== end.. ====");
+
         return "/user/home/mainPage";
+    }
+
+    public int charConvert(char ch){
+        int rst;
+        if(ch > 57){
+            rst = ch - 55;
+        }else{
+            rst = ch - 48;
+        }
+        return rst;
+    }
+
+    public String intConvert(int num){
+        if(num > 9){
+            return Character.toString(num + 55);
+        }else{
+            return String.valueOf(num);
+        }
     }
 }

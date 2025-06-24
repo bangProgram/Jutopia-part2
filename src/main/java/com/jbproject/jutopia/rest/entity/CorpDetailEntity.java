@@ -38,8 +38,8 @@ public class CorpDetailEntity {
     private String phnNo;
     @Column(name = "fax_no")
     private String faxNo;
-    @Column(name = "induty_code")
-    private String indutyCode;
+    @Column(name = "industry_code")
+    private String industryCode;
     @Column(name = "est_date")
     private String estDate;
     @Column(name = "acc_mt")
@@ -62,7 +62,7 @@ public class CorpDetailEntity {
         this.irUrl =  corpDetailModel.getIrUrl();
         this.phnNo =  corpDetailModel.getPhnNo();
         this.faxNo =  corpDetailModel.getFaxNo();
-        this.indutyCode =  corpDetailModel.getIndutyCode();
+        this.industryCode =  corpDetailModel.getIndustryCode();
         this.estDate =  corpDetailModel.getEstDt();
         this.accMt =  corpDetailModel.getAccMt();
     }
@@ -72,7 +72,7 @@ public class CorpDetailEntity {
             String corpCode, String corpName, String stockName, String stockCode
             ,String ceoName ,String corpCls ,String jurirNo ,String bizrNo
             ,String address ,String hmUrl ,String irUrl ,String phnNo
-            ,String faxNo ,String indutyCode ,String estDate ,String accMt
+            ,String faxNo ,String industryCode ,String estDate ,String accMt
     ) {
         this.corpCode = corpCode;
         this.corpName = corpName;
@@ -87,7 +87,7 @@ public class CorpDetailEntity {
         this.irUrl = irUrl;
         this.phnNo = phnNo;
         this.faxNo = faxNo;
-        this.indutyCode = indutyCode;
+        this.industryCode = industryCode;
         this.estDate = estDate;
         this.accMt = accMt;
     }

@@ -18,29 +18,22 @@ import java.time.LocalDate;
 public class NyCorpEntity extends BaseEntity {
 
     @Id
-    private String reutersCode;
+    private String cikCode;
 
     /** NASDAQ / NYSE 티커 */
-    @Column(length = 12, unique = true)
-    private String stockCode;
+    private String tickerSymbol;
     private String stockName;
     private LocalDate modifyDate;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "nyCorp")
-    private NyCorpDetailEntity nyCorpDetail;
+//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "nyCorp")
+//    private NyCorpDetailEntity nyCorpDetail;
 
     @Builder
-    public NyCorpEntity(String reutersCode, String stockCode, String stockName, LocalDate modifyDate){
-        this.reutersCode = reutersCode;
-        this.stockCode = stockCode;
+    public NyCorpEntity(String cikCode, String tickerSymbol, String stockName, LocalDate modifyDate){
+        this.cikCode = cikCode;
+        this.tickerSymbol = tickerSymbol;
         this.stockName = stockName;
         this.modifyDate = modifyDate;
-    }
-
-    public NyCorpEntity(NyStockModel model){
-        this.reutersCode = model.getReutersCode();
-        this.stockCode = model.getReutersCode();
-        this.stockName = model.getStockName();
     }
 
 }

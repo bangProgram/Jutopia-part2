@@ -415,36 +415,6 @@ public class AdminUtilServiceImpl implements AdminUtilService {
             ApiResponseModel initData = objectMapper.readValue(isr, ApiResponseModel.class);
 
             if(initData != null){
-                if(initData.getTotalCount() > 0){
-                    int totalCnt = initData.getTotalCount().intValue();
-                    int curPage = 1;
-
-                    while(totalCnt > sumCnt){
-
-                        URL responseURL = new URL(stockUrl+"?page="+curPage+"&pageSize=100");
-                        isr = new InputStreamReader(responseURL.openConnection().getInputStream(), "UTF-8");
-                        ApiResponseModel response = objectMapper.readValue(isr, ApiResponseModel.class);
-
-                        for(NyStockModel model : response.getStocks()){
-
-                            NyCorpEntity nyCorpEntity = new NyCorpEntity(model);
-                            NyCorpDetailEntity nyCorpDetailEntity = new NyCorpDetailEntity(model);
-                            if(model.getStockExchangeType() != null){
-                                StockExchageEntity stockExchageEntity = new StockExchageEntity(model.getStockExchangeType());
-                                stockExchageRepository.save(stockExchageEntity);
-                            }
-                            if(model.getIndustryCodeType() != null){
-                                StockIndustryEntity stockIndustryEntity = new StockIndustryEntity(model.getIndustryCodeType());
-                                stockIndustryRepository.save(stockIndustryEntity);
-                            }
-
-                            nyCorpRepository.save(nyCorpEntity);
-                            nyCorpDetailRepository.save(nyCorpDetailEntity);
-                            sumCnt++;
-                        }
-                        curPage++;
-                    }
-                }
             }
 
         }

@@ -44,7 +44,7 @@ public class SecurityConfig {
             "/swagger-ui.html", "/webjars/**", "swagger v3",
             "/v3/api-docs/**", "/swagger-ui/**", "/favicon.ico",
             "/auth/**","/error/**","/css/**", "/images/**", "/ajax/**",
-            "/bootstrap/**"
+            "/bootstrap/**", "/home/main", "/home/test"
     };
 
     // 기본 허용 path - request Matcher 추가
