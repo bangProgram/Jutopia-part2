@@ -1,0 +1,71 @@
+entityName	회사명 (CIK 기준)
+facts	보고된 모든 공시 항목들
+us-gaap	미국 회계 기준 항목들 (재무제표 중심)
+dei	공시 일반 정보 (주식수 등)
+NetIncomeLoss, Assets 등	공시 항목 (각 항목은 key이며, 항목명은 정해진 GAAP 명칭)
+units	항목의 단위별 수치 모음 (USD, shares, etc)
+val	실제 값
+start, end	회계기간 시작/종료일
+fp	회계 분기 (1Q, 2Q, 3Q, FY 등)
+form	공시 종류 (10-K, 10-Q 등)
+filed	실제 제출일
+frame	회계 기간 코드 (CY2022, CY2023Q1 등)
+
+
+    facts 내부 필드 구조
+start, end	회계기간 시작일/종료일
+val	값 (숫자, 비율, 주식수 등)
+accn	SEC 공시 문서 번호
+fy	회계 연도
+fp	회계 분기 (Q1, Q2, Q3, FY 등)
+form	공시 양식 (10-K, 10-Q 등)
+filed	SEC 제출일
+frame	기간 프레임 코드 (예: CY2023Q1, CY2022)
+
+
+    us-gaap (미국 회계기준 - 대부분의 재무정보가 여기에 있음)
+
+👉 손익계산서 관련
+항목명	설명
+Revenues 또는 RevenueFromContractWithCustomer	총 매출
+CostOfRevenue	매출원가
+GrossProfit	매출총이익
+OperatingIncomeLoss	영업이익
+NetIncomeLoss	당기순이익
+EarningsPerShareBasic	기본 주당순이익 (EPS)
+EarningsPerShareDiluted	희석 EPS
+WeightedAverageNumberOfSharesOutstandingBasic	주식수(Basic)
+IncomeTaxExpenseBenefit	법인세 비용
+InterestExpense	이자 비용
+
+
+👉 재무상태표 관련
+항목명	설명
+Assets	총 자산
+CurrentAssets	유동 자산
+NoncurrentAssets	비유동 자산
+Liabilities	총 부채
+CurrentLiabilities	유동 부채
+LongTermDebtNoncurrent	장기부채
+StockholdersEquity	자본 총액
+RetainedEarningsAccumulatedDeficit	이익잉여금
+CashAndCashEquivalentsAtCarryingValue	현금성 자산
+
+
+👉 현금흐름표 관련
+항목명	설명
+NetCashProvidedByUsedInOperatingActivities	영업활동 현금흐름
+NetCashProvidedByUsedInInvestingActivities	투자활동 현금흐름
+NetCashProvidedByUsedInFinancingActivities	재무활동 현금흐름
+PaymentsOfDividends	배당금 지급 총액
+
+
+👉 기타 주요 항목
+항목명	설명
+CommonStockDividendsPerShareDeclared	주당 배당금
+MarketableSecuritiesCurrent	단기투자자산
+InventoryNet	재고자산
+Goodwill	영업권
+
+
+

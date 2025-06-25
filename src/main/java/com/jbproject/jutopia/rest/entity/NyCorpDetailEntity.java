@@ -23,16 +23,16 @@ import java.time.LocalDateTime;
 public class NyCorpDetailEntity extends BaseEntity {
 
     @Id
-    @Comment(value = "CIK 고유 코드")
+    @Comment(value = "CIK 고유 코드") // cik
     private String cikCode;
 
     @Comment(value = "티커 코드")
     private String tickerSymbol;
-    @Comment(value = "티커 명")
+    @Comment(value = "티커 명") //
     private String tickerName;
 
 
-    @Comment(value = "종목 명")
+    @Comment(value = "종목 명") // entityName
     private String stockName;
     @Comment(value = "주식시장 타입")
     private String stockType;
@@ -60,9 +60,9 @@ public class NyCorpDetailEntity extends BaseEntity {
     private String marketStatus;
     @Comment(value = "시가총액(달러)")
     private Double marketValue;
-    @Comment(value = "상장 주식수")
+    @Comment(value = "상장 주식수") // WeightedAverageNumberOfSharesOutstandingBasic
     private Double sharesVolume;
-    @Comment(value = "배당")
+    @Comment(value = "주당 배당금") // CommonStockDividendsPerShareDeclared
     private Double dividend;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
