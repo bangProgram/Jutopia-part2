@@ -22,21 +22,4 @@ public class NyCorpDetailCustomImpl implements NyCorpDetailCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<NyCorpDetailEntity> searchNyCorpList(SearchNyCorpPayload payload){
-
-        BooleanBuilder whereCondition = new BooleanBuilder();
-        if(hasText(payload.getSearchWord())){
-            whereCondition.and(
-                    nyCorpDetailEntity.stockCode.like("%"+payload.getSearchWord()+"%").or(
-                    nyCorpDetailEntity.stockName.like("%"+payload.getSearchWord()+"%")
-                )
-            );
-        }
-
-        return jpaQueryFactory.select(nyCorpDetailEntity)
-            .from(nyCorpDetailEntity)
-            .where(whereCondition)
-            .fetch()
-            ;
-    }
 }

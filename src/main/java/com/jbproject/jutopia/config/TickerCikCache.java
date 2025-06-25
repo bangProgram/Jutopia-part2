@@ -51,8 +51,8 @@ public class TickerCikCache {
     }
 
     /** 티커 → CIK */
-    public String cikOf(String ticker) {return tickerToCik.get(ticker.toUpperCase(Locale.ROOT));}
+    public String tickerToCik(String ticker) {return tickerToCik.get(ticker.toUpperCase(Locale.ROOT));}
 
-    /** CIK → 티커  (여러 티커가 있을 경우 첫 번째 반환) */
-    public String tickerOf(String cik) {return cikToTicker.get(cik);}
+    /** CIK → 티커  */
+    public String cikToTicker(String cik) {return cikToTicker.get(cik);}
 }

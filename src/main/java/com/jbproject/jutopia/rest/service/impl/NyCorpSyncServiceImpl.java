@@ -41,43 +41,20 @@ public class NyCorpSyncServiceImpl {
 
     /** 단일 티커 동기화 */
     public void sync(String ticker) {
-        String cik = tickerCikCache.cikOf(ticker);
+        String cik = tickerCikCache.tickerToCik(ticker);
         if (cik == null) throw new IllegalArgumentException("Unknown ticker: " + ticker);
 
         /* ---------- 1) 기업 메타 ---------- */
         JsonNode sub = edgarClient.getSubmissions(cik);
         String companyName = sub.at("/entityName").asText();
 
-        NyCorpEntity corp = nyCorpRepo.findById(cik)          // reutersCode == CIK
-                .orElse(NyCorpEntity.builder()
-                        .reutersCode(cik)
-                        .stockCode(ticker)
-                        .build());
-        corp.setStockName(companyName);
-        corp.setModifyDate(LocalDate.now());
-        nyCorpRepo.save(corp);
-
         /* ---------- 2) 상세 정보 ---------- */
         NyCorpDetailEntity detail = nyCorpDetailRepo.findById(cik)
                 .orElse(new NyCorpDetailEntity());
-        detail.setReutersCode(cik);
-        detail.setStockCode(ticker);
-        detail.setStockNameEng(companyName);
         detail.setNationType("US");
 
         // SIC 산업코드 → StockIndustryEntity 로 전파
         String sic = sub.at("/sic").asText(null);
-        if (sic != null && !sic.isBlank()) {
-            StockIndustryEntity industry = stockIndustryRepo.findById(sic)
-                    .orElse(new StockIndustryEntity(
-                            NyStockModel.IndustryCodeType.builder()
-                                    .code(sic)
-                                    .name(sub.at("/sicDescription").asText())
-                                    .industryGroupKor("미국 SIC").build()));
-            industry.setNyCorpDetailEntity(detail);
-            stockIndustryRepo.save(industry);
-            detail.setStockIndustryEntity(industry);
-        }
         nyCorpDetailRepo.save(detail);
 
         /* ---------- 3) XBRL 재무 Facts ---------- */
@@ -110,7 +87,7 @@ public class NyCorpSyncServiceImpl {
 
                 JsonNode root = objectMapper.readTree(z.getInputStream(e));
                 String cik = root.path("cik").asText();
-                String ticker = tickerCikCache.cikOf(cik);
+                String ticker = tickerCikCache.tickerToCik(cik);
                 String name   = root.path("entityName").asText();
 
                 /* ---------- Corp ---------- */

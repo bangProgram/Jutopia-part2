@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Comment;
 import org.springframework.data.domain.Persistable;
 
 @Entity @Getter @Setter
@@ -24,23 +25,6 @@ public class StockExchageEntity extends BaseEntity {
     private String ExchangeNameEng;
     private String nationName;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reuters_code")
-    private NyCorpDetailEntity nyCorpDetailEntity;
-
-    public StockExchageEntity(NyStockModel.StockExchangeType stockExchangeType){
-
-        this.key = StockExchangeKey.builder()
-                .nationType(stockExchangeType.getNationType())
-                .exchangeCode(stockExchangeType.getCode())
-                .build();
-
-        this.startTime = stockExchangeType.getStartTime();
-        this.endTime = stockExchangeType.getEndTime();
-        this.closePriceSendTime = stockExchangeType.getClosePriceSendTime();
-        this.ExchangeNameKor = stockExchangeType.getNameKor();
-        this.ExchangeNameEng = stockExchangeType.getNameEng();
-        this.nationName = stockExchangeType.getNationName();
-
-    }
+    @Comment(value = "국가 타입")
+    private String nationType;
 }

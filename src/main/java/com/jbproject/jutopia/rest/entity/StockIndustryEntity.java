@@ -21,14 +21,7 @@ public class StockIndustryEntity extends BaseEntity {
     @Comment(value = "산업 코드명")
     private String industryName;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reuters_code")
-    private NyCorpDetailEntity nyCorpDetailEntity;
-
-    public StockIndustryEntity(NyStockModel.IndustryCodeType model){
-        this.industryCode = model.getCode();
-        this.industryGroupKor = model.getIndustryGroupKor();
-        this.industryName = model.getName();
-    }
+    @Comment(value = "국가 타입")
+    private String nationType;
 
 }

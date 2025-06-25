@@ -48,7 +48,7 @@ public class TradeCorpCustomImpl implements TradeCorpCustom {
                 )
         ).from(tradeCorpEntity)
         .innerJoin(nyCorpDetailEntity)
-        .on(tradeCorpEntity.stockCode.eq(nyCorpDetailEntity.stockCode))
+        .on(tradeCorpEntity.stockCode.eq(nyCorpDetailEntity.cikCode))
         .leftJoin(tradeCorpDetailEntity)
         .on(tradeCorpEntity.id.eq(tradeCorpDetailEntity.tradeCorpEntity.id))
         .where(whereCondition)

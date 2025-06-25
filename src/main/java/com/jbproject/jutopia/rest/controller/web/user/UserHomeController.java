@@ -43,21 +43,25 @@ public class UserHomeController {
 
 
         while(true){
-            String[] inputs = br.readLine().split(" ");
+            int num = Integer.parseInt(br.readLine());
+            if(num < 0) break;
 
-            int num1 = Integer.parseInt(inputs[0]);
-            int num2 = Integer.parseInt(inputs[1]);
-
-            if(num1 == 0 && num2 == 0){
-                break;
+            int chk = 0;
+            String rst = "";
+            for(int i=1; i<num; i++){
+                if((num%i) == 0){
+                    chk += i;
+                    if(i == 1){
+                        rst += num + " = "+i+"";
+                    }else{
+                        rst += " + "+i;
+                    }
+                }
             }
-
-            if(num1/num2 > 0 && num1%num2 == 0){
-                bw.write("multiple\n");
-            }else if(num2/num1 > 0 && num2%num1 == 0){
-                bw.write("factor\n");
+            if(num == chk){
+                bw.write(rst+"\n");
             }else{
-                bw.write("neither\n");
+                bw.write(num+" is NOT perfect.\n");
             }
         }
 
@@ -65,27 +69,25 @@ public class UserHomeController {
         bw.close();
 
 
-
         System.out.println("==== end.. ====");
 
         return "/user/home/mainPage";
     }
 
-    public int charConvert(char ch){
-        int rst;
-        if(ch > 57){
-            rst = ch - 55;
-        }else{
-            rst = ch - 48;
-        }
-        return rst;
-    }
+    public void backup(String[] input){
+        int num = Integer.parseInt(input[0]);
+        int cnt = Integer.parseInt(input[1]);
+        int chk = 0;
 
-    public String intConvert(int num){
-        if(num > 9){
-            return Character.toString(num + 55);
-        }else{
-            return String.valueOf(num);
+        for(int i=1; i<=num; i++){
+            if((num%i) == 0){
+                chk++;
+                if(cnt == chk){
+                    System.out.println(i);
+                    break;
+                }
+            }
         }
+        System.out.println(0);
     }
 }

@@ -46,8 +46,6 @@ public class NyCorpDetailEntity extends BaseEntity {
     private Double openPrice;
     @Comment(value = "종가")
     private Double closePrice;
-    @Comment(value = "executedVolume (확인불가)")
-    private String executedVolume;
     @Comment(value = "누적 거래량")
     private Double accumulatedTradingVolume;
     @Comment(value = "누적 거래액 (달러)")
@@ -62,6 +60,8 @@ public class NyCorpDetailEntity extends BaseEntity {
     private String marketStatus;
     @Comment(value = "시가총액(달러)")
     private Double marketValue;
+    @Comment(value = "상장 주식수")
+    private Double sharesVolume;
     @Comment(value = "배당")
     private Double dividend;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -69,13 +69,5 @@ public class NyCorpDetailEntity extends BaseEntity {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Comment(value = "배당 지급일")
     private LocalDateTime dividendPayAt;
-
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "nyCorpDetailEntity")
-    private StockExchageEntity stockExchageEntity;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "nyCorpDetailEntity")
-    private StockIndustryEntity stockIndustryEntity;
-
 
 }
