@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 @Controller
 @Slf4j
@@ -41,28 +39,32 @@ public class UserHomeController {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
+        while (true){
+            String[] input = br.readLine().split(" ");
 
-        while(true){
-            int num = Integer.parseInt(br.readLine());
-            if(num < 0) break;
+            List<Integer> numList = new ArrayList<>();
 
-            int chk = 0;
-            String rst = "";
-            for(int i=1; i<num; i++){
-                if((num%i) == 0){
-                    chk += i;
-                    if(i == 1){
-                        rst += num + " = "+i+"";
-                    }else{
-                        rst += " + "+i;
-                    }
+            numList.add(Integer.parseInt(input[0]));
+            numList.add(Integer.parseInt(input[1]));
+            numList.add(Integer.parseInt(input[2]));
+
+            int maxNum = Collections.max(numList);
+            int sumNum = numList.stream().mapToInt(Integer::intValue).sum();
+
+            if(sumNum == 0) break;
+
+            if(maxNum >= sumNum-maxNum){
+                bw.write("Invalid\n");
+            }else if(numList.get(0).equals(numList.get(1)) || numList.get(1).equals(numList.get(2)) || numList.get(2).equals(numList.get(0))){
+                if(numList.get(0).equals(numList.get(1)) && numList.get(1).equals(numList.get(2)) && numList.get(2).equals(numList.get(0))){
+                    bw.write("Equilateral\n");
+                }else{
+                    bw.write("Isosceles\n");
                 }
-            }
-            if(num == chk){
-                bw.write(rst+"\n");
             }else{
-                bw.write(num+" is NOT perfect.\n");
+                bw.write("Scalene\n");
             }
+
         }
 
         bw.flush();

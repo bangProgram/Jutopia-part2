@@ -24,7 +24,4 @@ public class StockExchageEntity extends BaseEntity {
     private String ExchangeNameKor;
     private String ExchangeNameEng;
     private String nationName;
-
-    @Comment(value = "국가 타입")
-    private String nationType;
 }
