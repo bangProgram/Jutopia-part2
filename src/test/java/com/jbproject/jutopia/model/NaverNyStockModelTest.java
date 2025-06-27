@@ -2,30 +2,25 @@ package com.jbproject.jutopia.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.rest.dto.model.ApiResponseModel;
-import com.jbproject.jutopia.rest.dto.model.CorpDetailModel;
-import com.jbproject.jutopia.rest.dto.model.NyStockModel;
 import com.jbproject.jutopia.rest.service.AdminUtilService;
 import groovy.util.logging.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Map;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Slf4j
-public class NyStockModelTest {
+public class NaverNyStockModelTest {
 
     @Autowired
     private MockMvc mockMvc;

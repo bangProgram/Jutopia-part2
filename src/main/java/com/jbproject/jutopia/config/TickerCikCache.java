@@ -1,5 +1,7 @@
 package com.jbproject.jutopia.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -20,9 +22,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TickerCikCache {
 
     private final WebClient webClient;
-    private Map<String, String> tickerToCik = new ConcurrentHashMap<>();
-    private Map<String, String> cikToTicker = new ConcurrentHashMap<>();
+    private static Map<String, String> tickerToCik = new ConcurrentHashMap<>();
+    private static Map<String, String> cikToTicker = new ConcurrentHashMap<>();
 
+    @PostConstruct  // 빈 생성 후 자동 실행
+    public void init() throws IOException {
+        refresh();  // 초기 데이터 로딩
+    }
 
     /** 하루 1회 새벽(서버 tz 04:00) 자동 갱신 */
     @Scheduled(cron = "0 0 4 * * ?")
@@ -51,8 +57,8 @@ public class TickerCikCache {
     }
 
     /** 티커 → CIK */
-    public String tickerToCik(String ticker) {return tickerToCik.get(ticker.toUpperCase(Locale.ROOT));}
+    public static String tickerToCik(String ticker) {return "CIK"+tickerToCik.get(ticker.toUpperCase(Locale.ROOT));}
 
     /** CIK → 티커  */
-    public String cikToTicker(String cik) {return cikToTicker.get(cik);}
+    public static String cikToTicker(String cikCode) {return cikToTicker.get(cikCode.replace("CIK",""));}
 }

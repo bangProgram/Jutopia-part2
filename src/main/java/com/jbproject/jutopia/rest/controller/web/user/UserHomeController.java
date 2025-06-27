@@ -36,45 +36,57 @@ public class UserHomeController {
     @GetMapping("/test")
     public String test() throws IOException, NullPointerException {
         System.out.println("==== start!! ====");
+
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        while (true){
-            String[] input = br.readLine().split(" ");
+        long n = Long.parseLong(br.readLine());
 
-            List<Integer> numList = new ArrayList<>();
+        long start = System.currentTimeMillis();
+        long rst = 0;
 
-            numList.add(Integer.parseInt(input[0]));
-            numList.add(Integer.parseInt(input[1]));
-            numList.add(Integer.parseInt(input[2]));
 
-            int maxNum = Collections.max(numList);
-            int sumNum = numList.stream().mapToInt(Integer::intValue).sum();
-
-            if(sumNum == 0) break;
-
-            if(maxNum >= sumNum-maxNum){
-                bw.write("Invalid\n");
-            }else if(numList.get(0).equals(numList.get(1)) || numList.get(1).equals(numList.get(2)) || numList.get(2).equals(numList.get(0))){
-                if(numList.get(0).equals(numList.get(1)) && numList.get(1).equals(numList.get(2)) && numList.get(2).equals(numList.get(0))){
-                    bw.write("Equilateral\n");
-                }else{
-                    bw.write("Isosceles\n");
-                }
-            }else{
-                bw.write("Scalene\n");
-            }
-
+        for(int i=1; i<=n-2; i++){
+            rst += (i*(n-(1+i)));
         }
 
-        bw.flush();
-        bw.close();
+        System.out.println(rst);
+        System.out.println(3);
 
+        long end = System.currentTimeMillis();
+
+        System.out.println("Process Time : " + (end - start));
 
         System.out.println("==== end.. ====");
 
         return "/user/home/mainPage";
     }
+
+    public long loop1(long n, long rst){
+        while(n > 0){
+            rst = loop2t(n,rst);
+            n--;
+        }
+
+        return rst;
+    }
+
+    public long loop2(long n, long rst){
+        if(n < 1) return rst;
+
+        rst += n--;
+        return loop2(n,rst);
+    }
+
+    // 개선된 반복문 코드 (안전)
+    public long loop2t(long n, long rst) {
+        while (n > 0) {
+            rst += n;
+            n--;
+        }
+        return rst;
+    }
+
 
     public void backup(String[] input){
         int num = Integer.parseInt(input[0]);

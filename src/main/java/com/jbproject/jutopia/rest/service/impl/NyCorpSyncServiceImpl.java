@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.config.EdgarClient;
 import com.jbproject.jutopia.config.TickerCikCache;
-import com.jbproject.jutopia.rest.dto.model.NyStockModel;
 import com.jbproject.jutopia.rest.entity.NyCorpDetailEntity;
 import com.jbproject.jutopia.rest.entity.NyCorpEntity;
-import com.jbproject.jutopia.rest.entity.StockIndustryEntity;
 import com.jbproject.jutopia.rest.repository.NyCorpDetailRepository;
 import com.jbproject.jutopia.rest.repository.NyCorpRepository;
 import com.jbproject.jutopia.rest.repository.StockIndustryRepository;
@@ -29,6 +27,7 @@ import java.util.Enumeration;
 @RequiredArgsConstructor
 @Transactional
 public class NyCorpSyncServiceImpl {
+
     private final TickerCikCache tickerCikCache; // ticker.txt ↔ CIK
     private final EdgarClient edgarClient;
 

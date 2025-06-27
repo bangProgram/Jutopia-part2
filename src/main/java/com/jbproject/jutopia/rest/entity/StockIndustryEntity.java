@@ -1,12 +1,10 @@
 package com.jbproject.jutopia.rest.entity;
 
-import com.jbproject.jutopia.rest.dto.model.NyStockModel;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
-import org.springframework.data.domain.Persistable;
 
 @Entity @Getter @Setter
 @NoArgsConstructor

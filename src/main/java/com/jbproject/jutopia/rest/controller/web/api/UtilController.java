@@ -2,7 +2,7 @@ package com.jbproject.jutopia.rest.controller.web.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.rest.dto.model.CorpDetailModel;
-import com.jbproject.jutopia.rest.dto.model.NyStockModel;
+import com.jbproject.jutopia.rest.dto.model.NaverNyStockModel;
 import com.jbproject.jutopia.rest.dto.payload.SearchCorpPayload;
 import com.jbproject.jutopia.rest.dto.payload.SearchNyCorpPayload;
 import com.jbproject.jutopia.rest.dto.payload.SearchPostPayload;
@@ -67,7 +67,7 @@ public class UtilController {
     @ResponseBody
     public String searchNyCorp(Model model, SearchNyCorpPayload searchNyCorpPayload){
         try{
-            List<NyStockModel> nyCorpList = userInvestService.searchNyCorpList(searchNyCorpPayload);
+            List<NaverNyStockModel> nyCorpList = userInvestService.searchNyCorpList(searchNyCorpPayload);
             return objectMapper.writeValueAsString(nyCorpList);
         }catch (Exception e){
             return "기업 검색에 실패했습니다..";

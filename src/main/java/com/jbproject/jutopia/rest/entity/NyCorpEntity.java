@@ -1,12 +1,10 @@
 package com.jbproject.jutopia.rest.entity;
 
-import com.jbproject.jutopia.rest.dto.model.NyStockModel;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDate;
 

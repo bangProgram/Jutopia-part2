@@ -2,7 +2,6 @@ package com.jbproject.jutopia.rest.dto.model;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +17,7 @@ public class ApiResponseModel{
     private Long page;
     private Long pageSize;
     private Long totalCount;
-    private List<NyStockModel> stocks;
+    private List<NaverNyStockModel> stocks;
     private String marketStatus;
     private String localOpenTimeDesc;
     private String localOpenTime;
