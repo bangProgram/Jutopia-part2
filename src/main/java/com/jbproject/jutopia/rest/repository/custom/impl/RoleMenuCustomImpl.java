@@ -2,6 +2,7 @@ package com.jbproject.jutopia.rest.repository.custom.impl;
 
 import com.jbproject.jutopia.rest.dto.result.RoleMenuResult;
 import com.jbproject.jutopia.rest.repository.custom.RoleMenuCustom;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,12 @@ public class RoleMenuCustomImpl implements RoleMenuCustom {
 
     public List<RoleMenuResult> getRoleBasedWhiteList(String role){
 
+        BooleanBuilder whereCondition = new BooleanBuilder();
+
+        if(!role.isEmpty()){
+            whereCondition.and(roleMenuRelation.roleId.eq(role));
+        }
+
         return queryFactory.select(
                 Projections.fields(
                         RoleMenuResult.class,
@@ -33,7 +40,7 @@ public class RoleMenuCustomImpl implements RoleMenuCustom {
                 )
                 .from(menuEntity)
                 .innerJoin(roleMenuRelation).on(menuEntity.id.eq(roleMenuRelation.menuEntity.id))
-                .where(roleMenuRelation.roleId.eq(role))
+                .where(whereCondition)
                 .fetch();
     }
 

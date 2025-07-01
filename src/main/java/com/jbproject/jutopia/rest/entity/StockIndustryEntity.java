@@ -1,5 +1,7 @@
 package com.jbproject.jutopia.rest.entity;
 
+import com.jbproject.jutopia.rest.dto.model.NaverNyStockModel;
+import com.jbproject.jutopia.rest.entity.key.StockIndustryKey;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,15 +13,25 @@ import org.hibernate.annotations.Comment;
 @Table(name = "tb_stock_industry")
 public class StockIndustryEntity extends BaseEntity {
 
-    @Id
-    @Comment(value = "산업 코드")
-    private String industryCode;
+    @EmbeddedId
+    private StockIndustryKey key;
+
     @Comment(value = "산업 명 (한글)")
     private String industryGroupKor;
     @Comment(value = "산업 코드명")
     private String industryName;
 
-    @Comment(value = "국가 타입")
-    private String nationType;
+
+    public StockIndustryEntity(NaverNyStockModel model){
+        NaverNyStockModel.IndustryCodeType industry = model.getIndustryCodeType();
+
+        this.key = StockIndustryKey.builder()
+                .industryCode(industry.getCode())
+                .nationType(model.getNationType())
+                .build();
+
+        this.industryGroupKor = industry.getIndustryGroupKor();
+        this.industryName = industry.getName();
+    }
 
 }

@@ -40,23 +40,25 @@ public class UserHomeController {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        long n = Long.parseLong(br.readLine());
+        String[] aInput = br.readLine().split(" ");
+        int a1 = Integer.parseInt(aInput[0]);
+        int a0 = Integer.parseInt(aInput[1]);
+        int c = Integer.parseInt(br.readLine());
+        int n0 = Integer.parseInt(br.readLine());
+        int n = n0;
 
         long start = System.currentTimeMillis();
-        long rst = 0;
 
-
-        for(int i=1; i<=n-2; i++){
-            rst += (i*(n-(1+i)));
+        if( n0 <=(-a0/(a1-c)) ){
+            System.out.println(1);
+        }else{
+            System.out.println(0);
         }
-
-        System.out.println(rst);
-        System.out.println(3);
 
         long end = System.currentTimeMillis();
 
-        System.out.println("Process Time : " + (end - start));
 
+        System.out.println("Process Time : "+(end-start));
         System.out.println("==== end.. ====");
 
         return "/user/home/mainPage";

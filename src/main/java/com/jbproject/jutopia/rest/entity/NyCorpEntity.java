@@ -1,5 +1,7 @@
 package com.jbproject.jutopia.rest.entity;
 
+import com.jbproject.jutopia.config.TickerCikCache;
+import com.jbproject.jutopia.rest.dto.model.NaverNyStockModel;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,4 +36,9 @@ public class NyCorpEntity extends BaseEntity {
         this.modifyDate = modifyDate;
     }
 
+    public NyCorpEntity(NaverNyStockModel model){
+        this.cikCode = TickerCikCache.tickerToCik(model.getSymbolCode());
+        this.tickerSymbol = model.getSymbolCode();
+        this.stockName = model.getStockName();
+    }
 }
