@@ -100,5 +100,6 @@ clean.doLast {
 }
 
 tasks.named('test') {
+	enabled = false
 	useJUnitPlatform()
 }

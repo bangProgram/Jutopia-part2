@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -49,11 +50,13 @@ public class SecurityUtils {
     }
 
     public void refreshRoleMenu(){
-//        작업해야함
-//        roleMenu = authService.getRoleBasedWhiteList("").stream().map(RoleMenuResult::getRoleId);
+        System.out.println("RoleBase WhiteList refresh start !!");
+        roleMenu = authService.getRoleBasedWhiteList("").stream().collect(Collectors.groupingBy(RoleMenuResult::getRoleId));
     }
 
-    public static List<RoleMenuResult> menuListByRole(String role) {return roleMenu.get(role);}
+    public static List<RoleMenuResult> menuListByRole(String role) {
+        return roleMenu.get(role);
+    }
 
     public static JwtTokenInfo handleAuthentication(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();

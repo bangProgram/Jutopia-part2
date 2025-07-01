@@ -1,5 +1,6 @@
 package com.jbproject.jutopia.rest.service.impl;
 
+import com.jbproject.jutopia.config.security.util.SecurityUtils;
 import com.jbproject.jutopia.rest.entity.relation.RoleMenuRelation;
 import com.jbproject.jutopia.rest.dto.result.AuthResult;
 import com.jbproject.jutopia.rest.repository.MenuRepository;
@@ -15,8 +16,9 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 public class AdminAuthServiceImpl implements AdminAuthService {
+
+    private final SecurityUtils securityUtils;
 
     private final MenuRepository menuRepository;
     private final RoleMenuRepository roleMenuRepository;
@@ -25,6 +27,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         return menuRepository.getMenuRoleList(roleType);
     }
 
+    @Transactional
     public void cudRoleMenu(String roleType, List<Long> menuIds, List<Long> cudMenuIds, List<Long> chkMenuIds){
 //        List<RoleMenuRelation> roleMenuRelations = roleMenuRepository.
 
@@ -43,5 +46,6 @@ public class AdminAuthServiceImpl implements AdminAuthService {
             }
         }
 
+        securityUtils.refreshRoleMenu();
     }
 }

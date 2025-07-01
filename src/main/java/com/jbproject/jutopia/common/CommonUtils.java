@@ -24,7 +24,6 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class CommonUtils {
 
-
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public static Double convertToString(String value){

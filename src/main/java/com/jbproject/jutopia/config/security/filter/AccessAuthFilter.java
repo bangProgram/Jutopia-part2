@@ -19,6 +19,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
@@ -28,6 +29,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 public class AccessAuthFilter extends OncePerRequestFilter {
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final List<RoleMenuResult> visitorBasedAuthList;
@@ -95,7 +97,9 @@ public class AccessAuthFilter extends OncePerRequestFilter {
                 accessJwtToken.setRole(role);
 
                 // Access Token 이 있을경우 Role 에 해당하는 인가 경로 변경
-                roleBasedUrls = authService.getRoleBasedWhiteList(role);
+                System.out.println("롤체크 하기위한 메뉴 호출");
+                roleBasedUrls = SecurityUtils.menuListByRole(role) == null ? visitorBasedAuthList : SecurityUtils.menuListByRole(role);
+                System.out.println("roleBasedUrls : "+roleBasedUrls);
 
                 accessJwtToken.setAuthenticated(true);
                 SecurityContext newContext = securityContextHolderStrategy.createEmptyContext();
@@ -104,7 +108,7 @@ public class AccessAuthFilter extends OncePerRequestFilter {
             }
             // Access Token 이 존재하지 않을경우 VISITOR 로 간주하고 인증 및 인가 진행
             else{
-                System.out.println("Token 없음 : Visitor 인증 시도");
+                log.info("Token 없음 : Visitor 인증 시도");
                 accessJwtToken.setAccessJwtPrincipal(
                         AccessJwtToken.AccessJwtPrincipal.builder()
                                 .role(Role.VISITOR.name())
@@ -118,16 +122,20 @@ public class AccessAuthFilter extends OncePerRequestFilter {
                 securityContextHolderStrategy.setContext(newContext);
             }
 
-            System.out.println("roleBasedUrls : "+roleBasedUrls.stream().toList()+ " / "+requestURI);
-            boolean chk = isAuthorization(requestURI, roleBasedUrls);
 
-            System.out.println("인가 체크 : "+chk);
-
-            if ( (chk) || role.equals(Role.SYSTEM.name()) ) {
-                System.out.println("필터 들어옴");
-                filterChain.doFilter(request, response);  // 허용된 URI일 경우 필터를 통과시킴
+            if ( role.equals(Role.SYSTEM.name()) ) {
+                log.info("System 인가 허용");
+                filterChain.doFilter(request, response);
             } else {
-                ExceptionProvider.sendErrorResponse(request,response,SecurityErrorCode.FORBIDDEN_ERROR_02);
+                log.info("roleBasedUrls : "+roleBasedUrls.stream().toList()+ " / "+requestURI);
+
+                if(isAuthorization(requestURI, roleBasedUrls)){
+                    log.info("인가 체크 : true");
+                    filterChain.doFilter(request, response); // 허용된 URI일 경우 필터를 통과시킴
+                }else{
+                    log.error("인가 체크 : false");
+                    ExceptionProvider.sendErrorResponse(request,response,SecurityErrorCode.FORBIDDEN_ERROR_02);
+                }
             }
         }
     }
