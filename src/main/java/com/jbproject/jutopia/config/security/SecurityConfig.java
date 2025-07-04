@@ -43,8 +43,9 @@ public class SecurityConfig {
             "/swagger-resources/**", "/configuration/ui", "/configuration/security",
             "/swagger-ui.html", "/webjars/**", "swagger v3",
             "/v3/api-docs/**", "/swagger-ui/**", "/favicon.ico",
-            "/auth/**","/error/**","/css/**", "/images/**", "/ajax/**","/.well-known/appspecific/**",
-            "/bootstrap/**", "/home/main", "/home/test"
+            "/auth/login","/auth/refresh","/auth/signup","/auth/logout",
+            "/error/**","/css/**", "/images/**", "/ajax/**","/.well-known/appspecific/**",
+            "/bootstrap/**", "/home/test"
     };
 
     // 기본 허용 path - request Matcher 추가

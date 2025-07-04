@@ -57,6 +57,7 @@ public class AccessAuthFilter extends OncePerRequestFilter {
         }
         // 모든 경로에 대한 인증및 인가 검증
         else{
+            log.info("inner Access filter .. ");
             JwtTokenInfo jwtTokenInfo = SecurityUtils.handleAuthentication(request) ;
             /*
                 기본적으로 비로그인 상태는 'visitor'로 간주

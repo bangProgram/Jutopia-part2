@@ -34,6 +34,7 @@ public class GlobalControllerAdvice {
         Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
 
         if (authentication instanceof AccessJwtToken accessJwtToken && accessJwtToken.isAuthenticated()) {
+            System.out.println("GlobalControllerAdvice isAdmin : "+Role.getAccessRole(accessJwtToken.getPrincipal().getRole()).contains("ADMIN"));
             return Role.getAccessRole(accessJwtToken.getPrincipal().getRole()).contains("ADMIN");
         }
 
@@ -45,6 +46,7 @@ public class GlobalControllerAdvice {
         Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
 
         if (authentication instanceof AccessJwtToken accessJwtToken && accessJwtToken.isAuthenticated()) {
+            System.out.println("GlobalControllerAdvice isRole : "+accessJwtToken.getPrincipal().getRole());
             return accessJwtToken.getPrincipal().getRole();
         }
 
