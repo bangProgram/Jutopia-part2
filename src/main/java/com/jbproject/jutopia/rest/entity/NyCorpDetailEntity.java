@@ -35,6 +35,11 @@ public class NyCorpDetailEntity extends BaseEntity {
     @Comment(value = "종목 명 (영어)")
     private String stockNameEng;
 
+    @Comment(value = "거래소 코드 (NYS/NSQ)")
+    private String stockExchangeCode;
+    @Comment(value = "거래소 이름 (NYSE/NASDAQ)")
+    private String stockExchangeName;
+
     @Comment(value = "주식시장 타입")
     private String stockType;
     @Comment(value = "국가 타입")
@@ -102,6 +107,10 @@ public class NyCorpDetailEntity extends BaseEntity {
         this.tickerSymbol = model.getSymbolCode();
         this.stockName = model.getStockName();
         this.stockNameEng = model.getStockNameEng();
+
+        this.stockExchangeCode = model.getStockExchangeType().getCode();
+        this.stockExchangeName = model.getStockExchangeType().getName();
+
         this.stockType = model.getStockType();
         this.nationType = model.getNationType();
         this.reutersIndustryCode = model.getReutersIndustryCode();
@@ -115,7 +124,7 @@ public class NyCorpDetailEntity extends BaseEntity {
         this.accumulatedTradingValueKrwHangeul = model.getAccumulatedTradingValueKrwHangeul();
         this.localTradedAt = model.getLocalTradedAt();
         this.marketStatus = model.getMarketStatus();
-        this.overMarketPriceInfo = model.getOverMarketPriceInfo();
+//        this.overMarketPriceInfo = model.getOverMarketPriceInfo();
         this.marketValue = CommonUtils.convertStringToDouble(model.getMarketValue());
         this.marketValueHangeul = model.getMarketValueHangeul();
         this.marketValueKrwHangeul = model.getMarketValueKrwHangeul();

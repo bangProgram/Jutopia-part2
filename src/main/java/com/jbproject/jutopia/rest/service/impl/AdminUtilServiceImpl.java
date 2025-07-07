@@ -1,5 +1,6 @@
 package com.jbproject.jutopia.rest.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.constant.CommonConstatns;
 import com.jbproject.jutopia.constant.ServerUtilConstant;
@@ -21,8 +22,10 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -398,6 +401,7 @@ public class AdminUtilServiceImpl implements AdminUtilService {
     public void mergeNyCorpDetail() throws Exception {
 
         ObjectMapper objectMapper = new ObjectMapper();
+        RestTemplate restTemplate = new RestTemplate();
 
         System.out.println("ny-corp/merge Detail start!!");
 
@@ -410,9 +414,12 @@ public class AdminUtilServiceImpl implements AdminUtilService {
 
             int sumCnt = 0;
 
-            URL url = new URL(stockUrl+"?page=1&pageSize=100");
-            InputStreamReader isr = new InputStreamReader(url.openConnection().getInputStream(), "UTF-8");
-            ApiResponseModel initData = objectMapper.readValue(isr, ApiResponseModel.class);
+            String url = stockUrl+"?page=1&pageSize=100";
+            ResponseEntity<String> resp = restTemplate.getForEntity(url, String.class);
+            String json = resp.getBody();
+//            System.out.println("json status : "+resp.getStatusCode());
+//            System.out.println("json data : "+objectMapper.writeValueAsString(json));
+            ApiResponseModel initData = objectMapper.readValue(json, ApiResponseModel.class);
 
             if(initData != null){
                 if(initData.getTotalCount() > 0){
@@ -421,9 +428,10 @@ public class AdminUtilServiceImpl implements AdminUtilService {
 
                     while(totalCnt > sumCnt){
 
-                        URL responseURL = new URL(stockUrl+"?page="+curPage+"&pageSize=100");
-                        isr = new InputStreamReader(responseURL.openConnection().getInputStream(), "UTF-8");
-                        ApiResponseModel response = objectMapper.readValue(isr, ApiResponseModel.class);
+                        url = stockUrl+"?page="+curPage+"&pageSize=100";
+                        resp = restTemplate.getForEntity(url, String.class);
+                        json = resp.getBody();
+                        ApiResponseModel response = objectMapper.readValue(json, ApiResponseModel.class);
 
                         for(NaverNyStockModel model : response.getStocks()){
 

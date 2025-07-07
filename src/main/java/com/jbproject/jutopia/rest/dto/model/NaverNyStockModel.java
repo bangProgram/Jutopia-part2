@@ -1,6 +1,7 @@
 package com.jbproject.jutopia.rest.dto.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -14,9 +15,8 @@ import java.time.LocalDateTime;
 
 @Getter @Setter @ToString
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class NaverNyStockModel {
-
 
     @Schema(title = "주식시장 타입")
     private String stockType;
@@ -60,8 +60,8 @@ public class NaverNyStockModel {
     private LocalDateTime localTradedAt;
     @Schema(title = "마켓 상태")
     private String marketStatus;
-    @Schema(title = "overMarketPriceInfo")
-    private String overMarketPriceInfo;
+//    @Schema(title = "overMarketPriceInfo")
+//    private String overMarketPriceInfo;
     @Schema(title = "시가총액(달러)")
     private String marketValue;
     @Schema(title = "시가총액(달러번역)")
@@ -127,7 +127,7 @@ public class NaverNyStockModel {
     }
     @Getter
     @Setter
-    @Builder
+    @NoArgsConstructor
     public static class IndustryCodeType{
         private String code;
         private String industryGroupKor;
@@ -172,7 +172,7 @@ public class NaverNyStockModel {
         result.setAccumulatedTradingValueKrwHangeul(entity.getAccumulatedTradingValueKrwHangeul());
         result.setLocalTradedAt(entity.getLocalTradedAt());
         result.setMarketStatus(entity.getMarketStatus());
-        result.setOverMarketPriceInfo(entity.getOverMarketPriceInfo());
+//        result.setOverMarketPriceInfo(entity.getOverMarketPriceInfo());
         result.setMarketValue(entity.getMarketValue().toString());
         result.setMarketValueHangeul(entity.getMarketValueHangeul());
         result.setMarketValueKrwHangeul(entity.getMarketValueKrwHangeul());
