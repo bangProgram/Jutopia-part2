@@ -25,7 +25,7 @@ public class RoleMenuCustomImpl implements RoleMenuCustom {
 
         BooleanBuilder whereCondition = new BooleanBuilder();
 
-        if(!role.isEmpty()){
+        if(!role.equals("ALL")){
             whereCondition.and(roleMenuRelation.roleId.eq(role));
         }
 

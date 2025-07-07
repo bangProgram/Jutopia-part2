@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Role {
 
+    ALL ("ALL"),
     VISITOR ("VISITOR"),
     JUTOPIAN ("VISITOR,JUTOPIAN"),
     TRADER ("VISITOR,JUTOPIAN,TRADER"),

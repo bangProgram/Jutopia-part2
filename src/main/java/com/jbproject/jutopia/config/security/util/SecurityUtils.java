@@ -7,6 +7,7 @@ import com.jbproject.jutopia.config.security.constant.SecurityErrorCode;
 import com.jbproject.jutopia.config.security.jwt.AccessJwtToken;
 import com.jbproject.jutopia.config.security.jwt.JwtTokenInfo;
 import com.jbproject.jutopia.config.security.jwt.RefreshJwtToken;
+import com.jbproject.jutopia.config.security.model.Role;
 import com.jbproject.jutopia.exception.ErrorCode;
 import com.jbproject.jutopia.exception.model.ExceptionModel;
 import com.jbproject.jutopia.rest.dto.result.RoleMenuResult;
@@ -51,7 +52,7 @@ public class SecurityUtils {
 
     public void refreshRoleMenu(){
         System.out.println("RoleBase WhiteList refresh start !!");
-        roleMenu = authService.getRoleBasedWhiteList("").stream().collect(Collectors.groupingBy(RoleMenuResult::getRoleId));
+        roleMenu = authService.getRoleBasedWhiteList(Role.ALL.name()).stream().collect(Collectors.groupingBy(RoleMenuResult::getRoleId));
     }
 
     public static List<RoleMenuResult> menuListByRole(String role) {
