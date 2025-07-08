@@ -22,19 +22,11 @@ public class AuthFilterConfig {
     private final RequestMatcher defaultPermitAllPathMatcher;
     private final TokenProvider tokenProvider;
 
-    @Bean("visitorBasedAuthList")
-    public List<RoleMenuResult> visitorBasedAuthList(){
-        List<RoleMenuResult> visitorBasedAuthList =  authService.getRoleBasedWhiteList(Role.VISITOR.name());
-        System.out.println("JB Map<String, List<String>> roleBasedAuthList : "+visitorBasedAuthList);
-        return visitorBasedAuthList;
-    }
-
     @Bean("accessAuthFilterFactory")
     Supplier<AccessAuthFilter> accessAuthFilterFactory(){
         System.out.println("JB Security accountAuthFilterFactory");
         return () -> new AccessAuthFilter(
                 defaultPermitAllPathMatcher,
-                visitorBasedAuthList(),
                 authService,
                 tokenProvider
         );

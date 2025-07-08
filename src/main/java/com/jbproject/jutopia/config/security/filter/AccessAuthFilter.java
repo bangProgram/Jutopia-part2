@@ -32,17 +32,15 @@ import java.util.List;
 @Slf4j
 public class AccessAuthFilter extends OncePerRequestFilter {
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
-    private final List<RoleMenuResult> visitorBasedAuthList;
     private final RequestMatcher defaultPermitAllPath;
     private final TokenProvider tokenProvider;
     private final AuthService authService;
 
 
     public AccessAuthFilter(
-            RequestMatcher defaultPermitAllPath, List<RoleMenuResult> visitorBasedAuthList, AuthService authService, TokenProvider tokenProvider
+            RequestMatcher defaultPermitAllPath, AuthService authService, TokenProvider tokenProvider
     ){
         this.defaultPermitAllPath = defaultPermitAllPath;
-        this.visitorBasedAuthList = visitorBasedAuthList;
         this.authService = authService;
         this.tokenProvider = tokenProvider;
     }
@@ -63,8 +61,8 @@ public class AccessAuthFilter extends OncePerRequestFilter {
                 기본적으로 비로그인 상태는 'visitor'로 간주
                 roleBasedUrls 인가 체크 또한 visitor 기준 세팅
             */
-            String role = "VISITOR";
-            List<RoleMenuResult> roleBasedUrls = visitorBasedAuthList;
+            String role = Role.VISITOR.name();
+            List<RoleMenuResult> roleBasedUrls = SecurityUtils.menuListByRole(role);
 
 
             AccessJwtToken accessJwtToken = new AccessJwtToken();
@@ -99,7 +97,7 @@ public class AccessAuthFilter extends OncePerRequestFilter {
 
                 // Access Token 이 있을경우 Role 에 해당하는 인가 경로 변경
                 System.out.println("롤체크 하기위한 메뉴 호출");
-                roleBasedUrls = SecurityUtils.menuListByRole(role) == null ? visitorBasedAuthList : SecurityUtils.menuListByRole(role);
+                roleBasedUrls = SecurityUtils.menuListByRole(role);
                 System.out.println("roleBasedUrls : "+roleBasedUrls);
 
                 accessJwtToken.setAuthenticated(true);
