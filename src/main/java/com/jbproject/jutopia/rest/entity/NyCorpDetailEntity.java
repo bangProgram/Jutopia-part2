@@ -46,6 +46,8 @@ public class NyCorpDetailEntity extends BaseEntity {
     private String nationType;
     @Comment(value = "로이터 산업 코드")
     private String reutersIndustryCode;
+    @Comment(value = "산업 코드")
+    private String industryCode;
     @Comment(value = "시가")
     private Double openPrice;
     @Comment(value = "종가")
@@ -114,6 +116,7 @@ public class NyCorpDetailEntity extends BaseEntity {
         this.stockType = model.getStockType();
         this.nationType = model.getNationType();
         this.reutersIndustryCode = model.getReutersIndustryCode();
+        this.industryCode = model.getIndustryCodeType().getCode();
         this.openPrice = CommonUtils.convertStringToDouble(model.getOpenPrice());
         this.closePrice = CommonUtils.convertStringToDouble(model.getClosePrice());
         this.compareToPreviousClosePrice = CommonUtils.convertStringToDouble(model.getCompareToPreviousClosePrice());
