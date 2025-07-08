@@ -1,18 +1,15 @@
 package com.jbproject.jutopia.rest.entity;
 
-import com.jbproject.jutopia.rest.dto.model.CorpCisModel;
-import com.jbproject.jutopia.rest.entity.key.CorpCisKey;
+import com.jbproject.jutopia.rest.dto.model.NyCorpCisModel;
 import com.jbproject.jutopia.rest.entity.key.NyCorpCisKey;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
-import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDate;
 
@@ -50,5 +47,7 @@ public class NyCorpCisEntity extends BaseEntity {
     @Column(name = "currency")
     @Comment("통화")
     private String currency;
+
+
 
 }

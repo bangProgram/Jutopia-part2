@@ -57,8 +57,8 @@ public class TickerCikCache {
     }
 
     /** 티커 → CIK */
-    public static String tickerToCik(String ticker) {return "CIK"+tickerToCik.get(ticker.toUpperCase(Locale.ROOT));}
+    public static String tickerToCik(String ticker) {return tickerToCik.get(ticker.toUpperCase(Locale.ROOT));}
 
     /** CIK → 티커  */
-    public static String cikToTicker(String cikCode) {return cikToTicker.get(cikCode.replace("CIK",""));}
+    public static String cikToTicker(String cikCode) {return cikToTicker.get(cikCode);}
 }

@@ -13,6 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@Builder
 public class NyCorpCisKey implements Serializable {
 
     @Column( name = "cik_code",columnDefinition="varchar(20)")

@@ -10,6 +10,7 @@ import com.jbproject.jutopia.rest.dto.result.CommCodeResult;
 import com.jbproject.jutopia.rest.dto.result.MergeResult;
 import com.jbproject.jutopia.rest.service.AdminUtilService;
 import com.jbproject.jutopia.rest.service.CommCodeService;
+import com.jbproject.jutopia.rest.service.NyCorpSyncService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 @Controller
 @Slf4j
@@ -37,6 +44,7 @@ public class AdminUtilController {
 
     private final AdminUtilService adminUtilService;
     private final CommCodeService commCodeService;
+    private final NyCorpSyncService nyCorpSyncService;
 
     @GetMapping("/main")
     public String goMain(
@@ -182,4 +190,27 @@ public class AdminUtilController {
         }
 
     }
+
+
+
+    @PostMapping("/ny-corp/report")
+    public RedirectView mergeNyCorpReportFromCompanyFacts(
+            HttpServletRequest request, HttpServletResponse response, Model model,
+            RedirectAttributes redirectAttributes,
+            @RequestParam("file") MultipartFile zipFile
+    ) {
+        try {
+            int totalCorp = nyCorpSyncService.uploadAndParseCompanyFacts(zipFile);
+
+            redirectAttributes.addFlashAttribute("serverMessage","총 " + totalCorp + "건 기업의 재무 데이터를 적재했습니다.");
+            return new RedirectView("/admin/util/main") ;
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("serverMessage","처리 중 오류 발생: " + e.getMessage());
+            return new RedirectView("/admin/util/main") ;
+        }
+    }
+
+
+
 }
