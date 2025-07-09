@@ -34,16 +34,16 @@ public class NyCorpCisEntity extends BaseEntity {
     private String accountName;
     @Column(name = "net_amount")
     @Comment("당기 금액")
-    private Long netAmount;
+    private Double netAmount;
     @Column(name = "accumulated_net_amount")
     @Comment("당기 누적 금액")
-    private Long accumulatedNetAmount;
+    private Double accumulatedNetAmount;
     @Column(name = "bef_net_amount")
     @Comment("전기 금액")
-    private Long befNetAmount;
+    private Double befNetAmount;
     @Column(name = "bef_accumulated_net_amount")
     @Comment("전기 누적 금액")
-    private Long befAccumulatedNetAmount;
+    private Double befAccumulatedNetAmount;
     @Column(name = "currency")
     @Comment("통화")
     private String currency;

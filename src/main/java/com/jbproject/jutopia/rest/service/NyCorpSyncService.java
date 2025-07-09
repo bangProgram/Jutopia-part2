@@ -5,4 +5,5 @@ import org.springframework.web.multipart.MultipartFile;
 public interface NyCorpSyncService {
 
     int uploadAndParseCompanyFacts(MultipartFile zipFile) throws Exception;
+    int mergeNyCorpCis() throws Exception;
 }

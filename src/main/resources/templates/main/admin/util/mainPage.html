@@ -9,127 +9,149 @@
     <meta charset="UTF-8">
     <title>어드민 기업데이터 관리 화면입니다.</title>
 </head>
-<body>
-    <h6>
-      어드민 기업데이터 관리 화면.
-    </h6>
+<body class="bg-light">
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">어드민 기업데이터 관리</h1>
 
-    <div class="utilDiv">
-        <div>
-            재무정보 업로드
-            <form action="/admin/util/dart/corp/report" name="exform" method="post" enctype="multipart/form-data"  th:object="${mergeCorpReportPayload}" >
-                <table>
-                    <tr>
-                        <td>
-                            <select th:field="*{reportType}" class="requiredChk" title="보고서 타입 선택">
-                                <option th:each="reportType : ${reportTypeList}" th:value = "${reportType.code}" th:utext="${reportType.codeName}" ></option>
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">재무정보 업로드</h6>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/util/dart/corp/report" method="post" enctype="multipart/form-data" th:object="${mergeCorpReportPayload}">
+                        <div class="form-group">
+                            <select th:field="*{reportType}" class="form-control requiredChk" title="보고서 타입 선택">
+                                <option th:each="reportType : ${reportTypeList}" th:value="${reportType.code}" th:utext="${reportType.codeName}"></option>
                             </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><input type="file" name="file" /></td>
-                    </tr>
-                    <tr>
-                        <td><button onclick="submit()" >엑셀 업로드</button></td>
-                    </tr>
-                </table>
-            </form>
-        </div>
-        <div>
-            재무정보 통계데이터 업데이트
-            <form action="/admin/util/cis/stat" name="exform" method="post"  th:object="${mergeCorpCisStatPayload}" >
-                <table>
-                    <tr>
-                        <td colspan="2">
-                            <input type="text" th:field="*{stockCode}" placeholder="StockCode">
-                        </td>
-                        <td colspan="2">
-                            <input type="text" th:field="*{bsnsYear}" placeholder="bsnsYear">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <input type="text" th:field="*{accountId}" placeholder="accountId">
-                        </td>
-                        <td colspan="2">
-                            <input type="text" th:field="*{quarterlyReportCode}" placeholder="quarterlyReportCode">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="checkbox" th:field="*{corpCls}" th:value="Y"><label>유가증권</label>
-                        </td>
-                        <td>
-                            <input type="checkbox" th:field="*{corpCls}" th:value="K"><label>코스닥</label>
-                        </td>
-                        <td>
-                            <input type="checkbox" th:field="*{corpCls}" th:value="N"><label>코스넥</label>
-                        </td>
-                        <td>
-                            <input type="checkbox" th:field="*{corpCls}" th:value="E"><label>기타</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4"><button onclick="submit()" >재무 통계수정</button></td>
-                    </tr>
-                </table>
-            </form>
-        </div>
-
-
-        <div style="display:flex;">
-            <div style="flex:1;">
-                기업정보(xml) 업로드
-                <form action="/admin/util/dart/corp" method="post" name="corpForm" enctype="multipart/form-data">
-                    <table>
-                        <tr>
-                            <td colspan="2"><input type="file" name="file" /></td>
-                        </tr>
-                        <tr>
-                            <td><button onclick="submit()" >XML 업로드</button></td>
-                        </tr>
-                    </table>
-
-                </form>
-            </div>
-            <div style="flex:1;">
-                뉴욕 기업정보(xml) 업로드
-                <form action="/admin/util/ny-corp/merge" method="post" name="nyCorpForm" >
-                    <table>
-                        <tr>
-                            <td><button onclick="submit()" >사업장 최신화</button></td>
-                        </tr>
-                    </table>
-
-                </form>
+                        </div>
+                        <div class="form-group">
+                            <input type="file" name="file" class="form-control-file">
+                        </div>
+                        <button type="submit" class="btn btn-primary">엑셀 업로드</button>
+                    </form>
+                </div>
             </div>
         </div>
 
-        <div>
-            기업 상세정보 현행화
-            <form action="/admin/util/dart/corp/detail" method="post" name="corpDetailForm" th:object="${mergeCorpDetailPayload}" >
-                <table>
-                    <tr>
-                        <td>
-                            <select th:field="*{gubn}" class="" title="최신화사업장 대상 구분선택" >
-                                <option value = "">전체</option>
-                                <option value = "01">상장기업 기준</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <input type="text" th:field="*{page}" value="" class="" title="Page 번호">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><button onclick="submit()" >사업장 최신화</button></td>
-                    </tr>
-                </table>
-            </form>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">재무정보 통계데이터 업데이트</h6>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/util/cis/stat" method="post" th:object="${mergeCorpCisStatPayload}">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <input type="text" th:field="*{stockCode}" class="form-control" placeholder="StockCode">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input type="text" th:field="*{bsnsYear}" class="form-control" placeholder="bsnsYear">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <input type="text" th:field="*{accountId}" class="form-control" placeholder="accountId">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input type="text" th:field="*{quarterlyReportCode}" class="form-control" placeholder="quarterlyReportCode">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="mr-3"><input type="checkbox" th:field="*{corpCls}" th:value="Y"> 유가증권</label>
+                            <label class="mr-3"><input type="checkbox" th:field="*{corpCls}" th:value="K"> 코스닥</label>
+                            <label class="mr-3"><input type="checkbox" th:field="*{corpCls}" th:value="N"> 코스넥</label>
+                            <label><input type="checkbox" th:field="*{corpCls}" th:value="E"> 기타</label>
+                        </div>
+                        <button type="submit" class="btn btn-warning">재무 통계수정</button>
+                    </form>
+                </div>
+            </div>
         </div>
-
     </div>
+
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-info">기업정보(xml) 업로드</h6>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/util/dart/corp" method="post" name="corpForm" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <input type="file" name="file" class="form-control-file">
+                        </div>
+                        <button type="submit" class="btn btn-secondary">XML 업로드</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">기업 상세정보 현행화</h6>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/util/dart/corp/detail" method="post" name="corpDetailForm" th:object="${mergeCorpDetailPayload}">
+                        <div class="form-row align-items-end">
+                            <div class="form-group col-md-4">
+                                <select th:field="*{gubn}" class="form-control" title="최신화사업장 대상 구분선택">
+                                    <option value="">전체</option>
+                                    <option value="01">상장기업 기준</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <input type="text" th:field="*{page}" class="form-control" placeholder="Page 번호">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <button type="submit" class="btn btn-success">사업장 최신화</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-info">뉴욕 기업정보(xml) 최신화</h6>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/util/ny-corp/merge" method="post" name="nyCorpForm">
+                        <button type="submit" class="btn btn-secondary">사업장 최신화</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">미국 상장기업 재무정보 (CompanyFacts.zip) 업로드</h6>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/util/ny-corp/report/test" method="post" enctype="multipart/form-data">
+                        <div class="form-row align-items-end">
+                            <div class="form-group col-md-4">
+                            </div>
+                            <div class="form-group col-md-4">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <button type="submit" class="btn btn-success">ZIP 업로드 및 적재 실행</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 </body>
 <script>
     $("#reportType").change(function(){

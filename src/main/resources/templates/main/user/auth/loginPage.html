@@ -18,32 +18,62 @@
 <head>
     <meta charset="UTF-8">
     <title>로그인 페이지</title>
+
+
+    <link th:href="@{/bootstrap/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/bootstrap/css/sb-admin-2.min.css}" rel="stylesheet">
+    <th:block th:replace="~{/common/fragments/header :: headerFragment}"></th:block>
 </head>
-<body>
-    <form action="#" th:action="@{/auth/login}" th:object="${loginPayload}" th:method="post">
-        <table>
-            <tr>
-                <td>ID : </td>
-                <td>
-                    <label><input type="text" th:field="*{userId}" required></label>
-                </td>
-            </tr>
-            <tr>
-                <td>Password : </td>
-                <td>
-                    <label><input type="text" th:field="*{password}" required></label>
-                </td>
-            </tr>
-        </table>
-        <button type="submit">
-            로그인
-        </button>
-        <button type="button" th:onclick="|location.href='@{/auth/signup}'|">
-            회원가입
-        </button>
-    </form>
+<body class="bg-gradient-primary">
+<div class="container">
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+
+        <div class="col-xl-6 col-lg-8 col-md-9">
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <!-- Nested Row within Card Body -->
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">로그인</h1>
+                        </div>
+                        <form class="user" th:action="@{/auth/login}" th:object="${loginPayload}" th:method="post">
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-user"
+                                       th:field="*{userId}" placeholder="아이디를 입력하세요" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control form-control-user"
+                                       th:field="*{password}" placeholder="비밀번호를 입력하세요" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-user btn-block">
+                                로그인
+                            </button>
+                            <hr>
+                            <button type="button" class="btn btn-secondary btn-user btn-block"
+                                    th:onclick="|location.href='@{/auth/signup}'|">
+                                회원가입
+                            </button>
+                        </form>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SB Admin 2 Scripts -->
+<script th:src="@{/bootstrap/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/bootstrap/vendor/jquery-easing/jquery.easing.min.js}"></script>
+<script th:src="@{/bootstrap/js/sb-admin-2.min.js}"></script>
 
 </body>
+
 
 <script>
     function loginProc() {

@@ -15,10 +15,10 @@ public class NyCorpCisModel {
     private String quarterlyReportName;
     private LocalDate closingDate;
     private String accountName;
-    private Long netAmount;
-    private Long accumulatedNetAmount;
-    private Long befNetAmount;
-    private Long befAccumulatedNetAmount;
+    private String netAmount;
+    private String accumulatedNetAmount;
+    private String befNetAmount;
+    private String befAccumulatedNetAmount;
     private String currency;
 
     public static NyCorpCisEntity create(NyCorpCisModel model) {
@@ -35,7 +35,7 @@ public class NyCorpCisModel {
         entity.setQuarterlyReportName(model.getQuarterlyReportName());
         entity.setClosingDate(model.getClosingDate());
         entity.setAccountName(model.getAccountName());
-        entity.setNetAmount(model.getNetAmount());
+        entity.setNetAmount(Double.parseDouble(model.getNetAmount()));
         entity.setCurrency(model.getCurrency());
 
         return entity;

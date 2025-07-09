@@ -212,5 +212,23 @@ public class AdminUtilController {
     }
 
 
+    @PostMapping("/ny-corp/report/test")
+    public RedirectView mergeNyCorpReportFromCik(
+            HttpServletRequest request, HttpServletResponse response, Model model,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            int totalCorp = nyCorpSyncService.mergeNyCorpCis();
+
+            redirectAttributes.addFlashAttribute("serverMessage","총 " + totalCorp + "건 기업의 재무 데이터를 적재했습니다.");
+            return new RedirectView("/admin/util/main") ;
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("serverMessage","처리 중 오류 발생: " + e.getMessage());
+            return new RedirectView("/admin/util/main") ;
+        }
+    }
+
+
 
 }
