@@ -1,4 +1,4 @@
-package com.jbproject.jutopia.config.parsing;
+package com.jbproject.jutopia.common.parsing;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.context.annotation.Bean;

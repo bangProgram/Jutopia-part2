@@ -1,4 +1,4 @@
-package com.jbproject.jutopia.config;
+package com.jbproject.jutopia.common;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,17 +35,17 @@ public class EdgarClient {
                 .block();
     }
 
-    public JsonNode getCompanyFacts(String cik) {
+    public String getCompanyFacts(String cik) {
         return edgarWebClient.get()
                 .uri("/api/xbrl/companyfacts/CIK"+cik+".json")
                 .retrieve()
-                .bodyToMono(JsonNode.class)
-                .doOnNext(body -> System.out.println("📥 SEC 응답:\n" + body))
+                .bodyToMono(String.class)
                 .block();
     }
 
     public List<NyCorpCisModel> parseCompanyFacts(Path jsonPath) throws IOException {
         JsonNode root = objectMapper.readTree(jsonPath.toFile());
+        System.out.println("parseCompanyFacts : "+root);
         String cik = root.path("cik").asText(); // 또는 path에서 추출
         String cikCode = String.format("%010d", Integer.parseInt(cik));
         JsonNode facts = root.path("facts").path("us-gaap");

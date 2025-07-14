@@ -1,7 +1,9 @@
 package com.jbproject.jutopia.rest.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.jbproject.jutopia.config.EdgarClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jbproject.jutopia.common.EdgarClient;
+import com.jbproject.jutopia.rest.dto.model.CorpDetailModel;
 import com.jbproject.jutopia.rest.dto.model.NyCorpCisModel;
 import com.jbproject.jutopia.rest.entity.NyCorpCisEntity;
 import com.jbproject.jutopia.rest.entity.NyCorpEntity;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.net.URL;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -79,18 +82,26 @@ public class NyCorpSyncServiceImpl implements NyCorpSyncService {
 
         try {
             List<NyCorpEntity> nyCorpEntities = nyCorpRepository.findAll();
+            String cik = "0000001750";
+            String apiUrl = "https://data.sec.gov/api/xbrl/companyfacts/CIK"+cik+".json";
 
-            for( NyCorpEntity nyCorpEntity : nyCorpEntities){
-                String cikCode = nyCorpEntity.getCikCode();
-                JsonNode submission = edgarClient.getCompanyFacts(cikCode);
+            URL url = new URL(apiUrl);
+            InputStreamReader isr = new InputStreamReader(url.openConnection().getInputStream(), "UTF-8");
+            ObjectMapper objectMapper = new ObjectMapper();
+            System.out.println("test : "+objectMapper.writeValueAsString(isr));
 
-                System.out.println(totalCorp +" 번째 기업 작업중... ");
-                List<NyCorpCisModel> models = edgarClient.parseCompanyFactsTest(submission);
-                List<NyCorpCisEntity> entities = models.stream().map(NyCorpCisModel::create).toList();
-                nyCorpCisRepository.saveAll(entities);
-                if(totalCorp == 2) break;
-                totalCorp++;
-            }
+//            for( NyCorpEntity nyCorpEntity : nyCorpEntities){
+//                String cikCode = nyCorpEntity.getCikCode();
+//                String submission = edgarClient.getCompanyFacts(cikCode);
+//
+//                System.out.println(totalCorp +" 번째 기업 작업중... ");
+//                System.out.println("submission : "+submission);
+////                List<NyCorpCisModel> models = edgarClient.parseCompanyFactsTest(submission);
+////                List<NyCorpCisEntity> entities = models.stream().map(NyCorpCisModel::create).toList();
+////                nyCorpCisRepository.saveAll(entities);
+//                if(totalCorp == 2) break;
+//                totalCorp++;
+//            }
             return totalCorp;
         }catch (Exception e){
             System.out.println("error : "+e);
