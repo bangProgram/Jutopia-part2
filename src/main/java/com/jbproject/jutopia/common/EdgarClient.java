@@ -3,6 +3,7 @@ package com.jbproject.jutopia.common;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jbproject.jutopia.rest.dto.model.NyCorpCisModel;
+import com.jbproject.jutopia.rest.entity.key.NyCorpCisKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class EdgarClient {
     private static final Map<String, List<String>> fallbackMap = Map.of(
             "Revenue", List.of("Revenues", "SalesRevenueNet", "RevenueFromContractWithCustomerExcludingAssessedTax"),
             "OperatingIncomeLoss", List.of("OperatingIncomeLoss"),
+            "DiscontinuedOperatingIncomeLoss", List.of("DisposalGroupIncludingDiscontinuedOperationOperatingIncomeLoss"),
             "ProfitLoss", List.of("ProfitLoss", "NetIncomeLoss"),
             "BasicEarningsLossPerShare", List.of("EarningsPerShareBasic")
     );
@@ -43,43 +46,68 @@ public class EdgarClient {
                 .block();
     }
 
-    public List<NyCorpCisModel> parseCompanyFacts(Path jsonPath) throws IOException {
-        JsonNode root = objectMapper.readTree(jsonPath.toFile());
+    public List<NyCorpCisModel> parseCompanyFacts(JsonNode root, List<NyCorpCisKey> nyCorpCisKeys) {
         System.out.println("parseCompanyFacts : "+root);
+
         String cik = root.path("cik").asText(); // 또는 path에서 추출
         String cikCode = String.format("%010d", Integer.parseInt(cik));
         JsonNode facts = root.path("facts").path("us-gaap");
 
         List<NyCorpCisModel> results = new ArrayList<>();
 
-        for (Map.Entry<String, List<String>> entry : fallbackMap.entrySet()) {
-            String accountId = entry.getKey();
-            for (String tag : entry.getValue()) {
-                JsonNode unitNode = facts.path(tag).path("units");
-                if (!unitNode.isMissingNode()) {
-                    for (Iterator<String> it = unitNode.fieldNames(); it.hasNext(); ) {
-                        String currency = it.next(); // 보통 USD or USD/shares
-                        for (JsonNode fact : unitNode.path(currency)) {
-                            String frame = fact.path("frame").asText("");
-                            if (!frame.matches("CY\\d{4}Q[1-4]")) continue; // 분기 단독 실적만
+        // Set으로 변환해서 빠르게 존재 여부 확인
+        Set<String> existingKeySet = nyCorpCisKeys.stream()
+                .map(k -> String.join(":", k.getCikCode(), k.getBsnsYear(), k.getQuarterlyReportCode(), k.getAccountId()))
+                .collect(Collectors.toSet());
 
-                            NyCorpCisModel dto = new NyCorpCisModel();
-                            dto.setCikCode(cikCode);
-                            dto.setBsnsYear(String.valueOf(fact.path("fy").asInt()));
-                            dto.setQuarterlyReportCode(frame.substring(frame.length()-2)); // "Q1", "Q2" 등
-                            dto.setAccountId(accountId);
-                            dto.setQuarterlyReportName(fact.path("form").asText());
-                            dto.setClosingDate(LocalDate.parse(fact.path("end").asText()));
-                            dto.setAccountName(tag); // 실제 태그명을 저장
-                            dto.setNetAmount(fact.path("val").asText());
-                            dto.setCurrency(currency);
+        String errorModel = "";
 
-                            results.add(dto);
+        try {
+            for (Map.Entry<String, List<String>> entry : fallbackMap.entrySet()) {
+                String accountId = entry.getKey();
+                for (String tag : entry.getValue()) {
+                    JsonNode unitNode = facts.path(tag).path("units");
+                    if (!unitNode.isMissingNode()) {
+                        for (Iterator<String> it = unitNode.fieldNames(); it.hasNext(); ) {
+                            String currency = it.next(); // 보통 USD or USD/shares
+                            System.out.println("test111 : "+currency);
+                            for (JsonNode fact : unitNode.path(currency)) {
+                                String frame = fact.path("frame").asText("");
+                                System.out.println("test222 : "+frame);
+                                if (!frame.matches("CY\\d{4}Q[1-4]")) continue; // 분기 단독 실적만
+
+                                String bsnsYear = String.valueOf(fact.path("fy").asInt());
+                                String quarterlyReportCode = frame.substring(frame.length() - 2); // Q1, Q2 등
+
+                                // 존재 여부 확인
+                                String key = String.join(":", cikCode, bsnsYear, quarterlyReportCode, accountId);
+                                System.out.println("key : "+key + " / existingKeySet.contains(key) : "+existingKeySet.contains(key));
+                                if (existingKeySet.contains(key)) continue;
+
+                                NyCorpCisModel dto = new NyCorpCisModel();
+                                dto.setCikCode(cikCode);
+                                dto.setBsnsYear(String.valueOf(fact.path("fy").asInt()));
+                                dto.setQuarterlyReportCode(frame.substring(frame.length()-2)); // "Q1", "Q2" 등
+                                dto.setAccountId(accountId);
+                                dto.setQuarterlyReportName(fact.path("form").asText());
+                                dto.setClosingDate(LocalDate.parse(fact.path("end").asText()));
+                                dto.setAccountName(tag); // 실제 태그명을 저장
+                                dto.setNetAmount(fact.path("val").asText());
+                                dto.setCurrency(currency);
+
+                                results.add(dto);
+
+                                errorModel = objectMapper.writeValueAsString(dto);
+                            }
                         }
+                        System.out.println("tag : "+tag);
+                        break; // 첫 번째 존재하는 태그에서만 수집
                     }
-                    break; // 첫 번째 존재하는 태그에서만 수집
                 }
             }
+        }catch (Exception e){
+            System.out.println(" e : "+ e);
+            System.out.println("errorModel : "+errorModel);
         }
 
         return results;

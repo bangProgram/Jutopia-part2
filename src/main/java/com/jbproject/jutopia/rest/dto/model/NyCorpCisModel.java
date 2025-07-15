@@ -1,5 +1,12 @@
 package com.jbproject.jutopia.rest.dto.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.jbproject.jutopia.rest.entity.NyCorpCisEntity;
 import com.jbproject.jutopia.rest.entity.key.NyCorpCisKey;
 import lombok.Data;
@@ -13,6 +20,9 @@ public class NyCorpCisModel {
     private String quarterlyReportCode;
     private String accountId;
     private String quarterlyReportName;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate closingDate;
     private String accountName;
     private String netAmount;

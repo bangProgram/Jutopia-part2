@@ -7,6 +7,7 @@ import com.jbproject.jutopia.rest.dto.model.CorpDetailModel;
 import com.jbproject.jutopia.rest.dto.model.NyCorpCisModel;
 import com.jbproject.jutopia.rest.entity.NyCorpCisEntity;
 import com.jbproject.jutopia.rest.entity.NyCorpEntity;
+import com.jbproject.jutopia.rest.entity.key.NyCorpCisKey;
 import com.jbproject.jutopia.rest.repository.NyCorpCisRepository;
 import com.jbproject.jutopia.rest.repository.NyCorpRepository;
 import com.jbproject.jutopia.rest.service.NyCorpSyncService;
@@ -17,18 +18,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class NyCorpSyncServiceImpl implements NyCorpSyncService {
 
     private final EdgarClient edgarClient;
     private final NyCorpCisRepository nyCorpCisRepository;
     private final NyCorpRepository nyCorpRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private static final String TEMP_DIR = System.getProperty("java.io.tmpdir") + "/companyfacts";
 
     public int uploadAndParseCompanyFacts(MultipartFile zipFile) throws Exception{
@@ -58,8 +61,22 @@ public class NyCorpSyncServiceImpl implements NyCorpSyncService {
             if (files == null || files.length == 0) return totalSaved;
 
             for (File json : files) {
-                List<NyCorpCisModel> models = edgarClient.parseCompanyFacts(json.toPath());
+                Path jsonPath = json.toPath();
+                JsonNode root = objectMapper.readTree(jsonPath.toFile());
+
+                if (root == null || root.size() == 0 || root.isMissingNode()) {
+                    System.out.println("⚠️ Empty JSON skipped.");
+                    continue;
+                }
+
+                String cikCode = String.format("%010d", root.path("cik").asInt());
+
+                List<NyCorpCisKey> nyCorpCisKeys = nyCorpCisRepository.getNyCorpCisKey(cikCode);
+
+                List<NyCorpCisModel> models = edgarClient.parseCompanyFacts(root, nyCorpCisKeys);
+                System.out.println("models out..........");
                 List<NyCorpCisEntity> entities = models.stream().map(NyCorpCisModel::create).toList();
+                System.out.println("entities ..........");
                 nyCorpCisRepository.saveAll(entities);
                 totalSaved += entities.size();
                 System.out.println(totalCorp +" 번째 기업 작업중... ");
