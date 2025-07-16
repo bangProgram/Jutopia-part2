@@ -51,7 +51,8 @@ public class NyCorpEntity extends BaseEntity {
     }
 
     public NyCorpEntity(NaverNyStockModel model){
-        this.cikCode = TickerCikCache.tickerToCik(model.getSymbolCode());
+        String ticker = model.getSymbolCode();
+        this.cikCode = TickerCikCache.tickerToCik(ticker.replace(".","-"));
         this.reutersCode = model.getReutersCode();
         this.tickerSymbol = model.getSymbolCode();
         this.stockName = model.getStockName();

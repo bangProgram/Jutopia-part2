@@ -54,6 +54,7 @@ public class TickerCikCache {
         tickerToCik = t2c;
         cikToTicker = c2t;
         log.info("✔  ticker.txt loaded: {} pairs", t2c.size());
+//        log.info("✔  ticker.txt loaded: {}", t2c);
     }
 
     /** 티커 → CIK */
@@ -61,4 +62,8 @@ public class TickerCikCache {
 
     /** CIK → 티커  */
     public static String cikToTicker(String cikCode) {return cikToTicker.get(cikCode);}
+
+    public static Boolean containKeyForTicker(String ticker){
+        return tickerToCik.containsKey(ticker.toUpperCase(Locale.ROOT));
+    }
 }

@@ -104,7 +104,8 @@ public class NyCorpDetailEntity extends BaseEntity {
 
     public NyCorpDetailEntity(NaverNyStockModel model){
 
-        this.cikCode = TickerCikCache.tickerToCik(model.getSymbolCode());
+        String ticker = model.getSymbolCode();
+        this.cikCode = TickerCikCache.tickerToCik(ticker.replace(".","-"));
         this.reutersCode = model.getReutersCode();
         this.tickerSymbol = model.getSymbolCode();
         this.stockName = model.getStockName();
@@ -116,7 +117,10 @@ public class NyCorpDetailEntity extends BaseEntity {
         this.stockType = model.getStockType();
         this.nationType = model.getNationType();
         this.reutersIndustryCode = model.getReutersIndustryCode();
-        this.industryCode = model.getIndustryCodeType().getCode();
+
+        // 산업코드 예외처리
+        if(model.getIndustryCodeType() != null) this.industryCode = model.getIndustryCodeType().getCode();
+
         this.openPrice = CommonUtils.convertStringToDouble(model.getOpenPrice());
         this.closePrice = CommonUtils.convertStringToDouble(model.getClosePrice());
         this.compareToPreviousClosePrice = CommonUtils.convertStringToDouble(model.getCompareToPreviousClosePrice());
@@ -125,14 +129,22 @@ public class NyCorpDetailEntity extends BaseEntity {
         this.accumulatedTradingVolume = CommonUtils.convertStringToDouble(model.getAccumulatedTradingVolume());
         this.accumulatedTradingValue = CommonUtils.convertStringToDouble(model.getAccumulatedTradingValue());
         this.accumulatedTradingValueKrwHangeul = model.getAccumulatedTradingValueKrwHangeul();
-        this.localTradedAt = model.getLocalTradedAt();
+
+        String localTradedAtStr = model.getLocalTradedAt();
+        String parsedLocalTradedAt = localTradedAtStr != null ? localTradedAtStr.substring(0, localTradedAtStr.length() - 6) : null;
+
+        this.localTradedAt = parsedLocalTradedAt != null ? LocalDateTime.parse(parsedLocalTradedAt) : null;
         this.marketStatus = model.getMarketStatus();
 //        this.overMarketPriceInfo = model.getOverMarketPriceInfo();
         this.marketValue = CommonUtils.convertStringToDouble(model.getMarketValue());
         this.marketValueHangeul = model.getMarketValueHangeul();
         this.marketValueKrwHangeul = model.getMarketValueKrwHangeul();
         this.dividend = CommonUtils.convertStringToDouble(model.getDividend());
-        this.dividendPayAt = model.getDividendPayAt();
+
+        String dividendPayAtStr = model.getDividendPayAt();
+        String parsedDividendPayAt = dividendPayAtStr != null ? dividendPayAtStr.substring(0, dividendPayAtStr.length() - 1) : null;
+
+        this.dividendPayAt = parsedDividendPayAt != null ? LocalDateTime.parse(parsedDividendPayAt) : null;
         this.endUrl = model.getEndUrl();
         this.delayTime = model.getDelayTime();
         this.delayTimeName = model.getDelayTimeName();

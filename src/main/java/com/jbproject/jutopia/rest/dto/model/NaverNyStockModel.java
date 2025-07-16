@@ -53,11 +53,8 @@ public class NaverNyStockModel {
     @Schema(title = "누적 거래액 (원화)")
     private String accumulatedTradingValueKrwHangeul;
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     @Schema(title = "현지 거래시간")
-    private LocalDateTime localTradedAt;
+    private String localTradedAt;
     @Schema(title = "마켓 상태")
     private String marketStatus;
 //    @Schema(title = "overMarketPriceInfo")
@@ -71,11 +68,8 @@ public class NaverNyStockModel {
     @Schema(title = "배당")
     private String dividend;
 
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     @Schema(title = "배당 지급일")
-    private LocalDateTime dividendPayAt;
+    private String dividendPayAt;
 
     @Schema(title = "네이버증권 url")
     private String endUrl;
@@ -170,14 +164,14 @@ public class NaverNyStockModel {
         result.setAccumulatedTradingVolume(entity.getAccumulatedTradingVolume().toString());
         result.setAccumulatedTradingValue(entity.getAccumulatedTradingValue().toString());
         result.setAccumulatedTradingValueKrwHangeul(entity.getAccumulatedTradingValueKrwHangeul());
-        result.setLocalTradedAt(entity.getLocalTradedAt());
+        result.setLocalTradedAt(entity.getLocalTradedAt().toString());
         result.setMarketStatus(entity.getMarketStatus());
 //        result.setOverMarketPriceInfo(entity.getOverMarketPriceInfo());
         result.setMarketValue(entity.getMarketValue().toString());
         result.setMarketValueHangeul(entity.getMarketValueHangeul());
         result.setMarketValueKrwHangeul(entity.getMarketValueKrwHangeul());
         result.setDividend(entity.getDividend().toString());
-        result.setDividendPayAt(entity.getDividendPayAt());
+        result.setDividendPayAt(entity.getDividendPayAt().toString());
         result.setEndUrl(entity.getEndUrl());
         result.setDelayTime(entity.getDelayTime());
         result.setDelayTimeName(entity.getDelayTimeName());

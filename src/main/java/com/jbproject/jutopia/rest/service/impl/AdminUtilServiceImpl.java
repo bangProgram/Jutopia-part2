@@ -2,6 +2,7 @@ package com.jbproject.jutopia.rest.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jbproject.jutopia.config.TickerCikCache;
 import com.jbproject.jutopia.constant.CommonConstatns;
 import com.jbproject.jutopia.constant.ServerUtilConstant;
 import com.jbproject.jutopia.rest.dto.model.*;
@@ -432,8 +433,19 @@ public class AdminUtilServiceImpl implements AdminUtilService {
                         resp = restTemplate.getForEntity(url, String.class);
                         json = resp.getBody();
                         ApiResponseModel response = objectMapper.readValue(json, ApiResponseModel.class);
+                        System.out.println("url : "+url);
 
                         for(NaverNyStockModel model : response.getStocks()){
+                            sumCnt++;
+
+                            System.out.println("model : "+objectMapper.writeValueAsString(model));
+
+                            String ticker = model.getSymbolCode().replace(".","-");
+
+                            if(!TickerCikCache.containKeyForTicker(ticker)){
+                                log.info("ticker :"+ticker+ " is Not SEC Mapper.");
+                                continue;
+                            }
 
                             NyCorpEntity nyCorpEntity = new NyCorpEntity(model);
                             NyCorpDetailEntity nyCorpDetailEntity = new NyCorpDetailEntity(model);
@@ -441,6 +453,7 @@ public class AdminUtilServiceImpl implements AdminUtilService {
 //                                StockExchageEntity stockExchageEntity = new StockExchageEntity(model.getStockExchangeType());
 //                                stockExchageRepository.save(stockExchageEntity);
 //                            }
+
                             if(model.getIndustryCodeType() != null){
                                 StockIndustryEntity stockIndustryEntity = new StockIndustryEntity(model);
                                 stockIndustryRepository.save(stockIndustryEntity);
@@ -448,8 +461,8 @@ public class AdminUtilServiceImpl implements AdminUtilService {
 
                             nyCorpRepository.save(nyCorpEntity);
                             nyCorpDetailRepository.save(nyCorpDetailEntity);
-                            sumCnt++;
                         }
+                        System.out.println("curPage : "+curPage);
                         curPage++;
                     }
                 }
