@@ -71,9 +71,9 @@ public class NyCorpSyncServiceImpl implements NyCorpSyncService {
 
                 String cikCode = String.format("%010d", root.path("cik").asInt());
 
-                List<NyCorpCisKey> nyCorpCisKeys = nyCorpCisRepository.getNyCorpCisKey(cikCode);
+//                List<NyCorpCisKey> nyCorpCisKeys = nyCorpCisRepository.getNyCorpCisKey(cikCode);
 
-                List<NyCorpCisModel> models = edgarClient.parseCompanyFacts(root, nyCorpCisKeys);
+                List<NyCorpCisModel> models = edgarClient.parseCompanyFacts(root);
                 System.out.println("models out..........");
                 List<NyCorpCisEntity> entities = models.stream().map(NyCorpCisModel::create).toList();
                 System.out.println("entities ..........");

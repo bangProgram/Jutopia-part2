@@ -23,11 +23,11 @@ public class EdgarClient {
 
     // 계정 ID → fallback 순위 목록
     private static final Map<String, List<String>> fallbackMap = Map.of(
-            "Revenue", List.of("Revenues", "SalesRevenueNet", "RevenueFromContractWithCustomerExcludingAssessedTax"),
-            "OperatingIncomeLoss", List.of("OperatingIncomeLoss"),
+            "Revenue", List.of("RevenueFromContractWithCustomerExcludingAssessedTax","SalesRevenueNet","Revenues"),
+            "OperatingIncomeLoss", List.of("OperatingIncomeLoss","IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest"),
             "DiscontinuedOperatingIncomeLoss", List.of("DisposalGroupIncludingDiscontinuedOperationOperatingIncomeLoss"),
-            "ProfitLoss", List.of("ProfitLoss", "NetIncomeLoss"),
-            "BasicEarningsLossPerShare", List.of("EarningsPerShareBasic")
+            "ProfitLoss", List.of("ProfitLoss", "NetIncomeLoss","NetIncomeLossAvailableToCommonStockholdersBasic"),
+            "BasicEarningsLossPerShare", List.of("EarningsPerShareBasic","EarningsPerShareDiluted")
     );
 
     public JsonNode getSubmissions(String cik) {
@@ -46,7 +46,7 @@ public class EdgarClient {
                 .block();
     }
 
-    public List<NyCorpCisModel> parseCompanyFacts(JsonNode root, List<NyCorpCisKey> nyCorpCisKeys) {
+    public List<NyCorpCisModel> parseCompanyFacts(JsonNode root) {
         System.out.println("parseCompanyFacts : "+root);
 
         String cik = root.path("cik").asText(); // 또는 path에서 추출
@@ -56,9 +56,7 @@ public class EdgarClient {
         List<NyCorpCisModel> results = new ArrayList<>();
 
         // Set으로 변환해서 빠르게 존재 여부 확인
-        Set<String> existingKeySet = nyCorpCisKeys.stream()
-                .map(k -> String.join(":", k.getCikCode(), k.getBsnsYear(), k.getQuarterlyReportCode(), k.getAccountId()))
-                .collect(Collectors.toSet());
+        Set<String> existingKeySet = new HashSet<>();
 
         String errorModel = "";
 
@@ -76,20 +74,21 @@ public class EdgarClient {
                                 System.out.println("test222 : "+frame);
                                 if (!frame.matches("CY\\d{4}Q[1-4]")) continue; // 분기 단독 실적만
 
-                                String bsnsYear = String.valueOf(fact.path("fy").asInt());
+                                String bsnsYear = frame.substring(2,6);
                                 String quarterlyReportCode = frame.substring(frame.length() - 2); // Q1, Q2 등
 
                                 // 존재 여부 확인
                                 String key = String.join(":", cikCode, bsnsYear, quarterlyReportCode, accountId);
                                 System.out.println("key : "+key + " / existingKeySet.contains(key) : "+existingKeySet.contains(key));
                                 if (existingKeySet.contains(key)) continue;
+                                existingKeySet.add(key);
 
                                 NyCorpCisModel dto = new NyCorpCisModel();
                                 dto.setCikCode(cikCode);
-                                dto.setBsnsYear(String.valueOf(fact.path("fy").asInt()));
-                                dto.setQuarterlyReportCode(frame.substring(frame.length()-2)); // "Q1", "Q2" 등
+                                dto.setBsnsYear(bsnsYear);
+                                dto.setQuarterlyReportCode(quarterlyReportCode); // "Q1", "Q2" 등
                                 dto.setAccountId(accountId);
-                                dto.setQuarterlyReportName(fact.path("form").asText());
+                                dto.setQuarterlyReportName(quarterlyReportCode+"분기 보고서");
                                 dto.setClosingDate(LocalDate.parse(fact.path("end").asText()));
                                 dto.setAccountName(tag); // 실제 태그명을 저장
                                 dto.setNetAmount(fact.path("val").asText());
@@ -101,7 +100,6 @@ public class EdgarClient {
                             }
                         }
                         System.out.println("tag : "+tag);
-                        break; // 첫 번째 존재하는 태그에서만 수집
                     }
                 }
             }
