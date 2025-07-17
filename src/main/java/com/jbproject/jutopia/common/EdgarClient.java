@@ -46,11 +46,9 @@ public class EdgarClient {
                 .block();
     }
 
-    public List<NyCorpCisModel> parseCompanyFacts(JsonNode root) {
-        System.out.println("parseCompanyFacts : "+root);
+    public List<NyCorpCisModel> parseCompanyFacts(String cikCode, JsonNode root) {
+//        System.out.println("parseCompanyFacts : "+root);
 
-        String cik = root.path("cik").asText(); // 또는 path에서 추출
-        String cikCode = String.format("%010d", Integer.parseInt(cik));
         JsonNode facts = root.path("facts").path("us-gaap");
 
         List<NyCorpCisModel> results = new ArrayList<>();

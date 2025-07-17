@@ -69,11 +69,16 @@ public class NyCorpSyncServiceImpl implements NyCorpSyncService {
                     continue;
                 }
 
-                String cikCode = String.format("%010d", root.path("cik").asInt());
+                System.out.println("json.getName() : "+json.getName());
+                System.out.println("json.getAbsolutePath() : "+json.getAbsolutePath());
+                System.out.println("jsonPath.getFileName() : "+jsonPath.getFileName());
+
+                String cikCode = json.getName().substring(3,13);
+                System.out.println("cikCode : "+cikCode);
 
 //                List<NyCorpCisKey> nyCorpCisKeys = nyCorpCisRepository.getNyCorpCisKey(cikCode);
 
-                List<NyCorpCisModel> models = edgarClient.parseCompanyFacts(root);
+                List<NyCorpCisModel> models = edgarClient.parseCompanyFacts(cikCode, root);
                 System.out.println("models out..........");
                 List<NyCorpCisEntity> entities = models.stream().map(NyCorpCisModel::create).toList();
                 System.out.println("entities ..........");
